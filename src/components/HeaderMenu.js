@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 
-const HeaderMenu = ({ toggleMenu, closeMenu, isOpen }) => {
+const HeaderMenu = ({ closeMenu, isOpen }) => {
   const menuRef = useRef(null);
 
   useEffect(() => {
