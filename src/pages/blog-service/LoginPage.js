@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import logo from '../../assets/images/logo.png';
-import eye_icon from '../../assets/images/eye_icon.png'
 import SignupPage from './SignupPage';
 import ForgotPassword from './ForgotPasswordPage';
+import checkEmptyField from '../../utils/checkEmptyField';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -13,15 +14,14 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    if (!email && !password) {
+    if (checkEmptyField(email) && checkEmptyField(password)) {
       setErrorMessage('이메일과 비밀번호를 입력해주세요.'); 
-    } else if (!email) {                           
+    } else if (checkEmptyField(email)) {                           
       setErrorMessage('이메일을 입력해주세요.');
-    } else if (!password) {                      
+    } else if (checkEmptyField(password)) {                      
       setErrorMessage('비밀번호를 입력해주세요.');       
-    } else if (email === 'test@example.com' && password === 'password123') { 
-      navigate('/home');
-    } else {                  
+    }
+   else {                  
       setErrorMessage('이메일 또는 비밀번호가 잘못되었습니다.');
     }
   };
@@ -40,8 +40,8 @@ const LoginPage = () => {
           type="email"
           placeholder="Email"
           value={email}
+          onChange={(e) => setEmail(e.target.value)}  
           className="w-full border rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          onChange={(e) => setEmail(e.target.value)}
         />
         <div className="relative"> 
           <input            // 비밀번호 입력 폼
@@ -51,12 +51,16 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border rounded-md p-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
-          <button          // 패스워드 토글 버튼
-            type="button" 
-            className="absolute right-2 top-2"
+               <button
+            type="button"
             onClick={togglePasswordVisibility}
+            className="absolute inset-y-0 right-2 flex items-center"
           >
-           {/*<img src={eye_icon} alt="Toggle Password" className={showPassword ? 'eye-off' : 'eye'} /> */}      {/* 토글 아이콘 */}
+            {showPassword ? (
+              <EyeSlashIcon className="w-4 h-4 text-gray-500" />
+            ) : (
+              <EyeIcon className="w-4 h-4 text-gray-500" />
+            )}
           </button>
         </div>
 
@@ -77,9 +81,9 @@ const LoginPage = () => {
       </div>
 
       <div className="flex items-center justify-center my-4"> {/* -connect with-*/}
-        <hr className="w-1/3 border-gray-300" />
+        <hr className="w-20 border-gray-300" />
         <span className="px-2 text-gray-500">Connect With</span>
-        <hr className="w-1/3 border-gray-300" />
+        <hr className="w-20 border-gray-300" />
       </div>
 
       <div className="flex space-x-4"> {/* 소셜 로그인 컴포넌트*/}
