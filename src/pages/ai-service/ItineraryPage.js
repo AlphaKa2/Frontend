@@ -58,7 +58,7 @@ const ItineraryPage = () => {
     <div className="flex h-screen">
       {/* 좌측 지도 */}
       <div className="w-[60%] relative">
-        <LoadScript googleMapsApiKey="AIzaSyBOwwtfHr0GEu8Z4H1gP_mGl0qClPZfSU8">
+        <LoadScript googleMapsApiKey="Secret">
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
             center={center}
