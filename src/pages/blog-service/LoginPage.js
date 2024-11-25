@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { loginState } from "../../recoil/atoms/loginState";
+import { useRecoilValue } from "recoil";
+import loginState from "../../recoil/atoms/loginState";
 import LoginApi from "../../api/blog-services/login/LoginApi";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import logo from "../../assets/images/logo.png";
@@ -11,6 +12,7 @@ import googlelogo from "../../assets/images/google.png";
 
 const LoginPage = () => {
   const setUser = useSetRecoilState(loginState); // Recoil 유저 상태 업데이트
+  const userState = useRecoilValue(loginState);  // Recoil 상태값 읽기
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -34,17 +36,18 @@ const LoginPage = () => {
 
     try {
       // 로그인 API 호출
-      const accessToken  = await LoginApi(email, password);
-
+      const { userId, nickname, profileImageUrl, accessToken } = await LoginApi(email, password);
       // Access Token을 localStorage에 저장
       localStorage.setItem("accessToken", accessToken);
 
       // Recoil 상태 업데이트
       setUser({
         isAuthenticated: true,
+        userId,
+        nickname,
+        profileImageUrl,
         accessToken,
       });
-
       // 홈 화면으로 이동
       navigate("/");
     } catch (error) {

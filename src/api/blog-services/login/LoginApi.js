@@ -6,9 +6,9 @@ const LoginApi = async (email, password) => {
       email,
       password,
     });
-
-    const accessToken = response.data;
-    return accessToken;
+    
+    const user = response.data;
+    return user;
   } catch (error) {
     let errorMessage = "로그인 중 문제가 발생했습니다. 다시 시도해주세요.";
 

@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
+import loginState  from "../../recoil/atoms/loginState";
 import HandIcon from "../../assets/images/hand_icon.png";
+import UpdateUserMbtiApi from "../../api/blog-services/mbti/UpdateUserMbtiApi";
+
+
 
 const MbtiTestPage = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const setUser = useSetRecoilState(loginState); // Recoil 유저 상태 업데이트
 
   // Trigger animation when component mounts
   useEffect(() => {
@@ -11,6 +17,11 @@ const MbtiTestPage = () => {
     }, 100); // Start animation after 100ms
     return () => clearTimeout(timer);
   }, []);
+
+  const handleTest = async () => {
+  const mbti = "ABLJ";
+  UpdateUserMbtiApi(setUser.userId, mbti);
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white overflow-hidden">
@@ -78,7 +89,8 @@ const MbtiTestPage = () => {
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"
         }`}
       >
-        <button className="bg-blue-500 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-blue-600">
+        <button className="bg-blue-500 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-blue-600"
+                onClick = {handleTest}>
           테스트 하러가기
         </button>
       </div>

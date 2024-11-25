@@ -10,11 +10,11 @@ const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 
 root.render(
+  <RecoilRoot> {/* RecoilRoot를 App을 감싸는 형태로 설정 */}
   <React.StrictMode>
-    <RecoilRoot> {/* RecoilRoot를 App을 감싸는 형태로 설정 */}
       <App />
-    </RecoilRoot>
   </React.StrictMode>
+  </RecoilRoot>
 );
 
 // If you want to start measuring performance in your app, pass a function

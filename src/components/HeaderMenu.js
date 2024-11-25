@@ -1,7 +1,9 @@
 import { useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const HeaderMenu = ({ closeMenu, isOpen }) => {
   const menuRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -15,6 +17,11 @@ const HeaderMenu = ({ closeMenu, isOpen }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [closeMenu]);
+
+  const handleNavigation = (path) => {
+    navigate(path); // 지정된 경로로 이동
+    closeMenu(); // 메뉴 닫기
+  };
 
  
 
@@ -37,9 +44,9 @@ const HeaderMenu = ({ closeMenu, isOpen }) => {
         {/* 각 서비스 */}
         <div className="text-gray-600 font-bold text-[1em] px-7 py-3 cursor-pointer">
           <p className="py-3">내 블로그</p>
-          <p className="py-3">여행 계획 생성</p>
-          <p className="py-3">유튜버 따라가기</p>
-          <p className="py-3">내 여행</p>
+          <p className="py-3" onClick={() => handleNavigation('/create-plan1')}>여행 계획 생성</p>
+          <p className="py-3" onClick={() => handleNavigation('/youtube-page')}>유튜버 따라가기</p>
+          <p className="py-3" onClick={() => handleNavigation('/my-trip-list')}>내 여행</p>
           <p className="py-3">여행 MBTI 검사</p>
         </div>
 

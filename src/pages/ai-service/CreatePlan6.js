@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { travelPlanState } from '../../recoil/atoms/ai-atoms';
-import purposes from '../../data/purposes';
+import purposes from '../../data/purpose';
 import { useNavigate } from 'react-router-dom';
 import { createRecommendation } from '../../api/ai-service/recommendations'; // API 호출 함수 import
 

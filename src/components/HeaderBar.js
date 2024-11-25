@@ -3,6 +3,7 @@ import logo from "../assets/images/logo.png";
 import logoText from "../assets/images/logoText.png";
 import header_hamburger from "../assets/images/header_hamburger.png";
 import HeaderMenu from "./HeaderMenu";
+import { useNavigate } from "react-router-dom";
 
 const HeaderBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,6 +13,8 @@ const HeaderBar = () => {
   const closeMenu = () => {
     setIsMenuOpen(false); // 메뉴 닫기
   };
+  const navigate = useNavigate();
+  const handleLogoClick = () => navigate("/");
 
   return (
     <header className="bg-white border-transparent text-white fixed w-full top-0 z-10">
@@ -23,6 +26,7 @@ const HeaderBar = () => {
               src={logo}
               alt="로고"
               className="logo w-[4.5em] h-auto rounded-[1%]"
+              onClick={handleLogoClick}
             />
           </button>
           <button>

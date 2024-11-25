@@ -3,7 +3,7 @@ import axiosInstance from "../../Config";
 const UpdateUserMbtiApi = async (userId,mbti) => {
   try {
     const response = axiosInstance.put(
-      "/user-service/users/{userId}/mbti", {
+      `/user-service/auth/users/${userId}/mbti`, {
         mbti,
       }
     );
@@ -11,10 +11,10 @@ const UpdateUserMbtiApi = async (userId,mbti) => {
 
   } catch (error) {
     if (error.response) {
-      const { status, code} = error.response.data;
-      if (status == 401 && code == USR016) {
+      const { status, code } = error.response.data;
+      if (status == 401 && code == "USR016") {
         throw new Error("권한이 없습니다.");
-      } else if (status == 400 && code == USR009) {
+      } else if (status == 400 && code == "USR009") {
         throw new Error("알 수 없는 mbti입니다.");
       }
     } else if (error.request) {
