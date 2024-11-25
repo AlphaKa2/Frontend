@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import ScrollMagic from "scrollmagic";
+import { useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { travelPlanState } from '../recoil/atoms/ai-atoms';
+
 import wallpaper from "../assets/images/main1_1.png";
 import picture1_2 from "../assets/images/main1_2.png";
 import video from "../assets/videos/gv70.mp4";
@@ -13,15 +17,44 @@ import picture4_3 from "../assets/images/main4_3.png";
 import HeaderBar from "../components/HeaderBar";
 import FooterBar from "../components/FooterBar";
 
-
 const MainPage = () => {
   const [showDelayedText, setShowDelayedText] = useState(false);
+  const navigate = useNavigate(); // 🚨 useNavigate는 컴포넌트 최상단에서 호출
+  const resetTravelPlan = useSetRecoilState(travelPlanState);
 
+  useEffect(() => {
+    // Recoil 상태 초기화
+    resetTravelPlan({
+      TRAVEL_PURPOSE: [],            // 선택된 여행 목적
+      MVMN_NM: '',                   // 교통 수단
+      AGE_GRP: '20S',                // 연령대 (기본값 설정)
+      GENDER: '남',                  // 성별 (기본값 설정)
+      TRAVEL_STYL_1: '',      // 여행 스타일
+      TRAVEL_MOTIVE_1: '',           // 여행 동기
+      TRAVEL_STATUS_ACCOMPANY: '',   // 동행자
+      TRAVEL_STATUS_DAYS: 0,         // 여행 기간
+      ROAD_ADDR: '',                 // 전체 주소
+      recommendation_type: 'AI-GENERATED', // 추천 유형
+      start_date: '',                // 여행 시작 날짜
+      end_date: '', 
+    });
+  }, [resetTravelPlan]);
+
+  // 스크롤 이벤트 함수
   const scrollToNextPage = () => {
     window.scrollTo({
       top: window.innerHeight, // 1 페이지 아래로 스크롤
       behavior: "smooth", // 부드럽게 스크롤
     });
+  };
+
+  // + 계획 생성하기 버튼 클릭 시 실행
+  const handleCreatePlan = () => {
+    navigate('/create-plan1'); // '/create-plan1' 경로로 이동
+  };
+
+  const handleYoutubePage = () => {
+    navigate('/youtube-page'); // '/윾튜브 페이지' 경로로 이동
   };
 
   useEffect(() => {
@@ -45,7 +78,6 @@ const MainPage = () => {
         .addTo(controller);
     }
 
-    // Clean-up function
     return () => {
       clearTimeout(timer);
       controller.destroy(); // ScrollMagic controller 해제
@@ -113,7 +145,10 @@ const MainPage = () => {
           <p className="animation mt-[0.1em] text-[#787878] text-[1.5em] text-left opacity-0 transition-opacity duration-500 ease-in delay-[700ms]">
             9가지 요소를 고려하여 여행 계획을 생성합니다.
           </p>
-          <button className="animation shadow-xl text-lg text-center text-white font-bold rounded bg-gradient-to-r from-[#A1C4FD] to-[#C2E9FB] mt-[5em] px-6 py-3 opacity-0 transition-opacity hover:bg-black hover:text-white transform hover:-translate-y-1 active:translate-y-0 duration-500 ease-in delay-[900ms]">
+          <button
+            className="animation shadow-xl text-lg text-center text-white font-bold rounded bg-gradient-to-r from-[#A1C4FD] to-[#C2E9FB] mt-[5em] px-6 py-3 opacity-0 transition-opacity hover:bg-black hover:text-white transform hover:-translate-y-1 active:translate-y-0 duration-500 ease-in delay-[900ms]"
+            onClick={handleCreatePlan} // 버튼 클릭 시 handleCreatePlan 실행
+            >
             + 계획 생성하기
           </button>
         </div>
@@ -176,6 +211,7 @@ const MainPage = () => {
             <button
               className="animation shadow-xl text-lg text-center text-white font-bold rounded bg-gradient-to-r from-[#FF0000] to-[#990000] mt-[1.5em] px-6 py-3 
             opacity-0 transition-opacity hover:bg-black hover:text-white transform hover:-translate-y-1 active:translate-y-0 duration-500 ease-in delay-[400ms]"
+            onClick={handleYoutubePage} //유튜브 페이지로 이동
             >
               + 일정 생성하기
             </button>
@@ -257,4 +293,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default MainPage
