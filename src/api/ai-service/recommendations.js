@@ -10,7 +10,7 @@ export const createRecommendation = async (requestData) => {
   
   // 추천 생성 API 호출
   return axios.post(
-    'http://ec2-13-125-174-132.ap-northeast-2.compute.amazonaws.com:8001/recommendations',
+    'http://ec2-13-125-174-132.ap-northeast-2.compute.amazonaws.com:8000/recommendations',
     requestData,
     {
       headers: {
@@ -34,7 +34,7 @@ export const getRecommendationById = async (recommendationId) => {
   
   // 추천 조회 API 호출
   return axios.get(
-    `http://ec2-13-125-174-132.ap-northeast-2.compute.amazonaws.com:8001/recommendations/${recommendationId}`,
+    `http://ec2-13-125-174-132.ap-northeast-2.compute.amazonaws.com:8000/recommendations/${recommendationId}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`, // 인증 헤더 추가

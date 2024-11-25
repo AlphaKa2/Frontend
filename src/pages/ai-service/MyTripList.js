@@ -4,6 +4,7 @@ import {
   fetchRegisteredTrips,
   fetchCompletedTrips,
 } from '../../api/ai-service/trips'; // API 파일 import
+import { deleteTripById } from '../../api/ai-service/trip-id';
 import { useNavigate } from 'react-router-dom'; // useNavigate import
 
 const MyTripList = () => {
@@ -45,6 +46,34 @@ const MyTripList = () => {
     navigate(`/itinerary/${recommendation_trip_id}`); // ItineraryPage로 이동
   };
 
+  const handleDelete = async (recommendation_trip_id) => {
+    if (window.confirm('정말 이 여행을 삭제하시겠습니까?')) {
+      try {
+        await deleteTripById(recommendation_trip_id);
+        alert('여행이 성공적으로 삭제되었습니다.');
+
+        // 삭제 후 목록 갱신
+        if (activeTab === 'unregistered') {
+          setUnregisteredTrips((prevTrips) =>
+            prevTrips.filter((trip) => trip.recommendation_trip_id !== recommendation_trip_id)
+          );
+        } else if (activeTab === 'registered') {
+          setRegisteredTrips((prevTrips) =>
+            prevTrips.filter((trip) => trip.recommendation_trip_id !== recommendation_trip_id)
+          );
+        } else if (activeTab === 'completed') {
+          setCompletedTrips((prevTrips) =>
+            prevTrips.filter((trip) => trip.recommendation_trip_id !== recommendation_trip_id)
+          );
+        }
+      } catch (error) {
+        console.error('Error deleting trip:', error);
+        alert('여행 삭제 중 문제가 발생했습니다.');
+      }
+    }
+  };
+
+
   const renderTrips = (trips) => {
     if (loading) {
       return <p className="text-gray-500 text-center">Loading...</p>;
@@ -83,7 +112,12 @@ const MyTripList = () => {
           >
             상세 보기
           </button>
-          <button className="text-red-500 hover:underline">삭제</button>
+          <button
+            className="text-red-500 hover:underline"
+            onClick={() => handleDelete(trip.recommendation_trip_id)}
+          >
+            삭제
+          </button>
         </div>
       </div>
     ));
