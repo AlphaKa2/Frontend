@@ -1,7 +1,7 @@
 import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 
 // Google Maps API Key (환경 변수로 관리 권장)
-const GOOGLE_MAPS_API_KEY = "AIzaSyBOwwtfHr0GEu8Z4H1gP_mGl0qClPZfSU8";
+const GOOGLE_MAPS_API_KEY = "Secret";
 
 // Google Maps 컨테이너 스타일
 export const mapContainerStyle = {
