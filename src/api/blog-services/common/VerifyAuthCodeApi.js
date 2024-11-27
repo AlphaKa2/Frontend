@@ -26,6 +26,7 @@ const VerifyAuthCodeApi = async (phoneNumber, authCode) => {
 
       // 상태 코드가 400이면 잘못된 인증번호일 가능성 있음
       if (error.response.status === 400) {
+        console.error(error.message);
         errorMessage = "잘못된 인증번호입니다. 다시 확인해주세요.";
       }
 

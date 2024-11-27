@@ -10,3 +10,7 @@
     transform: rotate(360deg);
   }
 }
+
+.tui-editor-defaultUI .tui-md-switch {
+  display: none !important;
+}

@@ -8,10 +8,10 @@ const ReportCommentApi = async (targetUserId) => {
     return true;
   } catch (error) {
     if (error.response) {
-      const { status, code, message } = error.response.data;
-      if (status == 400 && code == USR009) {
+      const { status, code } = error.response.data;
+      if (status == 400 && code == "USR009") {
         throw new Error("팔로우 할 수 없습니다.");
-      } else if (status == 404 && code == USR018) {
+      } else if (status == 404 && code == "USR018") {
         throw new Error("존재하지 않는 사용자입니다.");
       }
     } else if (error.request) {

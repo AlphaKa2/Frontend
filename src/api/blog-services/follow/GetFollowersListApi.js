@@ -2,7 +2,7 @@ import axiosInstance from "../../Config";
 
 const GetFollowersListApi = async (userId) => {
   try {
-    const response = axiosInstance.get("/user-service/users/{userId}/follower");
+    const response = axiosInstance.get(`/user-service/users/${userId}/follower`);
     const user = response.data.data;
     return user;
   } catch (error) {

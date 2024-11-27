@@ -8,9 +8,10 @@ const RequestAuthCodeApi = async (phoneNumber) => {
         phoneNumber,
       }
     );
-    const AuthCode = response.data.data;
-    return AuthCode;
-  } catch (error) {
+    console.log(response.data);
+    const AuthCode = response.data.status;
+    return AuthCode; 
+  } catch (error) { 
     let errorMessage = "인증번호를 받을 수 없습니다. 다시 시도해주세요.";
     if (error.response) {
       console.log(error.response.data);

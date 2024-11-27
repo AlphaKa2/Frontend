@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faPhone, faKey } from "@fortawesome/free-solid-svg-icons";
+import RequestAuthCodeApi from "../../api/blog-services/common/RequestAuthCodeApi" ; 
+import VerifyAuthCodeApi from "../../api/blog-services/common/VerifyAuthCodeApi";
 
 const SignupPage = () => {
   const [name, setName] = useState("");
@@ -76,20 +78,40 @@ const SignupPage = () => {
     navigate("/signup/second"); // 이동할 페이지 경로로 수정
   };
 
-  const handleSendAuthCode = () => {
+  const handleSendAuthCode = async () => {
     if (!phoneNumber) {
       setErrorMessage("전화번호를 입력하세요.");
-      return;
+      return ;
+    }
+
+    try {
+      const status = await RequestAuthCodeApi(phoneNumber);
+      if(status == 200) {
+        alert("인증 번호를 전송했습니다.");
+        return;
+      }
+    } catch (error) { 
+      alert(error.message);
     }
   };
 
-  const handleVerifyAuthCode = () => {
+  const handleVerifyAuthCode = async () => {
     if (!authCode) {
       alert("인증 코드를 입력하세요.");
       return;
     }
-    console.log("인증 코드 확인됨:", authCode);
-  };
+    try {
+      const status = await VerifyAuthCodeApi(phoneNumber, authCode);
+      if(status == 200) {
+        alert("인증이 완료되었습니다.");
+        return;
+      }
+      } catch(error) {
+        alert(error.message);
+      } 
+
+    }
+  
 
   return (
     <div className="w-full h-auto bg-white py-24">

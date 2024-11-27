@@ -3,7 +3,7 @@ import axiosInstance from "../../Config";
 const FollowUserApi = async (targetUserId) => {
   try {
     const response = axiosInstance.post(
-      "/user-service/users/{targetUserId}/following"
+      `/user-service/users/${targetUserId}/following`
     );
     return true;
   } catch (error) {

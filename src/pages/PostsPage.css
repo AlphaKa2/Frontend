@@ -1,0 +1,78 @@
+.posts-page {
+	width: 80%;
+	margin-left: 380px;
+	box-sizing: border-box;
+	padding: 20px;
+	z-index: 5; /* Lower z-index compared to footer */
+	position: relative; /* Ensure it stays below the footer */
+}
+
+.post-item {
+	margin-bottom: 10px; /* 하단에 일정한 간격 추가 */
+	transition: all 0.5s ease; /* 부드러운 전환 효과 추가 */
+  }
+
+.posts{
+	width: 100%;
+}
+
+@media screen and (max-width: 1599px) {
+	
+	.Left_Profile {
+		display:none;
+	}
+	.posts-page{
+		margin-left:100px;
+	}
+}
+
+
+/* pagination */
+  .pagination {
+	justify-content: center;
+	align-items: center;
+	display: flex;
+	margin-top: 50px;
+	margin-bottom: 100px;
+	width: 88%;
+  }
+  
+  .pagination button {
+	margin: 0 5px;
+	padding: 5px 10px;
+	border: none;
+	background-color: #e3f6f7;
+	cursor: pointer;
+	border-radius: 4px;
+	transition: background-color 0.3s;
+  }
+  
+  .pagination button:hover {
+	background-color: #b3e0e3;
+  }
+  
+  .pagination .active {
+	background-color: #007bff;
+	color: white;
+  }
+
+  
+ /* search css */
+.search-sort-container {
+	display: flex;
+	justify-content: flex-end; /* 오른쪽 정렬 */
+	align-items: center;
+	padding: 20px;
+	gap: 10px; /* 검색창과 드롭다운 간격 */
+    margin-right: 160px;
+  }
+  
+  .search-input {
+	padding: 10px;
+	border-radius: 30px;
+	border: 2px solid #ccc;
+	outline: none;
+	width: 300px;
+	font-size: 16px;
+
+  }

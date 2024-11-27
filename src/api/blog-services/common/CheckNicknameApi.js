@@ -3,7 +3,7 @@ import axiosInstance from "../../Config"; // Axios 인스턴스를 import
 // 닉네임 중복 확인 API 호출 함수
 const checkNickname = async (nickname) => {
   try {
-    const response = await axiosInstance.get("/user-service/users/{nickname}/exist", {
+    const response = await axiosInstance.get(`/user-service/users/${nickname}/exist`, {
       nickname,
     });
     return {

@@ -33,7 +33,8 @@ const HeaderMenu = ({ closeMenu, isOpen }) => {
 
         {/* 로그인 */}
         <div className="px-7 pt-6 pb-4 mt-2">
-          <p className="text-blue-600 font-bold text-[1.2em] text-left cursor-pointer">
+          <p className="text-blue-600 font-bold text-[1.2em] text-left cursor-pointer"
+          onClick={() => handleNavigation('/login')}>
             로그인/회원가입
           </p>
         </div>
@@ -47,7 +48,7 @@ const HeaderMenu = ({ closeMenu, isOpen }) => {
           <p className="py-3" onClick={() => handleNavigation('/create-plan1')}>여행 계획 생성</p>
           <p className="py-3" onClick={() => handleNavigation('/youtube-page')}>유튜버 따라가기</p>
           <p className="py-3" onClick={() => handleNavigation('/my-trip-list')}>내 여행</p>
-          <p className="py-3">여행 MBTI 검사</p>
+          <p className="py-3" onClick={() => handleNavigation('/mbti-test')}>여행 MBTI 검사</p>
         </div>
 
         {/* 경계선 */}

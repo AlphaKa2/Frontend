@@ -3,7 +3,7 @@ import axiosInstance from "../../Config";
 const UpdateUserProfileApi = async (userId,nickname,profileDescription) => {
   try {
     const response = axiosInstance.put(
-      "/user-service/users/{userId}/details", {
+      `/user-service/users/${userId}/details`, {
         nickname,
         profileDescription,
       }
@@ -13,9 +13,9 @@ const UpdateUserProfileApi = async (userId,nickname,profileDescription) => {
   } catch (error) {
     if (error.response) {
       const { status, code} = error.response.data;
-      if (status == 409 && code == USR007) {
+      if (status == 409 && code == "USR007") {
         throw new Error("이미 사용중인 닉네임입니다.");
-      } else if (status == 401 && code == USR016) {
+      } else if (status == 401 && code == "USR016") {
         throw new Error("유효하지 않은 토큰입니다.");
       }
     } else if (error.request) {

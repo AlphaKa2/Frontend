@@ -14,6 +14,8 @@ import YoutubePage from "./pages/ai-service/YoutubePage";
 import Header from './components/HeaderBar';
 import LoginPage from './pages/blog-service/LoginPage';
 import SignupPage from './pages/blog-service/SignupPage';
+import PostDetailPage from './pages/PostDetailPage';
+import CreatePostPage from './pages/CreatePostPage';
 import SignupPage_2 from './pages/blog-service/SignupPage_2';
 import SignupPage_3 from './pages/blog-service/SignupPage_3';
 import SignupPage_4 from './pages/blog-service/SignupPage_4';
@@ -62,17 +64,20 @@ function AppContent() {
         <Route path="/youtube-page" element={<YoutubePage/>} />
         <Route path="/" element={<MainPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/signup/second" element={<SignupPage_2 />} />
+        {/* <Route path="/signup/second" element={<SignupPage_2 />} />
         <Route path="/signup/third" element={<SignupPage_3 />} />
-        <Route path="/signup/last" element={<SignupPage_4 />} />
+        <Route path="/signup/last" element={<SignupPage_4 />} /> */}
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
         <Route path="/profile/edit" element={<ProfileEditPage />} />
         <Route path="/following" element={<FollowingPage />} />
         <Route path="/followers" element={<FollowersPage />} />
-        <Route path="/report" element={<ReportPage />} />
+        <Route path="/report" element={<ReportPage />} /> */}
         <Route path="/mbti-test" element={<MbtiTestPage />} />
+        <Route path="/postpage" element={<PostDetailPage />} />
+        {/* <Route path="/createpost" element={<CreatePostPage />} /> */}
+
       </Routes>
     </div>
   );
