@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logo from "../assets/images/logo.png";
 import logoText from "../assets/images/logoText.png";
-import header_hamburger from "../assets/images/header_hamburger.png";
+import header_hamburger from "../assets/images/header-hamburger.png";
 import HeaderMenu from "./HeaderMenu";
 
 const HeaderBar = () => {
@@ -14,7 +14,7 @@ const HeaderBar = () => {
   };
 
   return (
-    <header className="bg-white border-transparent text-white fixed w-full top-0 z-10">
+    <header className="bg-white border-transparent text-white fixed w-full top-0 z-30">
       <div className="w-full px-[5em] py-2 flex items-center justify-between">
         {/* 로고 */}
         <div className="flex flex-row">

@@ -1,10 +1,10 @@
 import React from "react";
 import logo from "../assets/images/logo.png";
-import location from "../assets/images/footer_location.png";
-import mail from "../assets/images/footer_mail.png";
-import instagram from "../assets/images/footer_instagram.png";
-import youtube from "../assets/images/footer_youtube.png";
-import x from "../assets/images/footer_x.png";
+import location from "../assets/images/footer-location.png";
+import mail from "../assets/images/footer-mail.png";
+import instagram from "../assets/images/footer-instagram.png";
+import youtube from "../assets/images/footer-youtube.png";
+import x from "../assets/images/footer-x.png";
 
 const footerBar = () => {
   return (
@@ -19,7 +19,7 @@ const footerBar = () => {
             <img
               src={location}
               alt="위치그림"
-              className="logoText w-[2em] h-auto mb-[2.5em]"
+              className="logoText w-[1.7em] h-auto mb-[2.7em]"
             />
             <div>
               <p className="text-bold mb-[0.5em] text-[1.2em]">위치</p>
@@ -31,7 +31,7 @@ const footerBar = () => {
             <img
               src={mail}
               alt="위치그림"
-              className="logoText w-[2.5em] h-auto mb-[2.5em]"
+              className="logoText w-[2.2em] h-auto mb-[3.2em]"
             />
             <div>
               <p className="text-bold mb-[0.5em] text-[1.2em]">
@@ -58,21 +58,21 @@ const footerBar = () => {
               <img
                 src={instagram}
                 alt="로고1"
-                className="logo w-[1.7em] h-auto rounded-[1%]"
+                className="logo w-[1.7em] h-auto rounded-[1%] opacity-70"
               />
             </button>
             <button>
               <img
                 src={youtube}
                 alt="로고2"
-                className="logo w-[1.9em] h-auto rounded-[1%]"
+                className="logo w-[1.9em] h-auto rounded-[1%] opacity-70"
               />
             </button>
             <button>
               <img
                 src={x}
                 alt="로고3"
-                className="logo w-[1.5em] h-auto rounded-[1%]"
+                className="logo w-[1.5em] h-auto rounded-[1%] opacity-70"
               />
             </button>
           </div>

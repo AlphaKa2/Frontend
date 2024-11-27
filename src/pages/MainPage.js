@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import ScrollMagic from "scrollmagic";
-import wallpaper from "../assets/images/main1_1.png";
-import picture1_2 from "../assets/images/main1_2.png";
+import picture1_2 from "../assets/images/main1-2.png";
 import video from "../assets/videos/gv70.mp4";
-import picture3_1 from "../assets/images/main3_1.png";
-import picture3_2 from "../assets/images/main3_2.png";
-import picture3_3 from "../assets/images/main3_3.png";
-import picture3_4 from "../assets/images/main3_4.png";
-import picture4_1 from "../assets/images/main4_1.png";
-import picture4_2 from "../assets/images/main4_2.png";
-import picture4_3 from "../assets/images/main4_3.png";
+import picture3_1 from "../assets/images/main3-1.png";
+import picture3_2 from "../assets/images/main3-2.png";
+import picture3_3 from "../assets/images/main3-3.png";
+import picture3_4 from "../assets/images/main3-4.png";
+import picture4_1 from "../assets/images/main4-1.png";
+import picture4_2 from "../assets/images/main4-2.png";
+import picture4_3 from "../assets/images/main4-3.png";
 import HeaderBar from "../components/HeaderBar";
 import FooterBar from "../components/FooterBar";
-
 
 const MainPage = () => {
   const [showDelayedText, setShowDelayedText] = useState(false);
@@ -56,10 +54,7 @@ const MainPage = () => {
     <div>
       <HeaderBar></HeaderBar>
       {/* Page-1 섹션 */}
-      <section
-        className="page-1 flex justify-center items-center bg-cover bg-center bg-no-repeat w-screen h-screen"
-        style={{ backgroundImage: `url(${wallpaper})` }}
-      >
+      <section className="page-1 flex justify-center items-center bg-gradient-to-tl from-[#b9e6ff] to-[#aadcff]] w-screen h-screen">
         {showDelayedText && (
           <>
             <div className="box-1 z-1 opacity-0 animate-appear whitespace-nowrap mb-[10em] transition-opacity duration-700 ease-in">
@@ -82,9 +77,6 @@ const MainPage = () => {
             </div>
           </>
         )}
-        {/* <div className="arrow-container absolute bottom-[20px] left-1/2 transform -translate-x-1/2">
-          <div className="arrow w-[30px] h-[30px] border-solid border-0 border-r-[4px] border-b-[4px] border-[#151515] rotate-45 animate-bounce"></div>
-        </div> */}
         <div
           className="arrow-container absolute bottom-[40px] left-1/2 transform -translate-x-1/2"
           onClick={scrollToNextPage} // 클릭 시 스크롤 실행
@@ -237,10 +229,10 @@ const MainPage = () => {
               />
               <div className="flex flex-row mt-[-1em] mb-[0.5em]">
                 <div className="text-[#5E7BFF] ml-[1.5em] border-2 border-[#5E7BFF] rounded-full pr-3 pl-3">
-                  #바다
+                  #설경
                 </div>
                 <div className="text-[#5E7BFF] ml-[0.3em] border-2 border-[#5E7BFF] rounded-full pr-3 pl-3">
-                  #일몰
+                  #눈꽃
                 </div>
               </div>
               <p className="text-black ml-[1.1em] text-[1.5em]">Ice land</p>
@@ -251,7 +243,6 @@ const MainPage = () => {
           </button>
         </div>
       </section>
-
       <FooterBar></FooterBar>
     </div>
   );
