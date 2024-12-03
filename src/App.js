@@ -8,11 +8,14 @@ import CreatePlan3 from './pages/ai-service/CreatePlan3';
 import CreatePlan4 from './pages/ai-service/CreatePlan4';
 import CreatePlan5 from './pages/ai-service/CreatePlan5';
 import CreatePlan6 from './pages/ai-service/CreatePlan6';
-import MyTripList from './pages/ai-service/MyTripList';
 import ItineraryPage from './pages/ai-service/ItineraryPage';
 import YoutubePage from "./pages/ai-service/YoutubePage";
+import MyTripList from './pages/travel-service/MyTripList';
+import RegisterItineraryPage from './pages/travel-service/RegisterItineraryPage';
+import EditItineraryPage from './pages/travel-service/EditItineraryPage';
+import TestPage from "./pages/TestPage";
 import Header from './components/HeaderBar';
-import './index.css'; // Tailwind가 포함된 CSS 파일을 import
+import './index.css'; // Tailwind가 포함된 CSS 파일을 import함
 import './App.css';
 
 function App() {
@@ -47,7 +50,14 @@ function AppContent() {
         <Route path="/create-plan6" element={<CreatePlan6 />} />
         <Route path="/my-trip-list" element={<MyTripList />} />
         <Route path="/itinerary/:recommendation_trip_id" element={<ItineraryPage />} />
+       
+        <Route path="/register-itinerary/:recommendation_trip_id" element={<RegisterItineraryPage />} />
+
+        
+        <Route path="/edit-itinerary/:recommendation_trip_id" element={<EditItineraryPage />} />
+
         <Route path="/youtube-page" element={<YoutubePage/>} />
+        <Route path="/test-page" element={<TestPage/>} />
       </Routes>
     </div>
   );

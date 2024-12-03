@@ -3,6 +3,7 @@ import { useRecoilState } from 'recoil'; // Recoil 훅
 import { travelPlanState } from '../../recoil/atoms/ai-atoms'; // Recoil Atom
 import companionshipOptions from '../../data/companionships'; // 동행자 데이터 가져오기
 import { useNavigate } from 'react-router-dom';
+import Sky4 from '../../assets/images/Sky4.png';
 
 const transportOptions = [
   { label: '대중교통', value: 'PUBLIC_TRANSPORTATION' },
@@ -30,8 +31,14 @@ function CreatePlan4() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-blue-100 justify-center">
-      <div className="relative bg-white w-full max-w-2xl p-8 rounded-xl shadow-lg text-center md:w-3/4 lg:w-2/3 xl:w-1/2">
+    <div className="flex flex-col items-center min-h-screen bg-blue-100 justify-center"
+    style={{
+      backgroundImage: `url(${Sky4})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}>
+      <div className="relative bg-white w-full max-w-2xl p-8 rounded-xl shadow-lg mt-12 text-center md:w-3/4 lg:w-2/3 xl:w-1/2">
         
         {/* 페이지 제목 */}
         <h2 className="text-gray-500 font-medium text-lg">누구와 떠나나요?</h2>

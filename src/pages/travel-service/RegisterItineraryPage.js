@@ -1,11 +1,9 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchTripDetailsById } from "../../api/ai-service/trip-id";
-import { registerTravel } from "../../api/ai-service/register"; // 새로운 register.js에서 함수 가져오기
 import GoogleMapsComponent from "../../api/google-maps";
 
-const ItineraryPage = () => {
+const RegisterItineraryPage = () => {
   const { recommendation_trip_id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
@@ -74,39 +72,10 @@ const ItineraryPage = () => {
     }
   }, [selectedDay, showAllDays, data]);
 
-  const handleRegister = async () => {
-    try {
-      const requestData = {
-        travelName: data.title,
-        description: data.description || "여행 설명이 없습니다.",
-        travelType: data.type || "CUSTOM_GENERATED",
-        preferenceId: data.preferenceId || null,
-        startDate: data.start_date,
-        endDate: data.end_date,
-        days: data.days.map((day) => ({
-          dayNumber: day.dayNumber,
-          date: day.date,
-          schedules: day.schedule.map((schedule) => ({
-            order: schedule.order,
-            startTime: schedule.startTime,
-            endTime: schedule.endTime,
-            place: {
-              placeName: schedule.place.place,
-              address: schedule.place.address,
-              latitude: schedule.place.latitude,
-              longitude: schedule.place.longitude,
-            },
-          })),
-        })),
-      };
-
-      await registerTravel(requestData); // 새로운 registerTravel 함수 호출
-      alert("여행이 성공적으로 등록되었습니다!");
-      navigate("/registered");
-    } catch (error) {
-      console.error("Error registering travel:", error);
-      alert("여행 등록 중 문제가 발생했습니다.");
-    }
+  // '편집' 버튼 클릭 시 EditItineraryPage로 이동하는 함수
+  const handleEdit = () => {
+    // EditItineraryPage로 이동하며 여행 ID를 전달합니다.
+    navigate(`/edit-itinerary/${recommendation_trip_id}`);
   };
 
   if (loading) {
@@ -255,12 +224,12 @@ const ItineraryPage = () => {
 
       {/* Right Buttons Section */}
       <div className="w-[10%] bg-white flex flex-col items-center p-4 gap-4 pt-[80px]">
-        {/* Register Button */}
+        {/* Edit Button */}
         <button
-          onClick={handleRegister}
+          onClick={handleEdit}
           className="absolute bottom-4 right-4 bg-blue-500 text-white py-6 px-10 rounded-lg shadow hover:bg-blue-600 text-lg font-semibold"
         >
-          등록
+          편집
         </button>
 
         <button
@@ -298,4 +267,4 @@ const ItineraryPage = () => {
   );
 };
 
-export default ItineraryPage;
+export default RegisterItineraryPage;

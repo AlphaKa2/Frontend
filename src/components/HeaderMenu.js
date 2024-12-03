@@ -54,7 +54,7 @@ const HeaderMenu = ({ closeMenu, isOpen }) => {
         <div className="w-[80%] border-[0.5px] border-gray-300 z-20 mx-auto"></div>
 
         <div className="text-gray-600 font-bold text-[1em] px-7 py-3 cursor-pointer">
-          <p className="py-3">설정</p>
+          <p className="py-3" onClick={() => handleNavigation('/test-page')}> 설정</p>
           <p className="py-3">로그아웃</p>
         </div>
       </div>}

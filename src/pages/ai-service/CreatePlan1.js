@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil'; // Recoil 상태를 사용하기 위한
 import { travelPlanState } from '../../recoil/atoms/ai-atoms'; // Recoil Atom 불러오기
 import regions from '../../data/regions';
 import { useNavigate } from 'react-router-dom';
-import Sky1 from '../../assets/images/SkyT1.png';
+import Sky1 from '../../assets/images/Sky1.png';
 
 function CreatePlan() {
   const [travelPlan, setTravelPlan] = useRecoilState(travelPlanState); // Recoil Atom 상태 가져오기
@@ -24,7 +24,7 @@ function CreatePlan() {
 
   return (
     <div
-      className="relative flex flex-col items-center justify-center h-screen m-0 p-0 bg-cover bg-center"
+      className="relative flex flex-col items-center justify-center h-screen m-0 p-0 bg-cover bg-center mt-8"
       style={{
         backgroundImage: `url(${Sky1})`,
         backgroundSize: 'cover',

@@ -1,7 +1,7 @@
 // tailwind.config.js
 module.exports = {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}", // src 폴더 내의 모든 JS, JSX, TS, TSX 파일을 대상으로 지정
+    "./src/**/*.{js,jsx}", 
   ],
   theme: {
     extend: {
@@ -37,10 +37,10 @@ module.exports = {
         '5%': '5%',
         '10%': '10%',
       },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'], // Tailwind 기본 sans 폰트를 Inter로 변경
+      },
     },
   },
   plugins: [],
 };
-
-
-
