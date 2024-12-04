@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchTripDetailsById } from "../../api/ai-service/trip-id";
-import { registerTravel } from "../../api/ai-service/register"; // 새로운 register.js에서 함수 가져오기
+import { registerTravel } from "../../api/travel-service/register"; // 새로운 register.js에서 함수 가져오기
 import GoogleMapsComponent from "../../api/google-maps";
 
 const ItineraryPage = () => {
