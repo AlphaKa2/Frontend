@@ -19,11 +19,11 @@ const Dropdown = ({ onSortChange }) => {
   };
 
   return (
-    <div className="inline-block text-left">
+    <div className="inline-block text-left relative">
       {/* 드롭다운 버튼 */}
       <button
         onClick={toggleDropdown}
-        className="inline-flex items-center justify-between w-[105px] pl-4 pr-1 py-2 text-md font-medium text-white bg-[#4B6BFB] rounded-lg shadow-sm"
+        className="inline-flex items-center justify-between w-[105px] pl-4 pr-1 py-2 text-md font-medium text-white bg-[#4B6BFB] rounded-lg shadow-sm z-10"
       >
         {selectedOption} {/* 버튼에 선택된 옵션 표시 */}
         <svg

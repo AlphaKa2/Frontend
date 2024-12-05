@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { format } from "date-fns"; // date-fns 라이브러리 사용
 import like_pic from "../assets/images/like.png";
 import comment_pic from "../assets/images/comment.png";
+import { useNavigate } from "react-router-dom";
 
 const EachPost = ({
   key,
@@ -17,6 +18,10 @@ const EachPost = ({
   updatedAt,
   time,
 }) => {
+  const navigate = useNavigate();
+  const visitDetailPage = () =>{
+    navigate("/postDetail");
+  }
   const formattedCreatedAt = format(new Date(createdAt), "yyyy-MM-dd HH:mm");
   const formattedUpdatedAt = format(new Date(updatedAt), "yyyy-MM-dd HH:mm");
 
@@ -27,7 +32,8 @@ const EachPost = ({
   }
 
   return (
-    <div className="w-[1200px] h-[205px] rounded-md border-gray-300 border-[0.2px] shadow-lg box-border p-1 mt-4 cursor-pointer flex flex-row justify-start z-10">
+    <div className="w-[1200px] h-[205px] rounded-md border-gray-300 border-[0.2px] shadow-lg box-border p-1 mt-4 cursor-pointer flex flex-row justify-start z-10"
+    onClick={visitDetailPage}>
       <div className="w-[80%] px-2">
         <div className="font-semibold text-black text-[2em] overflow-hidden">
           {title}
@@ -70,16 +76,16 @@ const EachPost = ({
           </div>
           <div className="flex">
             <div className="text-gray-500">{time}</div>
-            <div className="text-gray-500 ml-2">조회 {viewCount}</div>
+            <div className="text-gray-500 ml-2 mr-10">조회 {viewCount}</div>
           </div>
         </div>
       </div>
 
-      <div className="pt-1">
+      <div className="pt-3 pr-3">
         <img
           src={image} // props로 전달된 image 사용
           alt={title}
-          className="w-[300px] h-[200px] rounded-md"
+          className="w-[290px] h-[175px] rounded-md"
         />
       </div>
     </div>

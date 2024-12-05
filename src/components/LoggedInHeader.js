@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+/* import React, { useState } from "react";
 import logo from "../assets/images/logo.png";
 import logoText from "../assets/images/logoText.png";
 import header_hamburger from "../assets/images/header_hamburger.png";
@@ -20,7 +20,7 @@ const HeaderBar = () => {
   return (
     <header className=" bg-opacity-{100} border-transparent text-white fixed w-full top-0 z-10">
       <div className="w-full px-[5em] py-2 flex items-center justify-between">
-        {/* 로고 */}
+        
         <div className="flex flex-row">
           <button>
             <img
@@ -40,7 +40,7 @@ const HeaderBar = () => {
           </button>
         </div>
 
-        {/* 버튼 */}
+        
         <div className="flex flex-row">
           <button className="bg-transparent text-blue-600 text-[1.3em] font-semibold py-2 px-4 rounded-full"
           onClick={handleLoginClick}>
@@ -53,7 +53,7 @@ const HeaderBar = () => {
               className="logoText w-[3em] h-auto rounded-[1%] ml-[2em] mt-[0.3em]"
             />  
           </button>
-          {/* 메뉴 */}
+          
           {isMenuOpen && (
             <HeaderMenu
               toggleMenu={toggleMenu}
@@ -67,4 +67,4 @@ const HeaderBar = () => {
   );
 };
 
-export default HeaderBar;
+export default HeaderBar; */

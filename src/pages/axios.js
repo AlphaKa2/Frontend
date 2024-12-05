@@ -20,8 +20,8 @@ instance.interceptors.response.use(
 instance.interceptors.request.use(
   function (config) {
     // 로컬 스토리지에서 accessToken 가져오기
-    // const accessToken = localStorage.getItem('accessToken');
-    const accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBY2Nlc3NUb2tlbiIsImlkIjozLCJuaWNrbmFtZSI6ImltVGhpcmQiLCJwcm9maWxlIjoiL2ltZy9kZWZhdWx0Iiwicm9sZSI6IlVTRVIiLCJleHAiOjE3MzI2ODkxMjh9.NtuyAY2ZyMnbHfWsddr6kFpLg0IDvcv4Od8zFLQwDDbEIF7bEbLfE7BebYiiH1K-I1dhNMqLbGsvhhjc-z3f1Q"
+    const accessToken = localStorage.getItem('accessToken');
+    
     console.log(accessToken);
     // accessToken이 존재하면 Authorization 헤더에 추가
     if (accessToken) {

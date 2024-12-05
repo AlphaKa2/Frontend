@@ -12,6 +12,7 @@ import detail_7 from "../assets/images/beach.png";
 import detail_8 from "../assets/images/snow.png";
 import HeaderBar from "../components/HeaderBar";
 import FooterBar from "../components/FooterBar";
+import Comment from "./Comment";
 
 const NextArrow = (props) => {
   const { onClick } = props;
@@ -110,7 +111,7 @@ const PostDetailPage = () => {
             </button>
           </div>
         </div>
-
+        <Comment/>
         {/* 댓글 작성 섹션 */}
         <div className="mt-[4em] p-[15px] mx-[3em]">
           <div className="flex items-center text-[#888] ml-[1em]">
