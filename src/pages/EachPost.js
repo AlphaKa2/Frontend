@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { format } from "date-fns"; // date-fns 라이브러리 사용
 import like_pic from "../assets/images/like.png";
 import comment_pic from "../assets/images/comment.png";
+import { useNavigate } from "react-router-dom";
 
 const EachPost = ({
   key,
@@ -17,6 +18,7 @@ const EachPost = ({
   updatedAt,
   time,
 }) => {
+  const navigate = useNavigate()
   const formattedCreatedAt = format(new Date(createdAt), "yyyy-MM-dd HH:mm");
   const formattedUpdatedAt = format(new Date(updatedAt), "yyyy-MM-dd HH:mm");
 
@@ -27,7 +29,8 @@ const EachPost = ({
   }
 
   return (
-    <div className="w-[1200px] h-[205px] rounded-md border-gray-300 border-[0.2px] shadow-lg box-border p-1 mt-4 cursor-pointer flex flex-row justify-start z-10">
+    <div className="w-[1200px] h-[205px] rounded-md border-gray-300 border-[0.2px] shadow-lg box-border p-1 mt-4 cursor-pointer flex flex-row justify-start z-10"
+    onClick = { ()=> {navigate('/postdetail')}}>
       <div className="w-[80%] px-2">
         <div className="font-semibold text-black text-[2em] overflow-hidden">
           {title}

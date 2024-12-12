@@ -1,19 +1,16 @@
 import axiosInstance from "../../Config";
 
-const FollowUserApi = async (targetUserId) => {
+const CancleAccountApi = async () => {
   try {
-    const response = axiosInstance.post(
-      `/user-service/auth/users/${targetUserId}/following`
+    const response = axiosInstance.delete(
+      `/user-service/auth/users/account`
     );
     const result = response.data;
     return result;
-
   } catch (error) {
     if (error.response) {
       const { status, code, message } = error.response.data;
-      if (status == 400 && code == "USR009") {
-        throw new Error(message);
-      } else if (status == 401 && code == "USR016") {
+      if (status == 401 && code == "USR016") {
         throw new Error(message);
       }
     } else if (error.request) {
@@ -23,9 +20,9 @@ const FollowUserApi = async (targetUserId) => {
       );
     } else {
       console.error("요청 오류:", error.message);
-      throw new Error("팔로우 요청 중 알 수 없는 오류가 발생했습니다.");
+      throw new Error("회원탈퇴 중 요청 중 알 수 없는 오류가 발생했습니다.");
     }
   }
 };
 
-export default FollowUserApi;
+export default CancleAccountApi;

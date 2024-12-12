@@ -44,18 +44,18 @@ const HeaderMenu = ({ closeMenu, isOpen }) => {
 
         {/* 각 서비스 */}
         <div className="text-gray-600 font-bold text-[1em] px-7 py-3 cursor-pointer">
-          <p className="py-3">내 블로그</p>
+          <p className="py-3" onClick={() => handleNavigation('/postpage')}>내 블로그</p>
           <p className="py-3" onClick={() => handleNavigation('/create-plan1')}>여행 계획 생성</p>
           <p className="py-3" onClick={() => handleNavigation('/youtube-page')}>유튜버 따라가기</p>
           <p className="py-3" onClick={() => handleNavigation('/my-trip-list')}>내 여행</p>
-          <p className="py-3" onClick={() => handleNavigation('/mbti-test')}>여행 MBTI 검사</p>
+          <p className="py-3" onClick={() => handleNavigation('/mbti')}>여행 MBTI 검사</p>
         </div>
 
         {/* 경계선 */}
         <div className="w-[80%] border-[0.5px] border-gray-300 z-20 mx-auto"></div>
 
         <div className="text-gray-600 font-bold text-[1em] px-7 py-3 cursor-pointer">
-          <p className="py-3">설정</p>
+          <p className="py-3" onClick={() => handleNavigation('/profile/edit')} >설정</p>
           <p className="py-3">로그아웃</p>
         </div>
       </div>}

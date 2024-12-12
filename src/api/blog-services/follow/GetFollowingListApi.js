@@ -2,14 +2,14 @@ import axiosInstance from "../../Config";
 
 const GetFollowingListApi = async (userId) => {
   try {
-    const response = axiosInstance.get(`/user-service/users/${userId}/following`);
-    const user = response.data.data;
-    return user;
+    const response = axiosInstance.get(`/user-service/auth/users/${userId}/following`);
+    const result = response.data;
+    return result ;
   } catch (error) {
     if (error.response) {
-      const { status, code } = error.response.data;
-      if (status == 404 && code == USR018) {
-        throw new Error("존재하지 않는 사용자입니다.");
+      const { status, code, message } = error.response.data;
+      if (status == 404 && code == "USR018") {
+        throw new Error(message);
       }
     } else if (error.request) {
       console.error("서버 응답 없음:", error.request);

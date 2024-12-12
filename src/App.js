@@ -16,16 +16,23 @@ import LoginPage from './pages/blog-service/LoginPage';
 import SignupPage from './pages/blog-service/SignupPage';
 import PostDetailPage from './pages/PostDetailPage';
 import CreatePostPage from './pages/CreatePostPage';
+import PostPage from './pages/PostPage' ;
 import SignupPage_2 from './pages/blog-service/SignupPage_2';
 import SignupPage_3 from './pages/blog-service/SignupPage_3';
-import SignupPage_4 from './pages/blog-service/SignupPage_4';
 import ForgotPasswordPage from './pages/blog-service/ForgotPasswordPage';
 import ChangePasswordPage from './pages/blog-service/ChangePasswordPage';
 import ProfileEditPage from './pages/blog-service/ProfileEditPage';
-import FollowingPage from './pages/blog-service/FollowingPage';
-import FollowersPage from './pages/blog-service/FollowersPage';
+import FollowingListPage from './pages/blog-service/FollowingListPage';
+import FollowerListPage from './pages/blog-service/FollowerListPage';
 import ReportPage from './pages/blog-service/ReportPage';
 import MbtiTestPage from './pages/blog-service/MbtiTestPage';
+import MbtiPage from './pages/blog-service/MbtiPage';
+import Terms_Privacy_Page from './pages/blog-service/Terms_Privacy_Page';
+import Terms_Service_Page from './pages/blog-service/Terms_Service_Page';
+import Terms_Location_Page from './pages/blog-service/Terms_Location_Page';
+import MbtiResultPage from './pages/blog-service/MbtiResultPage';
+
+
 import "./index.css"; // Tailwind가 포함된 CSS 파일을 import
 import './App.css';
 
@@ -64,19 +71,25 @@ function AppContent() {
         <Route path="/youtube-page" element={<YoutubePage/>} />
         <Route path="/" element={<MainPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        {/* <Route path="/signup/second" element={<SignupPage_2 />} />
+        <Route path="/signup/second" element={<SignupPage_2 />} />
         <Route path="/signup/third" element={<SignupPage_3 />} />
-        <Route path="/signup/last" element={<SignupPage_4 />} /> */}
         <Route path="/login" element={<LoginPage />} />
-        {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
         <Route path="/profile/edit" element={<ProfileEditPage />} />
-        <Route path="/following" element={<FollowingPage />} />
-        <Route path="/followers" element={<FollowersPage />} />
-        <Route path="/report" element={<ReportPage />} /> */}
-        <Route path="/mbti-test" element={<MbtiTestPage />} />
-        <Route path="/postpage" element={<PostDetailPage />} />
-        {/* <Route path="/createpost" element={<CreatePostPage />} /> */}
+        <Route path="/following/list" element={<FollowingListPage />} />
+        <Route path="/follower/list" element={<FollowerListPage />} />
+        <Route path="/report" element={<ReportPage />} />
+        <Route path="/mbti" element={<MbtiPage />} />
+        <Route path="/postdetail" element={<PostDetailPage />} />
+        <Route path="/createpost" element={<CreatePostPage />} />
+        <Route path="/postpage" element={<PostPage />} />
+        <Route path="/mbti/test" element={ <MbtiTestPage /> } />
+        <Route path="/mbti/result" element={ <MbtiResultPage/>} />
+        <Route path="/terms/service" element={ <Terms_Service_Page/> } />
+        <Route path="/terms/privacy" element={ <Terms_Privacy_Page/> } />
+        <Route path="/terms/location" element={ <Terms_Location_Page/>} />
+
 
       </Routes>
     </div>

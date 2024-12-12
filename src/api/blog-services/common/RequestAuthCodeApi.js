@@ -9,9 +9,11 @@ const RequestAuthCodeApi = async (phoneNumber) => {
       }
     );
     console.log(response.data);
-    const AuthCode = response.data.status;
-    return AuthCode; 
+    const result = response.data;
+    return result;
+     
   } catch (error) { 
+    console.log("인증번호 전송 에러:",  error)
     let errorMessage = "인증번호를 받을 수 없습니다. 다시 시도해주세요.";
     if (error.response) {
       console.log(error.response.data);

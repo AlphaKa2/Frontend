@@ -15,14 +15,14 @@ const LoginApi = async (email, password) => {
     if (error.response) {
       console.log(error.response.data);
       console.log(error.response.status);
-
-      if (error.response.status === 401) {
+      
+      if (error.response.data.status === 500) {
         errorMessage =
           "이메일 또는 비밀번호가 잘못되었습니다. 다시 확인해주세요.";
-      } else if (error.response.status >= 500) {
-        errorMessage = "서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.";
-      } else {
-        errorMessage = "로그인 중 알 수 없는 오류가 발생했습니다.";
+      // } else if (error.response.status >= 500) {
+      //   errorMessage = "서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.";
+      // } else {
+      //   errorMessage = "로그인 중 알 수 없는 오류가 발생했습니다.";
       }
       // 에러 메시지를 던짐
       throw new Error(errorMessage);

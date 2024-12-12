@@ -1,20 +1,23 @@
 import axiosInstance from "../../Config";
 
-const VerifyAuthCodeApi = async (phoneNumber, authCode) => {
+const VerifyAuthCodeApi = async (phoneNumber, authenticationCode) => {
   try {
     const response = await axiosInstance.post(
       "/auth-service/sms/verification",
       {
         phoneNumber,
-        authCode,
+        authenticationCode,
       }
     );
-    const result = response.data.data; // 인증 성공 시 반환되는 데이터
-    return {
-      success: true,
-      message: "인증 번호가 전송되었습니다.", // 성공 메시지
-      data: result,
-    };
+    console.log("인증번호 검증 결과:",response);
+    
+    const result = response.data; // 인증 성공 시 반환되는 데이터
+    return result;
+    // return {
+    //   success: true,
+    //   message: "인증 번호가 전송되었습니다.", // 성공 메시지
+    //   data: result,
+    // };
   } catch (error) {
     if (error.response) {
       // 서버가 응답을 했고, 상태 코드가 2xx 범위 외에 있을 경우

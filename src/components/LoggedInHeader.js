@@ -5,7 +5,7 @@ import header_hamburger from "../assets/images/header_hamburger.png";
 import HeaderMenu from "./HeaderMenu";
 import { useNavigate } from "react-router-dom";
 
-const HeaderBar = () => {
+const LoggedInHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev); // 메뉴 열기/닫기 상태 토글
@@ -16,6 +16,7 @@ const HeaderBar = () => {
   const navigate = useNavigate();
   const handleLogoClick = () => navigate("/");
   const handleLoginClick = () => navigate("/login");
+  const [showContent, setShowContent] = useState(false);
 
   return (
     <header className=" bg-opacity-{100} border-transparent text-white fixed w-full top-0 z-10">
@@ -42,10 +43,6 @@ const HeaderBar = () => {
 
         {/* 버튼 */}
         <div className="flex flex-row">
-          <button className="bg-transparent text-blue-600 text-[1.3em] font-semibold py-2 px-4 rounded-full"
-          onClick={handleLoginClick}>
-            로그인
-          </button>
           <button onClick={toggleMenu} className="mt-[-0.5em]">
             <img
               src={header_hamburger}
@@ -67,4 +64,4 @@ const HeaderBar = () => {
   );
 };
 
-export default HeaderBar;
+export default LoggedInHeader;

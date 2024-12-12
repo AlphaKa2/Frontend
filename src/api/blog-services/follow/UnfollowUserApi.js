@@ -3,16 +3,20 @@ import axiosInstance from "../../Config";
 const UnfollowUserApi = async (targetUserId) => {
   try {
     const response = axiosInstance.delete(
-      `/user-service/users/${targetUserId}/following`
+      `/user-service/auth/users/${targetUserId}/following`
     );
-    return true;
+    const result = response.data;
+    return result;
+
   } catch (error) {
     if (error.response) {
       const { status, code, message } = error.response.data;
-      if (status == 400 && code == USR009) {
-        throw new Error("언팔로우 할 수 없습니다.");
-      } else if (status == 404 && code == USR018) {
-        throw new Error("존재하지 않는 사용자입니다.");
+      if (status == 400 && code == "USR009") {
+        throw new Error(message);
+      } else if (status == 401 && code == "USR016") {
+        throw new Error(message);
+      } else if (status == 404 && code == "USR018") {
+        throw new Error(message);
       }
     } else if (error.request) {
       console.error("서버 응답 없음:", error.request);

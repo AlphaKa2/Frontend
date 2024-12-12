@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ScrollMagic from "scrollmagic";
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { travelPlanState } from '../recoil/atoms/ai-atoms';
 import loginState  from '../recoil/atoms/loginState'; 
 
@@ -19,12 +19,13 @@ import HeaderBar from "../components/HeaderBar";
 import LoggedInHeader from "../components/LoggedInHeader";
 import FooterBar from "../components/FooterBar";
 
+
 // recoil 상태 불러옴 => 만약 
 const MainPage = () => {
   const [showDelayedText, setShowDelayedText] = useState(false);
   const navigate = useNavigate(); // 🚨 useNavigate는 컴포넌트 최상단에서 호출
   const resetTravelPlan = useSetRecoilState(travelPlanState);
-  const userState = useRecoilValue(loginState);
+  const userState = useRecoilState(loginState);
   
   useEffect(() => {
     // Recoil 상태 초기화
@@ -86,11 +87,13 @@ const MainPage = () => {
       clearTimeout(timer);
       controller.destroy(); // ScrollMagic controller 해제
     };
+
+
   }, []);
 
   return (
     <div>
-      { userState.isAuthenticated ? <LoggedInHeader /> : <HeaderBar /> } 
+      {userState.isAuthenticated ? <LoggedInHeader /> : <HeaderBar />}
       {/* Page-1 섹션 */}
       <section
         className="page-1 flex justify-center items-center bg-cover bg-center bg-no-repeat w-screen h-screen"
@@ -297,4 +300,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default MainPage

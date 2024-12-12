@@ -7,7 +7,7 @@ const UpdateUserMbtiApi = async (userId,mbti) => {
         mbti,
       }
     );
-    return true;
+    return response;
 
   } catch (error) {
     if (error.response) {
