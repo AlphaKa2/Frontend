@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from '../axios'; // axios 설정 파일 경로
 
 // 특정 여행 추천 ID로 데이터 가져오기
 export const fetchTripDetailsById = async (recommendation_trip_id) => {
@@ -50,5 +51,32 @@ export const deleteTripById = async (recommendationTripId) => {
   } catch (error) {
     console.error("Error deleting trip by ID:", error);
     throw error; // 에러 발생 시 호출한 쪽에서 처리 가능
+  }
+};
+
+
+/**
+ * 특정 여행 계획 ID로 데이터를 가져오는 함수
+ * @param {number} travelId - 여행 계획 ID
+ * @returns {Promise<object>} - 여행 계획 데이터
+ */
+export const getTravelById = async (travelId) => {
+  try {
+    // 요청 전 travelId 확인
+    if (!travelId) {
+      throw new Error('travelId is required');
+    }
+
+    // API 요청
+    const response = await axiosInstance.get(
+      `travel-service/auth/api/travels/${travelId}`,
+      
+    );
+
+    // 성공 시 데이터 반환
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching travel data:', error.response?.data || error.message);
+    throw error;
   }
 };

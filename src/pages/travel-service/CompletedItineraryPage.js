@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { fetchTripDetailsById } from "../../api/ai-service/trip-id";
-import { registerTravel } from "../../api/travel-service/register"; 
-import GoogleMapsComponent from "../../api/google-maps";
+// src/pages/travel-service/CompletedItineraryPage.js
 
-const ItineraryPage = () => {
-  const { recommendation_trip_id } = useParams();
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getTravelById } from '../../api/ai-service/trip-id'; // RegisterItineraryPage와 동일하게 getTravelById 사용
+import GoogleMapsComponent from '../../api/google-maps';
+
+const CompletedItineraryPage = () => {
+  const { travelId } = useParams();
   const navigate = useNavigate();
+
   const [data, setData] = useState(null);
   const [center, setCenter] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
@@ -15,45 +17,44 @@ const ItineraryPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!recommendation_trip_id) {
-        console.error("Recommendation Trip ID is required.");
+      if (!travelId) {
+        console.error("Travel ID is required.");
+        setLoading(false);
         return;
       }
 
       try {
         setLoading(true);
-        const tripDetails = await fetchTripDetailsById(recommendation_trip_id);
-        setData(tripDetails);
+        const tripDetails = await getTravelById(travelId);
+        setData(tripDetails.data);
 
+        // 지도 중심 설정
         if (
-          tripDetails.days?.length > 0 &&
-          tripDetails.days[0].schedule?.length > 0
+          tripDetails.data.days?.length > 0 &&
+          tripDetails.data.days[0].schedules?.length > 0
         ) {
-          const firstPlace = tripDetails.days[0].schedule[0].place;
+          const firstPlace = tripDetails.data.days[0].schedules[0].place;
           setCenter({
             lat: parseFloat(firstPlace.latitude),
             lng: parseFloat(firstPlace.longitude),
           });
         }
       } catch (error) {
-        console.error("Error fetching trip details:", error);
+        console.error("Error fetching travel data:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [recommendation_trip_id]);
+  }, [travelId]);
 
   useEffect(() => {
     if (!data) return;
 
     if (showAllDays) {
-      if (
-        data.days?.length > 0 &&
-        data.days[0].schedule?.length > 0
-      ) {
-        const firstPlace = data.days[0].schedule[0].place;
+      if (data.days?.length > 0 && data.days[0].schedules?.length > 0) {
+        const firstPlace = data.days[0].schedules[0].place;
         setCenter({
           lat: parseFloat(firstPlace.latitude),
           lng: parseFloat(firstPlace.longitude),
@@ -63,8 +64,8 @@ const ItineraryPage = () => {
       const selectedDayData = data.days.find(
         (day) => String(day.dayNumber) === String(selectedDay)
       );
-      if (selectedDayData && selectedDayData.schedule.length > 0) {
-        const firstPlace = selectedDayData.schedule[0].place;
+      if (selectedDayData && selectedDayData.schedules.length > 0) {
+        const firstPlace = selectedDayData.schedules[0].place;
         setCenter({
           lat: parseFloat(firstPlace.latitude),
           lng: parseFloat(firstPlace.longitude),
@@ -73,39 +74,9 @@ const ItineraryPage = () => {
     }
   }, [selectedDay, showAllDays, data]);
 
-  const handleRegister = async () => {
-    try {
-      const requestData = {
-        travelName: data.title,
-        description: data.description || "여행 설명이 없습니다.",
-        travelType: data.type || "AI_GENERATED",
-        preferenceId: data.preferenceId || 7,
-        startDate: data.start_date,
-        endDate: data.end_date,
-        days: data.days.map((day) => ({
-          dayNumber: day.dayNumber,
-          date: day.date,
-          schedules: day.schedule.map((schedule) => ({
-            order: schedule.order,
-            startTime: "00:00",
-            endTime: "00:00",
-            place: {
-              placeName: schedule.place.place,
-              address: schedule.place.address,
-              latitude: schedule.place.latitude,
-              longitude: schedule.place.longitude,
-            },
-          })),
-        })),
-      };
-
-      await registerTravel(requestData);
-      alert("여행이 성공적으로 등록되었습니다!");
-      navigate("/registered");
-    } catch (error) {
-      console.error("Error registering travel:", error);
-      alert("여행 등록 중 문제가 발생했습니다.");
-    }
+  const formatTime = (time) => {
+    if (!time || time === "00:00:00") return null;
+    return time.slice(0, 5); // 'hh:mm:ss'에서 'hh:mm'만 추출
   };
 
   if (loading) {
@@ -124,34 +95,34 @@ const ItineraryPage = () => {
     );
   }
 
-  const markers = data
-    ? showAllDays
-      ? data.days.flatMap((day) =>
-          day.schedule.map((item) => ({
-            lat: parseFloat(item.place.latitude),
-            lng: parseFloat(item.place.longitude),
-            label: item.place.place,
-          }))
-        )
-      : data.days
-          .find((day) => String(day.dayNumber) === String(selectedDay))
-          ?.schedule.map((item) => ({
-            lat: parseFloat(item.place.latitude),
-            lng: parseFloat(item.place.longitude),
-            label: item.place.place,
-          })) || []
-    : [];
+  const markers = showAllDays
+    ? data.days?.flatMap((day) => day.schedules.map((item) => ({
+        lat: parseFloat(item.place.latitude),
+        lng: parseFloat(item.place.longitude),
+        label: item.place.placeName,
+      }))) || []
+    : data.days
+        .find((day) => String(day.dayNumber) === String(selectedDay))
+        ?.schedules.map((item) => ({
+          lat: parseFloat(item.place.latitude),
+          lng: parseFloat(item.place.longitude),
+          label: item.place.placeName,
+        })) || [];
 
-    const formatScheduleList = (day) => (
-      <ul className="space-y-12">
-        {day.schedule.map((item, index) => (
+  const formatScheduleList = (day) => (
+    <ul className="space-y-12">
+      {day.schedules.map((item, index) => {
+        const startTime = formatTime(item.startTime);
+        const endTime = formatTime(item.endTime);
+        const showTimes = startTime && endTime;
+
+        return (
           <li
             key={index}
             className="relative flex items-center gap-6"
             style={{ padding: "20px 0" }}
           >
-            {/* 현재 아이템이 마지막이 아닌 경우에만 아래로 선을 이어줌 */}
-            {index < day.schedule.length - 1 && (
+            {index < day.schedules.length - 1 && (
               <div
                 className="absolute left-4 w-0.5 bg-red-500"
                 style={{
@@ -161,18 +132,19 @@ const ItineraryPage = () => {
               ></div>
             )}
             <div className="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center z-10">
-              {item.order}
+              {item.scheduleOrder}
             </div>
             <div>
-              <h3 className="text-sm font-semibold">{item.place.place}</h3>
-              {item.place.content && (
-                <p className="text-xs text-gray-500">{item.place.content}</p>
+              {showTimes && (
+                <p className="text-sm text-gray-500">{`${startTime} ~ ${endTime}`}</p>
               )}
+              <h2 className="text-base font-semibold">{item.place.placeName}</h2>
             </div>
           </li>
-        ))}
-      </ul>
-    );
+        );
+      })}
+    </ul>
+  );
 
   return (
     <div className="flex h-screen">
@@ -191,12 +163,12 @@ const ItineraryPage = () => {
             top: "64px",
           }}
         >
-          <h1 className="text-lg font-bold text-center md:text-xl lg:text-2xl">
+          <h1 className="text-lg font-bold text-left md:text-xl lg:text-2xl">
             {data.title}
           </h1>
-          <p className="text-base font-semibold text-gray-600 text-center mt-2">
-            {data.start_date && data.end_date
-              ? `${data.start_date} ~ ${data.end_date}`
+          <p className="text-base font-semibold text-gray-600 text-left mt-2">
+            {data.startDate && data.endDate
+              ? `${data.startDate} ~ ${data.endDate}`
               : `${data.days?.length || 0}일 여행 코스`}
           </p>
         </div>
@@ -213,7 +185,9 @@ const ItineraryPage = () => {
                 <div key={day.dayNumber} className="mb-8">
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold">{`${day.dayNumber}일차`}</h2>
-                    <p className="text-base font-semibold text-gray-600">{day.date}</p>
+                    <p className="text-base font-semibold text-gray-600">
+                      {day.date}
+                    </p>
                   </div>
                   {formatScheduleList(day)}
                 </div>
@@ -224,7 +198,9 @@ const ItineraryPage = () => {
                   <div key={day.dayNumber} className="mb-12">
                     <div className="flex justify-between items-center mb-6">
                       <h2 className="text-xl font-bold">{`${day.dayNumber}일차`}</h2>
-                      <p className="text-base font-semibold text-gray-600">{day.date}</p>
+                      <p className="text-base font-semibold text-gray-600">
+                        {day.date}
+                      </p>
                     </div>
                     {formatScheduleList(day)}
                   </div>
@@ -234,12 +210,12 @@ const ItineraryPage = () => {
 
       {/* Right Buttons Section */}
       <div className="w-[10%] bg-white flex flex-col items-center p-4 gap-4 pt-[125px]">
-        {/* Register Button */}
+        {/* 별점매기기 버튼 (수정하지 말 것) */}
         <button
-          onClick={handleRegister}
-          className="absolute bottom-4 right-4 bg-blue-500 text-white py-6 px-10 rounded-lg shadow hover:bg-blue-600 text-lg font-semibold"
+          onClick={() => navigate(`/rating/${travelId}`)}
+          className="absolute bottom-4 right-4 bg-blue-500 text-white py-4 px-4 rounded-lg shadow hover:bg-blue-600 text-base font-semibold"
         >
-          등록
+          별점 매기기
         </button>
 
         <button
@@ -275,4 +251,4 @@ const ItineraryPage = () => {
   );
 };
 
-export default ItineraryPage;
+export default CompletedItineraryPage;

@@ -2,11 +2,10 @@ import axiosInstance from "../../Config";
 
 const CancleAccountApi = async () => {
   try {
-    const response = axiosInstance.delete(
+    const response = await axiosInstance.delete(
       `/user-service/auth/users/account`
     );
-    const result = response.data;
-    return result;
+      return response;
   } catch (error) {
     if (error.response) {
       const { status, code, message } = error.response.data;

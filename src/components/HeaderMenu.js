@@ -49,6 +49,7 @@ const HeaderMenu = ({ closeMenu, isOpen }) => {
           <p className="py-3" onClick={() => handleNavigation('/youtube-page')}>유튜버 따라가기</p>
           <p className="py-3" onClick={() => handleNavigation('/my-trip-list')}>내 여행</p>
           <p className="py-3" onClick={() => handleNavigation('/mbti')}>여행 MBTI 검사</p>
+          <p className="py-3" onClick={() => handleNavigation('/invitation-list')}>초대 목록</p>
         </div>
 
         {/* 경계선 */}

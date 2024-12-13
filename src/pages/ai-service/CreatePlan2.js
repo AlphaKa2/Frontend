@@ -3,6 +3,7 @@ import { useRecoilState } from 'recoil'; // Recoil 훅
 import { travelPlanState } from '../../recoil/atoms/ai-atoms'; // Recoil Atom
 import regions from '../../data/regions'; // 지역 데이터
 import { useNavigate } from 'react-router-dom';
+import Sky2 from '../../assets/images/Sky2.png';
 
 function CreatePlan2() {
   const [travelPlan, setTravelPlan] = useRecoilState(travelPlanState); // Atom 상태
@@ -34,7 +35,14 @@ function CreatePlan2() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-blue-100 justify-center">
+    <div className="flex flex-col items-center min-h-screen bg-blue-100 justify-center"
+      style={{
+        backgroundImage: `url(${Sky2})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+      >
       <div className="relative bg-white w-full max-w-2xl p-8 rounded-xl shadow-lg text-center md:w-3/4 lg:w-2/3 xl:w-1/2">
         <div className="absolute top-4 left-4 text-indigo-600 font-semibold text-sm md:text-base">
           온길 AI 여행 코스 추천
@@ -64,7 +72,7 @@ function CreatePlan2() {
         <div className="flex justify-between mt-10">
           <button
             onClick={handleBack}
-            className="bg-white border border-gray-400 text-gray-600 font-medium py-2 px-6 rounded-lg shadow transition duration-200 hover:bg-gray-100"
+            className="bg-white border border-gray-400 text-gray-600 font-medium py-2 px-6 rounded-lg transition duration-200 hover:bg-gray-100"
           >
             이전
           </button>

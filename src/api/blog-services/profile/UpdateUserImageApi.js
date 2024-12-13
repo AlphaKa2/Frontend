@@ -2,17 +2,18 @@ import axiosInstance from "../../Config";
 
 const UpdateUserImageApi = async (userId, profileImageUrl) => {
   try {
-    const response = axiosInstance.put(
+    const response = await axiosInstance.put(
       `/user-service/auth/users/${userId}/profile/image`, {
         profileImageUrl,
       }
     );
+    
     const result = response.data;
     return result;
-
+ 
   } catch (error) {
     if (error.response) {
-      const { status, code, message} = error.response.data;
+      const { status, code, message } = error.response.data;
       if (status == 400 && code == "USR009") {
         throw new Error(message);
       } else if (status == 401 && code == "USR016") {

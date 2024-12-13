@@ -3,7 +3,7 @@ import ScrollMagic from "scrollmagic";
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { travelPlanState } from '../recoil/atoms/ai-atoms';
-import loginState  from '../recoil/atoms/loginState'; 
+
 
 import wallpaper from "../assets/images/main1_1.png";
 import picture1_2 from "../assets/images/main1_2.png";
@@ -16,9 +16,9 @@ import picture4_1 from "../assets/images/main4_1.png";
 import picture4_2 from "../assets/images/main4_2.png";
 import picture4_3 from "../assets/images/main4_3.png";
 import HeaderBar from "../components/HeaderBar";
-import LoggedInHeader from "../components/LoggedInHeader";
 import FooterBar from "../components/FooterBar";
 
+import loginState  from '../recoil/atoms/loginState'; 
 
 // recoil 상태 불러옴 => 만약 
 const MainPage = () => {
@@ -93,7 +93,7 @@ const MainPage = () => {
 
   return (
     <div>
-      {userState.isAuthenticated ? <LoggedInHeader /> : <HeaderBar />}
+      <HeaderBar></HeaderBar>
       {/* Page-1 섹션 */}
       <section
         className="page-1 flex justify-center items-center bg-cover bg-center bg-no-repeat w-screen h-screen"

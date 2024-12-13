@@ -5,6 +5,7 @@ import '../../styles/CustomCalendar.css';
 import { useRecoilState } from 'recoil'; // Recoil 훅
 import { travelPlanState } from '../../recoil/atoms/ai-atoms'; // Recoil Atom
 import { useNavigate } from 'react-router-dom';
+import Sky3 from '../../assets/images/Sky3.png';
 
 function CreatePlan3() {
   const [travelPlan, setTravelPlan] = useRecoilState(travelPlanState); // Recoil 상태 가져오기
@@ -70,8 +71,14 @@ function CreatePlan3() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-blue-100 justify-center">
-      <div className="relative bg-white w-full max-w-4xl p-8 rounded-xl shadow-lg text-center">
+    <div className="flex flex-col items-center min-h-screen bg-blue-100 justify-center"
+    style={{
+      backgroundImage: `url(${Sky3})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}>
+      <div className="relative bg-white w-full max-w-4xl p-8 rounded-xl shadow-lg text-center mt-12">
 
       <div className="absolute top-4 left-4 text-indigo-600 font-semibold text-sm md:text-base">
           온길 AI 여행 코스 추천
@@ -88,19 +95,20 @@ function CreatePlan3() {
 
         {/* 두 달력을 하나로 연결 */}
         <div className="flex justify-center mt-5">
-          <Calendar
-            onChange={onDateChange}
-            value={selectedDates}
-            selectRange={true}
-            calendarType="gregory"
-            className="custom-calendar double-view"
-            showDoubleView={true}
-            activeStartDate={currentDate}
-            onActiveStartDateChange={({ activeStartDate }) =>
-              setCurrentDate(activeStartDate)
-            }
-            showNeighboringMonth={false}
-          />
+        <Calendar
+          onChange={onDateChange}
+          value={selectedDates}
+          selectRange={true}
+          calendarType="gregory"
+          className="custom-calendar double-view"
+          showDoubleView={true}
+          activeStartDate={currentDate}
+          locale="en" // "일" 제거
+          onActiveStartDateChange={({ activeStartDate }) =>
+            setCurrentDate(activeStartDate)
+          }
+          showNeighboringMonth={false}
+        />
         </div>
 
         {/* 선택한 날짜 표시 */}

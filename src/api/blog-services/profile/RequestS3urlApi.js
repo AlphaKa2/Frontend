@@ -2,13 +2,13 @@ import axiosInstance from "../../Config";
 
 const RequestS3urlApi = async (fileName, contentType) => {
   try {
-    const response = axiosInstance.post(
-      `/user-service/auth/users/presigned-url`, {
+    const response = await axiosInstance.post(
+      `/user-service/auth/users/profile/presigned-url`, {
         fileName,
         contentType,
       }
     );
-
+    console.log("API Response:", response.data);
     const result = response.data;
     return result;
 

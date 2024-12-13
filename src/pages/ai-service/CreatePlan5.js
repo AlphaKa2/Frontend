@@ -5,6 +5,7 @@ import motives from '../../data/motives'; // motives 데이터 가져오기
 import { useNavigate } from 'react-router-dom';
 import natureIcon from '../../assets/images/natureicon.png'; // Nature preference icon
 import cityIcon from '../../assets/images/cityicon.png'; // City preference icon
+import Sky5 from '../../assets/images/Sky5.png';
 
 // 여행 스타일 리스트와 레이블
 const styleMapping = ["VERY_NATURE", "MODERATE_NATURE", "NEUTRAL", "MODERATE_CITY", "VERY_CITY"];
@@ -39,8 +40,14 @@ function CreatePlan5() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-blue-100 justify-center">
-      <div className="relative bg-white w-full max-w-2xl p-8 rounded-xl shadow-lg text-center md:w-3/4 lg:w-2/3 xl:w-1/2">
+    <div className="flex flex-col items-center min-h-screen bg-blue-100 justify-center"
+    style={{
+      backgroundImage: `url(${Sky5})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}>
+      <div className="relative bg-white w-full max-w-2xl p-8 rounded-xl shadow-lg text-center md:w-3/4 lg:w-2/3 xl:w-1/2 mt-12">
         
         {/* 여행 동기 선택 */}
         <h1 className="text-2xl font-bold mb-2">여행 동기를 선택해 주세요</h1>
@@ -59,6 +66,11 @@ function CreatePlan5() {
               {motive.label}
             </button>
           ))}
+        </div>
+
+        {/* 우측 상단 페이지 번호 */}
+        <div className="absolute top-4 right-4 text-gray-600 font-semibold md:text-base">
+          <span className="font-semibold">05</span> / 06
         </div>
 
         {/* 여행 스타일 선택 */}

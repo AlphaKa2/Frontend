@@ -1,35 +1,40 @@
+// src/pages/travel-service/RegisterItineraryPage.js
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchTripDetailsById } from "../../api/ai-service/trip-id";
-import { registerTravel } from "../../api/travel-service/register"; 
+import { getTravelById } from "../../api/ai-service/trip-id";
 import GoogleMapsComponent from "../../api/google-maps";
+import ParticipantsList from "../../components/ParticipantsList"; // 참여자 목록 컴포넌트 임포트
+import ParticipantsImage from "../../assets/images/Participants.png"; // 참여자 버튼에 사용할 이미지 (경로 및 파일명 가정)
 
-const ItineraryPage = () => {
-  const { recommendation_trip_id } = useParams();
+const RegisterItineraryPage = () => {
+  const { travelId } = useParams(); 
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [center, setCenter] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [showAllDays, setShowAllDays] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [isParticipantsOpen, setIsParticipantsOpen] = useState(false); // 참여자 팝업 상태
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!recommendation_trip_id) {
-        console.error("Recommendation Trip ID is required.");
+      if (!travelId) {
+        console.error("Travel ID is required.");
         return;
       }
 
       try {
         setLoading(true);
-        const tripDetails = await fetchTripDetailsById(recommendation_trip_id);
-        setData(tripDetails);
+        const tripDetails = await getTravelById(travelId);
+        setData(tripDetails.data);
 
+        // 지도 중심 설정
         if (
-          tripDetails.days?.length > 0 &&
-          tripDetails.days[0].schedule?.length > 0
+          tripDetails.data.days?.length > 0 &&
+          tripDetails.data.days[0].schedules?.length > 0
         ) {
-          const firstPlace = tripDetails.days[0].schedule[0].place;
+          const firstPlace = tripDetails.data.days[0].schedules[0].place;
           setCenter({
             lat: parseFloat(firstPlace.latitude),
             lng: parseFloat(firstPlace.longitude),
@@ -43,17 +48,14 @@ const ItineraryPage = () => {
     };
 
     fetchData();
-  }, [recommendation_trip_id]);
+  }, [travelId]);
 
   useEffect(() => {
     if (!data) return;
 
     if (showAllDays) {
-      if (
-        data.days?.length > 0 &&
-        data.days[0].schedule?.length > 0
-      ) {
-        const firstPlace = data.days[0].schedule[0].place;
+      if (data.days?.length > 0 && data.days[0].schedules?.length > 0) {
+        const firstPlace = data.days[0].schedules[0].place;
         setCenter({
           lat: parseFloat(firstPlace.latitude),
           lng: parseFloat(firstPlace.longitude),
@@ -63,8 +65,8 @@ const ItineraryPage = () => {
       const selectedDayData = data.days.find(
         (day) => String(day.dayNumber) === String(selectedDay)
       );
-      if (selectedDayData && selectedDayData.schedule.length > 0) {
-        const firstPlace = selectedDayData.schedule[0].place;
+      if (selectedDayData && selectedDayData.schedules.length > 0) {
+        const firstPlace = selectedDayData.schedules[0].place;
         setCenter({
           lat: parseFloat(firstPlace.latitude),
           lng: parseFloat(firstPlace.longitude),
@@ -73,39 +75,13 @@ const ItineraryPage = () => {
     }
   }, [selectedDay, showAllDays, data]);
 
-  const handleRegister = async () => {
-    try {
-      const requestData = {
-        travelName: data.title,
-        description: data.description || "여행 설명이 없습니다.",
-        travelType: data.type || "AI_GENERATED",
-        preferenceId: data.preferenceId || 7,
-        startDate: data.start_date,
-        endDate: data.end_date,
-        days: data.days.map((day) => ({
-          dayNumber: day.dayNumber,
-          date: day.date,
-          schedules: day.schedule.map((schedule) => ({
-            order: schedule.order,
-            startTime: "00:00",
-            endTime: "00:00",
-            place: {
-              placeName: schedule.place.place,
-              address: schedule.place.address,
-              latitude: schedule.place.latitude,
-              longitude: schedule.place.longitude,
-            },
-          })),
-        })),
-      };
+  const formatTime = (time) => {
+    if (!time || time === "00:00:00") return null;
+    return time.slice(0, 5); // 'hh:mm:ss'에서 'hh:mm'만 추출
+  };
 
-      await registerTravel(requestData);
-      alert("여행이 성공적으로 등록되었습니다!");
-      navigate("/registered");
-    } catch (error) {
-      console.error("Error registering travel:", error);
-      alert("여행 등록 중 문제가 발생했습니다.");
-    }
+  const handleEdit = () => {
+    navigate(`/edit-itinerary/${travelId}`);
   };
 
   if (loading) {
@@ -127,31 +103,35 @@ const ItineraryPage = () => {
   const markers = data
     ? showAllDays
       ? data.days.flatMap((day) =>
-          day.schedule.map((item) => ({
+          day.schedules.map((item) => ({
             lat: parseFloat(item.place.latitude),
             lng: parseFloat(item.place.longitude),
-            label: item.place.place,
+            label: item.place.placeName,
           }))
         )
       : data.days
           .find((day) => String(day.dayNumber) === String(selectedDay))
-          ?.schedule.map((item) => ({
+          ?.schedules.map((item) => ({
             lat: parseFloat(item.place.latitude),
             lng: parseFloat(item.place.longitude),
-            label: item.place.place,
+            label: item.place.placeName,
           })) || []
     : [];
 
-    const formatScheduleList = (day) => (
-      <ul className="space-y-12">
-        {day.schedule.map((item, index) => (
+  const formatScheduleList = (day) => (
+    <ul className="space-y-12">
+      {day.schedules.map((item, index) => {
+        const startTime = formatTime(item.startTime);
+        const endTime = formatTime(item.endTime);
+        const showTimes = startTime && endTime;
+
+        return (
           <li
             key={index}
             className="relative flex items-center gap-6"
             style={{ padding: "20px 0" }}
           >
-            {/* 현재 아이템이 마지막이 아닌 경우에만 아래로 선을 이어줌 */}
-            {index < day.schedule.length - 1 && (
+            {index < day.schedules.length - 1 && (
               <div
                 className="absolute left-4 w-0.5 bg-red-500"
                 style={{
@@ -161,18 +141,19 @@ const ItineraryPage = () => {
               ></div>
             )}
             <div className="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center z-10">
-              {item.order}
+              {item.scheduleOrder}
             </div>
             <div>
-              <h3 className="text-sm font-semibold">{item.place.place}</h3>
-              {item.place.content && (
-                <p className="text-xs text-gray-500">{item.place.content}</p>
+              {showTimes && (
+                <p className="text-sm text-gray-500">{`${startTime} ~ ${endTime}`}</p>
               )}
+              <h2 className="text-base font-semibold">{item.place.placeName}</h2>
             </div>
           </li>
-        ))}
-      </ul>
-    );
+        );
+      })}
+    </ul>
+  );
 
   return (
     <div className="flex h-screen">
@@ -191,17 +172,28 @@ const ItineraryPage = () => {
             top: "64px",
           }}
         >
-          <h1 className="text-lg font-bold text-center md:text-xl lg:text-2xl">
+          <h1 className="text-lg font-bold text-left md:text-xl lg:text-2xl">
             {data.title}
           </h1>
-          <p className="text-base font-semibold text-gray-600 text-center mt-2">
-            {data.start_date && data.end_date
-              ? `${data.start_date} ~ ${data.end_date}`
+
+          <p className="text-base font-semibold text-gray-600 text-left mt-2">
+            {data.startDate && data.endDate
+              ? `${data.startDate} ~ ${data.endDate}`
               : `${data.days?.length || 0}일 여행 코스`}
           </p>
+
+          <button
+            onClick={() => setIsParticipantsOpen(true)}
+            className="absolute right-4 bottom-7 flex items-center"
+          >
+            <img
+              src={ParticipantsImage}
+              className="w-14 h-8"
+              alt="Participants"
+            />
+          </button>
         </div>
 
-        {/* Itinerary List */}
         <div
           className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
           style={{
@@ -232,14 +224,12 @@ const ItineraryPage = () => {
         </div>
       </div>
 
-      {/* Right Buttons Section */}
       <div className="w-[10%] bg-white flex flex-col items-center p-4 gap-4 pt-[125px]">
-        {/* Register Button */}
         <button
-          onClick={handleRegister}
+          onClick={handleEdit}
           className="absolute bottom-4 right-4 bg-blue-500 text-white py-6 px-10 rounded-lg shadow hover:bg-blue-600 text-lg font-semibold"
         >
-          등록
+          편집
         </button>
 
         <button
@@ -271,8 +261,15 @@ const ItineraryPage = () => {
           </button>
         ))}
       </div>
+
+      {isParticipantsOpen && (
+        <ParticipantsList
+          travelId={travelId}
+          onClose={() => setIsParticipantsOpen(false)}
+        />
+      )}
     </div>
   );
 };
 
-export default ItineraryPage;
+export default RegisterItineraryPage;

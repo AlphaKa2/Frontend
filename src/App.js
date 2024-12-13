@@ -8,10 +8,18 @@ import CreatePlan3 from './pages/ai-service/CreatePlan3';
 import CreatePlan4 from './pages/ai-service/CreatePlan4';
 import CreatePlan5 from './pages/ai-service/CreatePlan5';
 import CreatePlan6 from './pages/ai-service/CreatePlan6';
-import MyTripList from './pages/ai-service/MyTripList';
 import ItineraryPage from './pages/ai-service/ItineraryPage';
 import YoutubePage from "./pages/ai-service/YoutubePage";
+import MyTripList from './pages/travel-service/MyTripList';
+
+import RegisterItineraryPage from './pages/travel-service/RegisterItineraryPage';
+import EditItineraryPage from './pages/travel-service/EditItineraryPage';
+import CompletedItineraryPage from './pages/travel-service/CompletedItineraryPage';
+import RatingPage from './pages/travel-service/RatingPage';
+import InvitationList from './pages/travel-service/InvitationList';
+
 import Header from './components/HeaderBar';
+
 import LoginPage from './pages/blog-service/LoginPage';
 import SignupPage from './pages/blog-service/SignupPage';
 import PostDetailPage from './pages/PostDetailPage';
@@ -67,9 +75,15 @@ function AppContent() {
         <Route path="/create-plan5" element={<CreatePlan5 />} />
         <Route path="/create-plan6" element={<CreatePlan6 />} />
         <Route path="/my-trip-list" element={<MyTripList />} />
+
+        <Route path="/invitation-list" element={<InvitationList />} />
         <Route path="/itinerary/:recommendation_trip_id" element={<ItineraryPage />} />
+        <Route path="/register-itinerary/:travelId" element={<RegisterItineraryPage />} />
+        <Route path="/edit-itinerary/:travelId" element={<EditItineraryPage />} />
+        <Route path="/completed-itinerary/:travelId" element={<CompletedItineraryPage />} />
+        <Route path="/rating/:travelId" element={<RatingPage />} />
+
         <Route path="/youtube-page" element={<YoutubePage/>} />
-        <Route path="/" element={<MainPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/signup/second" element={<SignupPage_2 />} />
         <Route path="/signup/third" element={<SignupPage_3 />} />
