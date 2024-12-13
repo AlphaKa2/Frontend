@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function TagInput({ tags, setTags }) {
+function TagInput({ tags, setTags}) {
   const [inputValue, setInputValue] = useState(""); // 입력 값
   const [isComposing, setIsComposing] = useState(false); // IME 입력 상태 여부
 

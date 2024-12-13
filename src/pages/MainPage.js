@@ -16,7 +16,6 @@ import picture4_1 from "../assets/images/main4_1.png";
 import picture4_2 from "../assets/images/main4_2.png";
 import picture4_3 from "../assets/images/main4_3.png";
 import HeaderBar from "../components/HeaderBar";
-import LoggedInHeader from "../components/LoggedInHeader";
 import FooterBar from "../components/FooterBar";
 
 // recoil 상태 불러옴 => 만약

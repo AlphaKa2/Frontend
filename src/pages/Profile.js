@@ -2,36 +2,40 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useRecoilValue } from "recoil";
 import loginState from "../recoil/atoms/loginState";
-import Tags from "./Tags";
-import profilePicture from "../assets/images/profile-picture.jpg";
 import { useNavigate } from "react-router-dom";
+import axios from "../api/axios";
 
 const Profile = () => {
   const navigate = useNavigate();
   const writePage = () => {
-    navigate("/postCreate");
+    navigate("/blog-service/api/posts");
   };
   const goLoginPage = () => {
     navigate("/login");
   };
   const [profileData, setProfileData] = useState(null);
   const { isAuthenticated, nickname: userNickname } = useRecoilValue(loginState);
+  const { userId: userId } = useRecoilValue(loginState);
 
-  // API에서 데이터를 가져오는 함수 (현재 더미 데이터 사용)
   useEffect(() => {
-    // 여기에서 실제 API 요청을 대체합니다.
-    const dummyData = {
-      profileImage: profilePicture,
-      nickname: "imThird",
-      followerCount: 85,
-      followingCount: 110,
-      mbti: "ABLJ",
-      mbtiDescription: "체계적 활동파",
-      profileDescription: "안녕하세요~",
+    const fetchTags = async () => {
+      try {
+        const response = await axios.get(`/user-service/users/${userId}/profile`);
+        if (response.status === 200) {
+          setProfileData(response.data.data); // API에서 가져온 태그 데이터를 상태에 저장
+          console.log(response.data.data);
+        } else {
+          console.error("태그 데이터를 가져오는 데 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("태그 데이터를 가져오는 중 오류 발생:", error);
+      }
     };
 
-    setProfileData(dummyData);
-  }, []);
+    if (userId) {
+      fetchTags();
+    }
+  }, [userId]); 
 
   // 프로필 정보 로딩 중인 경우의 UI
   if (!profileData) {
@@ -79,8 +83,8 @@ const Profile = () => {
 
   // 프로필 정보를 렌더링
   return (
-    <div className="w-[20%] h-screen px-12 py-12">
-      <div className="border-[0.1px] border-gray-400 shadow-md rounded-2xl h-[90%] p-4 mt-16 text-center">
+
+      <>
         <div className="flex w-[100%] h-[25%] justify-center items-center overflow-hidden">
           <img
             src={profileData.profileImage}
@@ -112,9 +116,7 @@ const Profile = () => {
           {renderButtons()}
         </div>
 
-        <Tags />
-      </div>
-    </div>
+      </>
   );
 };
 

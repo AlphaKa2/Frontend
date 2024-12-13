@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import ResultPic from "../../assets/images/mbti.jpeg";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "../axios"; // axios import
+import axios from "../../api/axios"; // axios import
 import loginState from "../../recoil/atoms/loginState";
 import { useRecoilValue } from "recoil";
 

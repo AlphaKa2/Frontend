@@ -6,6 +6,9 @@ import {
   useLocation,
 } from "react-router-dom";
 import { RecoilRoot } from "recoil"; // RecoilRoot 가져오기
+import { useRecoilValue } from "recoil";
+import { useNavigate } from "react-router-dom";
+import loginState from "./recoil/atoms/loginState";
 import MainPage from "./pages/MainPage";
 import CreatePlan1 from "./pages/ai-service/CreatePlan1"; // CreatePlan1 컴포넌트 import
 import CreatePlan2 from "./pages/ai-service/CreatePlan2";
@@ -32,6 +35,8 @@ import FollowersPage from "./pages/blog-service/FollowersPage";
 import ReportPage from "./pages/blog-service/ReportPage";
 import MbtiTestPage from "./pages/blog-service/MbtiTestPage";
 import PostPage from "./pages/blog-service/PostPage";
+import PostEditPage from "./pages/PostEditPage";
+import CommentSection from "./pages/CommentSection";
 import "./index.css"; // Tailwind가 포함된 CSS 파일을 import
 import "./App.css";
 
@@ -39,6 +44,7 @@ import MbtiDetailPage from "./pages/blog-service/MbtiDetailPage";
 import MbtiResultPage from "./pages/blog-service/MbtiResultPage";
 
 function App() {
+  
   return (
     <RecoilRoot>
       <Router>
@@ -50,13 +56,16 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
-
+  const Navigate = useNavigate();
   // 특정 경로에서 Header를 숨기기
   const hideHeaderPaths = [];
   const showHeader = !hideHeaderPaths.includes(location.pathname); // 경로가 숨김 경로에 없으면 Header 표시
+  const nickname  = useRecoilValue(loginState);
+  
 
   return (
     <div className="App">
+     
       {showHeader && <Header />} {/* Header를 조건부로 렌더링 */}
       <Routes>
         
@@ -75,7 +84,6 @@ function AppContent() {
           element={<ItineraryPage />}
         />
         <Route path="/youtube-page" element={<YoutubePage />} />
-        <Route path="/" element={<MainPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
         <Route path="/signup/second" element={<SignupPage_2 />} />
@@ -95,9 +103,21 @@ function AppContent() {
         <Route path="/MbtiDetailPage" element={<MbtiDetailPage/>}/>
         <Route path="/MbtiResultPage" element={<MbtiResultPage/>}/>
 
-        <Route path="/posts" element={<PostPage />} />
-        <Route path="/postDetail" element={<PostDetailPage />} />
-        <Route path="/postCreate" element={<CreatePostPage/>}/>
+        <Route path="/blog-service/api/posts/blog/:nickname" element={<PostPage />} />
+        {/* <Route
+          path="/"
+          element={
+            nickname ? (
+              <Navigate to={`/blog-service/api/posts/blog/${nickname}`} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        /> */}
+        <Route path="/blog-service/auth/api/posts/:postId" element={<PostDetailPage />} />
+        <Route path="/blog-service/auth/api/posts/:postId/edit" element={<PostEditPage/>}/>
+
+        <Route path="/blog-service/api/posts" element={<CreatePostPage/>}/>
       </Routes>
     </div>
   );

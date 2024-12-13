@@ -1,46 +1,58 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-// import { fetchTags } from "./path/to/api";
+import axios from "../api/axios";
 
-const dummyTags = [
-  { tagName: "경기", postCount: 15 },
-  { tagName: "강원", postCount: 8 },
-  { tagName: "충북", postCount: 10 },
-  { tagName: "충남", postCount: 5 },
-  { tagName: "제주", postCount: 12 },
-  { tagName: "제주", postCount: 12 },
-  { tagName: "강원", postCount: 8 },
-  { tagName: "충북", postCount: 10 }
-  
-];
 
 const Tags = ({ nickname, onFilterChange }) => {
   const [tags, setTags] = useState([]);
+  const [selectedTag, setSelectedTag] = useState("all"); // 현재 선택된 태그 상태
 
   useEffect(() => {
-    // 실제 API 호출 시 주석을 해제하고 사용
-    // const loadTags = async () => {
-    //   const data = await fetchTags(nickname);
-    //   setTags(data);
-    // };
+    const fetchTags = async () => {
+      try {
+        const response = await axios.get(`/blog-service/api/tags/blog/${nickname}`);
+        if (response.status === 200) {
+          setTags(response.data.data); // API에서 가져온 태그 데이터를 상태에 저장
+          console.log("태그요청이 정상작동됐습니다.");
+          console.log(response.data.data);
+        } else {
+          console.error("태그 데이터를 가져오는 데 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("태그 데이터를 가져오는 중 오류 발생:", error);
+      }
+    };
 
-    // loadTags();
+    if (nickname) {
+      fetchTags();
+    }
+  }, [nickname]); // nickname이 변경될 때마다 요청 실행
 
-    // 더미 데이터 사용
-    setTags(dummyTags);
-  }, [nickname]);
+  const handleTagClick = (tagName) => {
+    setSelectedTag(tagName); // 선택된 태그 업데이트
+    onFilterChange(tagName); // 상위 컴포넌트에 필터링 태그 전달
+  };
 
   return (
     <div className="w-[100%] mt-6 text-left p-2 space-y-2">
       <div className="font-semibold text-[1.2em]">태그 목록</div>
       <div className="w-[100%] border-[0.5px] border-black"></div>
       <div className="w-[100%] space-y-2 h-[220px] overflow-y-scroll">
-        <div onClick={() => onFilterChange("all")}>전체보기</div>
+        <div
+          onClick={() => handleTagClick("all")}
+          className={`cursor-pointer hover:underline ${
+            selectedTag === "all" ? "font-bold" : ""
+          }`}
+        >
+          전체보기
+        </div>
         {tags.map((tag) => (
           <div
             key={tag.tagName}
-            onClick={() => onFilterChange(tag.tagName)}
-            className="cursor-pointer hover:underline"
+            onClick={() => handleTagClick(tag.tagName)}
+            className={`cursor-pointer hover:underline ${
+              selectedTag === tag.tagName ? "font-bold" : ""
+            }`}
           >
             {`${tag.tagName} (${tag.postCount})`}
           </div>

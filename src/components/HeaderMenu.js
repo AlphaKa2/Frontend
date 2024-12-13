@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { useSetRecoilState } from "recoil";
 import loginState from "../recoil/atoms/loginState"; // 경로 주의!
-import axios from "../pages/axios";
+import axios from "../api/axios";
 
 const HeaderMenu = ({ closeMenu, isOpen }) => {
   const menuRef = useRef(null);
@@ -95,7 +95,7 @@ const HeaderMenu = ({ closeMenu, isOpen }) => {
 
           {/* 각 서비스 */}
           <div className="text-gray-600 font-bold text-[1em] px-7 py-3 cursor-pointer">
-            <p className="py-3" onClick={() => handleNavigation("/posts")}>
+            <p className="py-3" onClick={() => handleNavigation(`/blog-service/api/posts/blog/${user.nickname}`)}>
               내 블로그
             </p>
             <p className="py-3" onClick={() => handleNavigation("/create-plan1")}>
