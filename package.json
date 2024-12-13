@@ -32,6 +32,7 @@
     "recoil-persist": "^5.1.0",
     "scrollmagic": "^2.0.8",
     "slick-carousel": "^1.8.1",
+    "tailwind-scrollbar": "^3.1.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

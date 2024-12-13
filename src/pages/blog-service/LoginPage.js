@@ -9,9 +9,8 @@ import kakaologo from "../../assets/images/kakao.webp";
 import naverlogo from "../../assets/images/naver.png";
 import googlelogo from "../../assets/images/google.png";
 
-
 const LoginPage = () => {
-  const [userState, setUserState] = useRecoilState(loginState);   
+  const [userState, setUserState] = useRecoilState(loginState);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -35,10 +34,12 @@ const LoginPage = () => {
 
     try {
       // 로그인 API 호출
-      const { userId, nickname, profileImageUrl, accessToken } = await LoginApi(email, password);
+      const { userId, nickname, profileImageUrl, accessToken } = await LoginApi(
+        email,
+        password
+      );
       // Access Token을 localStorage에 저장
       localStorage.setItem("accessToken", accessToken);
-
 
       // Recoil 상태 업데이트
       setUserState({
@@ -48,14 +49,14 @@ const LoginPage = () => {
         profileImageUrl,
         accessToken,
       });
-          // 상태 확인 로그
-    console.log("User State Updated:", {
-      isAuthenticated: true,
-      userId,
-      nickname,
-      profileImageUrl,
-      accessToken,
-    });
+      // 상태 확인 로그
+      console.log("User State Updated:", {
+        isAuthenticated: true,
+        userId,
+        nickname,
+        profileImageUrl,
+        accessToken,
+      });
       // 홈 화면으로 이동
       navigate("/");
     } catch (error) {
@@ -140,19 +141,19 @@ const LoginPage = () => {
         <hr className="w-36 border-gray-300" />
       </div>
       <div className="flex items-center space-x-4">
-  <div
-    className="w-12 h-12 rounded-full bg-center bg-cover"
-    style={{ backgroundImage: `url(${kakaologo})` }}
-  ></div>
-  <div
-    className="w-12 h-12 rounded-full bg-center bg-cover"
-    style={{ backgroundImage: `url(${naverlogo})` }}
-  ></div>
-  <div
-    className="w-12 h-12 rounded-full bg-center bg-cover"
-    style={{ backgroundImage: `url(${googlelogo})` }}
-  ></div>
-</div>
+        <div
+          className="w-12 h-12 rounded-full bg-center bg-cover"
+          style={{ backgroundImage: `url(${kakaologo})` }}
+        ></div>
+        <div
+          className="w-12 h-12 rounded-full bg-center bg-cover"
+          style={{ backgroundImage: `url(${naverlogo})` }}
+        ></div>
+        <div
+          className="w-12 h-12 rounded-full bg-center bg-cover"
+          style={{ backgroundImage: `url(${googlelogo})` }}
+        ></div>
+      </div>
       <p className="text-sm text-gray-500 mt-6">
         회원이 아니신가요?{" "}
         <button

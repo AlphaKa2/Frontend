@@ -11,20 +11,17 @@ import CreatePlan6 from './pages/ai-service/CreatePlan6';
 import ItineraryPage from './pages/ai-service/ItineraryPage';
 import YoutubePage from "./pages/ai-service/YoutubePage";
 import MyTripList from './pages/travel-service/MyTripList';
-
 import RegisterItineraryPage from './pages/travel-service/RegisterItineraryPage';
 import EditItineraryPage from './pages/travel-service/EditItineraryPage';
 import CompletedItineraryPage from './pages/travel-service/CompletedItineraryPage';
 import RatingPage from './pages/travel-service/RatingPage';
 import InvitationList from './pages/travel-service/InvitationList';
-
 import Header from './components/HeaderBar';
-
 import LoginPage from './pages/blog-service/LoginPage';
 import SignupPage from './pages/blog-service/SignupPage';
 import PostDetailPage from './pages/PostDetailPage';
 import CreatePostPage from './pages/CreatePostPage';
-import PostPage from './pages/PostPage' ;
+import PostPage from './pages/blog-service/PostPage' ;
 import SignupPage_2 from './pages/blog-service/SignupPage_2';
 import SignupPage_3 from './pages/blog-service/SignupPage_3';
 import ForgotPasswordPage from './pages/blog-service/ForgotPasswordPage';
@@ -40,11 +37,20 @@ import Terms_Service_Page from './pages/blog-service/Terms_Service_Page';
 import Terms_Location_Page from './pages/blog-service/Terms_Location_Page';
 import MbtiResultPage from './pages/blog-service/MbtiResultPage';
 
+import { useRecoilValue } from "recoil";
+import { useNavigate } from "react-router-dom";
+import loginState from "./recoil/atoms/loginState";
 
+
+import PostEditPage from "./pages/PostEditPage";
+import CommentSection from "./pages/CommentSection";
 import "./index.css"; // Tailwind가 포함된 CSS 파일을 import
-import './App.css';
+import "./App.css";
+
+import MbtiDetailPage from "./pages/blog-service/MbtiDetailPage";
 
 function App() {
+  
   return (
     <RecoilRoot>
       <Router>
@@ -56,18 +62,22 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
-
+  const Navigate = useNavigate();
   // 특정 경로에서 Header를 숨기기
   const hideHeaderPaths = [];
   const showHeader = !hideHeaderPaths.includes(location.pathname); // 경로가 숨김 경로에 없으면 Header 표시
+  const nickname  = useRecoilValue(loginState);
+  
 
   return (
     <div className="App">
+     
       {showHeader && <Header />} {/* Header를 조건부로 렌더링 */}
       <Routes>
-        {/* MainPage 경로 */}
+        
         <Route path="/" element={<MainPage />} />
-        {/* CreatePlan 경로 */}
+        
+
         <Route path="/create-plan1" element={<CreatePlan1 />} />
         <Route path="/create-plan2" element={<CreatePlan2 />} />
         <Route path="/create-plan3" element={<CreatePlan3 />} />
@@ -105,6 +115,25 @@ function AppContent() {
         <Route path="/terms/location" element={ <Terms_Location_Page/>} />
 
 
+        <Route path="/mbti-test" element={<MbtiTestPage />} />
+        <Route path="/MbtiDetailPage" element={<MbtiDetailPage/>}/>
+        <Route path="/MbtiResultPage" element={<MbtiResultPage/>}/>
+
+        <Route path="/blog-service/api/posts/blog/:nickname" element={<PostPage />} />
+        {/* <Route
+          path="/"
+          element={
+            nickname ? (
+              <Navigate to={`/blog-service/api/posts/blog/${nickname}`} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        /> */}
+        <Route path="/blog-service/auth/api/posts/:postId" element={<PostDetailPage />} />
+        <Route path="/blog-service/auth/api/posts/:postId/edit" element={<PostEditPage/>}/>
+
+        <Route path="/blog-service/api/posts" element={<CreatePostPage/>}/>
       </Routes>
     </div>
   );

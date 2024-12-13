@@ -1,3 +1,4 @@
+// Config.js
 import axios from "axios";
 
 const axiosInstance = axios.create({
@@ -63,4 +64,5 @@ axiosInstance.interceptors.response.use(
 );
 
 
+// 요청 및 응답 인터셉터 추가는 생략 (axios.js와 중복)
 export default axiosInstance;

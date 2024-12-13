@@ -90,7 +90,6 @@ const handleNext = () => {
         {currentQuestion}. {currentQuestionData.question}
       </h1>
       <p className="text-gray-500 mb-8 text-center">둘 중 하나를 선택하세요</p>
-
       {/* Options Section */}
       <div
         className={`transition-opacity duration-700 delay-400 ${

@@ -90,6 +90,7 @@ const MbtiResultPage = () => {
       >
         다시 테스트하기
       </button>
+
     </div>
   );
 };

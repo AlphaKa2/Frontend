@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Editor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "../api/axios";
 import apiClient from "../api/axios";
 import { v4 as uuidv4 } from "uuid";
@@ -18,39 +18,80 @@ const ALLOWED_FILE_TYPES = [
   "image/gif",
 ];
 
-const CreatePostPage = () => {
+const PostEditPage = () => {
+  const [editPost, setEditPost] = useState({});
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false); // 모달 상태 관리
   const editorRef = useRef();
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]); // 태그 배열 상태 추가
   const [isPublic, setIsPublic] = useState(true);
   const [isCommentable, setIsCommentable] = useState(true);
-
+  const { postId } = useParams();
   const navigate = useNavigate();
 
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false); // 모달 상태 관리
+  useEffect(() => {
+    if (postId) {
+      console.log("postId가 있음:", postId);
+    } else {
+      console.log("postId가 없음");
+    }
+  }, [postId]);
+
+  useEffect(() => {
+    // API 요청 보내기
+    const fetchEditedPost = async () => {
+      try {
+        const response = await axios.get(
+          `/blog-service/auth/api/posts/${postId}/edit`
+        ); // 예상 API URL
+        const editPostData = response.data.data; // 데이터 가져오기
+        setEditPost(editPostData); // 응답 데이터 상태에 저장
+        console.log(editPostData);
+      } catch (error) {
+        console.error("게시글을 가져오는데 실패", error);
+      }
+    };
+
+    if (postId) {
+      fetchEditedPost();
+    }
+  }, [postId]);
+
+
+  // 제목 상태 동기화
+  useEffect(() => {
+    if (editPost.title) {
+      setTitle(editPost.title); // editPost.title을 제목 상태에 설정
+    }
+  }, [editPost.title]);
+
+  // 태그 동기화
+  useEffect(() => {
+    if (editPost.tagNames) {
+      setTags(editPost.tagNames); // 초기 태그 값 설정
+    }
+  }, [editPost]);
+
+   // Editor 내용 동기화
+  useEffect(() => {
+    if (editPost.content && editorRef.current) {
+      editorRef.current.getInstance().setHTML(editPost.content);
+    }
+  }, [editPost.content]);
+
+  // isPublic과 isCommentable 상태 동기화
+  useEffect(() => {
+    if (editPost) {
+      setIsPublic(editPost.isPublic); // 공개 여부 설정
+      setIsCommentable(editPost.isCommentable); // 댓글 가능 여부 설정
+    }
+  }, [editPost]); // editPost가 업데이트될 때마다 동기화
+  
+
 
   useEffect(() => {
     console.log("isCancelModalOpen 상태:", isCancelModalOpen);
   }, [isCancelModalOpen]);
-  
-
-  // 취소 버튼 클릭 핸들러
-  const handleCancel = () => {
-    setIsCancelModalOpen(true); // 모달 열기
-  };
-
-  // 모달에서 "예" 클릭 시 처리
-  const checkYes = () => {
-    console.log("사용자가 게시글 작성을 취소했습니다.");
-    setIsCancelModalOpen(false); // 모달 닫기
-    navigate("/blog-service/api/posts/blog");
-  };
-
-  // 모달에서 "아니오" 클릭 시 처리
-  const checkNo = () => {
-    console.log("아니오 눌렀음");
-    setIsCancelModalOpen(false); // 모달 닫기
-  };
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -72,6 +113,33 @@ const CreatePostPage = () => {
       document.head.removeChild(style);
     };
   }, []);
+
+  // 로딩 중 처리
+  if (!editPost) {
+    return (
+      <div className="flex justify-center items-center text-[40px] font-bold mt-[9em]">
+        Loading...
+      </div>
+    );
+  }
+
+  // 취소 버튼 클릭 핸들러
+  const handleCancel = () => {
+    setIsCancelModalOpen(true); // 모달 열기
+  };
+
+  // 모달에서 "예" 클릭 시 처리
+  const checkYes = () => {
+    console.log("사용자가 게시글 작성을 취소했습니다.");
+    setIsCancelModalOpen(false); // 모달 닫기
+    navigate("/blog-service/api/posts/blog");
+  };
+
+  // 모달에서 "아니오" 클릭 시 처리
+  const checkNo = () => {
+    console.log("아니오 눌렀음");
+    setIsCancelModalOpen(false); // 모달 닫기
+  };
 
   const validateFile = (file) => {
     const fileType = file.type;
@@ -125,7 +193,7 @@ const CreatePostPage = () => {
     }
   };
 
-  const handleSave = async () => {
+  const handleEditedSave = async () => {
     const editorInstance = editorRef.current.getInstance();
     const content = editorInstance.getHTML();
 
@@ -139,7 +207,7 @@ const CreatePostPage = () => {
       return;
     }
 
-    const postData = {
+    const editedPost = {
       title: title.trim(),
       content: content.trim(),
       isPublic: isPublic,
@@ -148,9 +216,9 @@ const CreatePostPage = () => {
     };
 
     try {
-      const response = await apiClient.post(
-        "/blog-service/auth/api/posts",
-        postData,
+      const response = await apiClient.put(
+        `/blog-service/auth/api/posts/${postId}`,
+        editedPost,
         {
           headers: {
             "Content-Type": "application/json",
@@ -158,11 +226,11 @@ const CreatePostPage = () => {
         }
       );
       if (response.status === 200) {
-        console.log("게시글 저장 성공");
-        alert("저장되었습니다.");
+        console.log("게시글 수정 성공");
+        alert("수정되었습니다.");
         navigate("/blog-service/api/posts/blog");
       } else {
-        console.error("게시글 저장 실패");
+        console.error("게시글 수정 실패");
       }
     } catch (error) {
       console.error("서버 오류:", error);
@@ -179,15 +247,19 @@ const CreatePostPage = () => {
             className="w-[100%] p-[15px] mb-[10px] text-[22px] border-[2px] border-[#ccc] rounded-lg"
             placeholder="제목 입력 (1~100글자)"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+                setTitle(e.target.value);
+              }
+            }
           />
 
           {/* Tags Input */}
-          <TagInput tags={tags} setTags={setTags} />
+          <TagInput tags={tags || []} setTags={setTags} />
+
 
           {/* Toast UI Editor */}
           <Editor
-            initialValue="글내용을 입력해주세요."
+            initialValue=""
             ref={editorRef}
             previewStyle="vertical"
             height="400px"
@@ -229,23 +301,22 @@ const CreatePostPage = () => {
             >
               취소
             </button>
-           
 
             <button
               className="bg-[#111e8d] text-white border-none rounded-lg px-4 py-2"
-              onClick={handleSave}
+              onClick={handleEditedSave}
             >
               저장
             </button>
           </div>
-           {/* 취소 모달 표시 */}
-           {isCancelModalOpen && (
-              <CancelCheck onConfirm={checkYes} onCancel={checkNo} />
-            )}
+          {/* 취소 모달 표시 */}
+          {isCancelModalOpen && (
+            <CancelCheck onConfirm={checkYes} onCancel={checkNo} />
+          )}
         </div>
       </div>
     </>
   );
 };
 
-export default CreatePostPage;
+export default PostEditPage;
