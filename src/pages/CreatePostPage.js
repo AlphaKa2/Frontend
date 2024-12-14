@@ -43,7 +43,7 @@ const CreatePostPage = () => {
   const checkYes = () => {
     console.log("사용자가 게시글 작성을 취소했습니다.");
     setIsCancelModalOpen(false); // 모달 닫기
-    navigate("/blog-service/api/posts/blog");
+    navigate("/blog-service/api/posts/blog/:nickname");
   };
 
   // 모달에서 "아니오" 클릭 시 처리
@@ -160,7 +160,7 @@ const CreatePostPage = () => {
       if (response.status === 200) {
         console.log("게시글 저장 성공");
         alert("저장되었습니다.");
-        navigate("/blog-service/api/posts/blog");
+        navigate("/blog-service/api/posts/blog/:nickname");
       } else {
         console.error("게시글 저장 실패");
       }
