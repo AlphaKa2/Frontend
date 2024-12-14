@@ -13,10 +13,10 @@ const ReportPage = () => {
   });
   const navigate = useNavigate();
   const location = useLocation();
-  // const { targetId } = location.state || {}; // 전달된 props 수신
+  const { targetId } = location.state || {}; // 전달된 props 수신
 
 
-  const targetId = 2;
+  // const targetId = 8; 테스트용 타겟 아이디 하드코딩
   const handleCancelClick = () => {
     setIsModalOpen(true);
   };
@@ -62,12 +62,12 @@ const ReportPage = () => {
   
     try {
       console.log("Request Payload:", { targetId, reason: convertedReason, details });
-      const response = await ReportCommentApi(targetId, convertedReason, details);
-      if (response.status === 200) {
+      const {status} = await ReportCommentApi(targetId, convertedReason, details);
+      if (status === 200) {
         alert("신고가 접수되었습니다.");
       }
     } catch (error) {
-      alert(error);
+      alert(error.message);
     }
   };
   

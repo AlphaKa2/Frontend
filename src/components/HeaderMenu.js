@@ -121,7 +121,7 @@ const HeaderMenu = ({ closeMenu, isOpen }) => {
             >
               내 여행
             </p>
-            <p className="py-3" onClick={() => handleNavigation("/mbti-test")}>
+            <p className="py-3" onClick={() => handleNavigation("/mbti")}>
               여행 MBTI 검사
             </p>
             <p

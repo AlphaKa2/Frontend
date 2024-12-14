@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import loginState from "../../recoil/atoms/loginState";
+import { useRecoilState } from "recoil";
+
 
 const SignupCompletePage = () => {
   const location = useLocation();
   const { nickname } = location.state || { nickname: "홍길동" }; // 전달된 닉네임이 없을 경우 기본값
   const navigate = useNavigate();
+  const [userState, setUserState] = useRecoilState(loginState);
 
   const handleGoHome = () => {
     navigate("/");
   };
-
 
   return (
     <div className="w-full h-auto bg-white py-32">

@@ -13,7 +13,7 @@ const PasswordChangePage = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
-  const [userData, setUserId] = useRecoilState(loginState);
+  const {userId} = useRecoilState(loginState);
   const [errors, setErrors] = useState({
     previousPassword: false,
     newPassword: false,
@@ -21,7 +21,7 @@ const PasswordChangePage = () => {
   });
 
   const navigate = useNavigate();
-  const userId = userData.userId;
+
 
   const handleCancelClick = () => {
     setIsModalOpen(true);

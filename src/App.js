@@ -114,8 +114,6 @@ function AppContent() {
         <Route path="/terms/privacy" element={ <Terms_Privacy_Page/> } />
         <Route path="/terms/location" element={ <Terms_Location_Page/>} />
 
-
-        <Route path="/mbti-test" element={<MbtiTestPage />} />
         <Route path="/MbtiDetailPage" element={<MbtiDetailPage/>}/>
         <Route path="/MbtiResultPage" element={<MbtiResultPage/>}/>
 

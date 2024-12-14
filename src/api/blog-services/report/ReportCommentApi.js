@@ -2,15 +2,15 @@ import axiosInstance from "../../Config";
 
 const ReportCommentApi = async (targetId, reason, details) => {
   try {
-    const response = axiosInstance.post(
-      "blog-service/api/auth/reports/comments", {
+    const response = await axiosInstance.post(
+      "blog-service/auth/api/reports/comments", {
       targetId,
       reason,
       details,
       }
     );
     const result = response.data;
-    return result; 
+    return result;
 
   } catch (error) {
     if (error.response) {
