@@ -55,6 +55,10 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    if (config.url?.includes("s3.amazonaws.com")) {
+      console.log("S3 요청 감지: Authorization 헤더 제거");
+      delete config.headers.Authorization;
+    }
     return config;
   },
   (error) => Promise.reject(error)

@@ -228,7 +228,7 @@ const PostEditPage = () => {
       if (response.status === 200) {
         console.log("게시글 수정 성공");
         alert("수정되었습니다.");
-        navigate("/blog-service/api/posts/blog");
+        navigate("/blog-service/api/posts/blog/:nickname");
       } else {
         console.error("게시글 수정 실패");
       }
