@@ -13,7 +13,7 @@ const UserReportPage = () => {
   });
   const navigate = useNavigate();
   const location = useLocation();
-  const { targetId } = location.state || {}; // 전달된 props 수신
+  const { userId } = location.state || {}; // 전달된 props 수신
 
 
   // const targetId = 8; 테스트용 타겟 아이디 하드코딩
@@ -61,8 +61,8 @@ const UserReportPage = () => {
     const convertedReason = reasonMap[reason];
   
     try {
-      console.log("Request Payload:", { targetId, reason: convertedReason, details });
-      const {status} = await ReportUserApi(targetId, convertedReason, details);
+      console.log("Request Payload:", { userId, reason: convertedReason, details });
+      const {status} = await ReportUserApi( userId, convertedReason, details);
       if (status === 200) {
         alert("신고가 접수되었습니다.");
       }
