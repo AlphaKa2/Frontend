@@ -1,7 +1,7 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+// 전역 상태관리
 import { RecoilRoot } from 'recoil'; // RecoilRoot 가져오기
-import MainPage from './pages/MainPage';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+// AI 여행 계획 생성
 import CreatePlan1 from './pages/ai-service/CreatePlan1'; // CreatePlan1 컴포넌트 import
 import CreatePlan2 from './pages/ai-service/CreatePlan2';
 import CreatePlan3 from './pages/ai-service/CreatePlan3';
@@ -16,38 +16,47 @@ import EditItineraryPage from './pages/travel-service/EditItineraryPage';
 import CompletedItineraryPage from './pages/travel-service/CompletedItineraryPage';
 import RatingPage from './pages/travel-service/RatingPage';
 import InvitationList from './pages/travel-service/InvitationList';
+// 메인 화면
+import MainPage from './pages/MainPage';
 import Header from './components/HeaderBar';
-import LoginPage from './pages/blog-service/LoginPage';
-import SignupPage from './pages/blog-service/SignupPage';
+import LoginPage from './pages/blog-service/login/LoginPage';
+// 회원가입
+import SignupPage from './pages/blog-service/signup/SignupPage';
+import SignupPage_2 from './pages/blog-service/signup/SignupPage_2';
+import SignupPage_3 from './pages/blog-service/signup/SignupPage_3';
+import Terms_Privacy_Page from './data/Terms_Privacy_Page';
+import Terms_Service_Page from './data/Terms_Service_Page';
+import Terms_Location_Page from './data/Terms_Location_Page';
+// 비밀번호 관련
+import ForgotPasswordPage from './pages/blog-service/login/ForgotPasswordPage';
+import ChangePasswordPage from './pages/blog-service/login/ChangePasswordPage';
+// 유저 서비스
+import ProfileEditPage from './pages/blog-service/profile/ProfileEditPage';
+import FollowingListPage from './pages/blog-service/follow/FollowingListPage';
+import FollowerListPage from './pages/blog-service/follow/FollowerListPage';
+// 신고하기
+import UserReportPage from './pages/blog-service/report/UserReportPage';
+import PostReportPage from './pages/blog-service/report/PostReportPage';
+import CommentReportPage from './pages/blog-service/report/CommentReportPage';
+// MBTI
+import MbtiTestPage from './pages/blog-service/mbti/MbtiTestPage';
+import MbtiPage from './pages/blog-service/mbti/MbtiPage';
+import MbtiResultPage from './pages/blog-service/mbti/MbtiResultPage';
+// 블로그 
 import PostDetailPage from './pages/PostDetailPage';
 import CreatePostPage from './pages/CreatePostPage';
-import PostPage from './pages/blog-service/PostPage' ;
-import SignupPage_2 from './pages/blog-service/SignupPage_2';
-import SignupPage_3 from './pages/blog-service/SignupPage_3';
-import ForgotPasswordPage from './pages/blog-service/ForgotPasswordPage';
-import ChangePasswordPage from './pages/blog-service/ChangePasswordPage';
-import ProfileEditPage from './pages/blog-service/ProfileEditPage';
-import FollowingListPage from './pages/blog-service/FollowingListPage';
-import FollowerListPage from './pages/blog-service/FollowerListPage';
-import ReportPage from './pages/blog-service/ReportPage';
-import MbtiTestPage from './pages/blog-service/MbtiTestPage';
-import MbtiPage from './pages/blog-service/MbtiPage';
-import Terms_Privacy_Page from './pages/blog-service/Terms_Privacy_Page';
-import Terms_Service_Page from './pages/blog-service/Terms_Service_Page';
-import Terms_Location_Page from './pages/blog-service/Terms_Location_Page';
-import MbtiResultPage from './pages/blog-service/MbtiResultPage';
-
+import PostPage from './pages/PostPage' ;
+import PostEditPage from "./pages/PostEditPage";
+import CommentSection from "./pages/CommentSection";
+// Hooks
 import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import loginState from "./recoil/atoms/loginState";
-
-
-import PostEditPage from "./pages/PostEditPage";
-import CommentSection from "./pages/CommentSection";
+// React
+import React from 'react';
 import "./index.css"; // Tailwind가 포함된 CSS 파일을 import
 import "./App.css";
 
-import MbtiDetailPage from "./pages/blog-service/MbtiDetailPage";
 
 function App() {
   
@@ -103,7 +112,9 @@ function AppContent() {
         <Route path="/profile/edit" element={<ProfileEditPage />} />
         <Route path="/following/list" element={<FollowingListPage />} />
         <Route path="/follower/list" element={<FollowerListPage />} />
-        <Route path="/report" element={<ReportPage />} />
+        <Route path="/report/comment" element={<CommentReportPage />} />
+        <Route path="/report/user" element={<UserReportPage />} />
+        <Route path="/report/post" element={<PostReportPage />} />
         <Route path="/mbti" element={<MbtiPage />} />
         <Route path="/postdetail" element={<PostDetailPage />} />
         <Route path="/blog-service/auth/api/posts" element={<CreatePostPage />} />
@@ -114,7 +125,6 @@ function AppContent() {
         <Route path="/terms/privacy" element={ <Terms_Privacy_Page/> } />
         <Route path="/terms/location" element={ <Terms_Location_Page/>} />
 
-        <Route path="/MbtiDetailPage" element={<MbtiDetailPage/>}/>
         <Route path="/MbtiResultPage" element={<MbtiResultPage/>}/>
 
         <Route path="/blog-service/api/posts/blog/:nickname" element={<PostPage />} />

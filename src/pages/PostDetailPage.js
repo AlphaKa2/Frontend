@@ -18,7 +18,28 @@ import { format } from "date-fns";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 
+
+
+
+
+const PostDetailPage = () => {
+  const { postId } = useParams(); // URL에서 postId 추출
+  const [post, setPost] = useState(null); // 게시글 데이터 상태
+  const [comments, setComments] = useState([]);
+  const [isLocalLiked, setIsLocalLiked] = useState();
+  const [localLikeCount, setLocalLikeCount] = useState(0);
+  /* const [isCommentLiked, setIsCommentLiked] = useState(false);
+  const [commentLikeCount, setCommentLikeCount] = useState(0); */
+  const navigate = useNavigate();
+
+const handlePostReport = () => {
+  navigate("/report/post", {state: postId});
+}
+
+
 const NextArrow = (props) => {
+
+
   const { onClick } = props;
   return (
     <button
@@ -41,16 +62,6 @@ const PrevArrow = (props) => {
     </button>
   );
 };
-
-const PostDetailPage = () => {
-  const { postId } = useParams(); // URL에서 postId 추출
-  const [post, setPost] = useState(null); // 게시글 데이터 상태
-  const [comments, setComments] = useState([]);
-  const [isLocalLiked, setIsLocalLiked] = useState();
-  const [localLikeCount, setLocalLikeCount] = useState(0);
-  /* const [isCommentLiked, setIsCommentLiked] = useState(false);
-  const [commentLikeCount, setCommentLikeCount] = useState(0); */
-  const navigate = useNavigate();
 
   const formattedCreatedAt = post?.createdAt
     ? format(new Date(post.createdAt), "yyyy-MM-dd HH:mm")
@@ -218,7 +229,7 @@ const PostDetailPage = () => {
                   alt="detail_2"
                   className="detail_2 w-5 h-5 mr-1"
                 />
-                <div>신고하기</div>
+                <button onClick={handlePostReport}>신고하기</button>
               </button>
               <button
                 onClick={handleLikeClick}

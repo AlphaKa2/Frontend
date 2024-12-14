@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import ReportCommentApi from "../../api/blog-services/report/ReportCommentApi";
+import ReportUserApi from "../../../api/blog-services/report/ReportCommentApi";
 import { useNavigate, useLocation } from "react-router-dom";
 
 
-const ReportPage = () => {
+const UserReportPage = () => {
   const [details, setDetails] = useState("");
   const [reason, setReason] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false); 
@@ -62,7 +62,7 @@ const ReportPage = () => {
   
     try {
       console.log("Request Payload:", { targetId, reason: convertedReason, details });
-      const {status} = await ReportCommentApi(targetId, convertedReason, details);
+      const {status} = await ReportUserApi(targetId, convertedReason, details);
       if (status === 200) {
         alert("신고가 접수되었습니다.");
       }
@@ -167,4 +167,4 @@ const ReportPage = () => {
   );
 };
 
-export default ReportPage;
+export default UserReportPage;

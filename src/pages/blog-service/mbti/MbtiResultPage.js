@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import mbtiDescriptions from "../../data/mbtiDescriptions";
-import UpdateUserMbtiApi from "../../api/blog-services/mbti/UpdateUserMbtiApi";
+import mbtiDescriptions from "../../../data/mbtiDescriptions";
+import UpdateUserMbtiApi from "../../../api/blog-services/mbti/UpdateUserMbtiApi";
 import {useRecoilValue} from "recoil";
-import loginState from "../../recoil/atoms/loginState";
+import loginState from "../../../recoil/atoms/loginState";
 
 const MbtiResultPage = () => {
   const location = useLocation();

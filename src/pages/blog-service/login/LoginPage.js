@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import loginState from "../../recoil/atoms/loginState";
-import LoginApi from "../../api/blog-services/login/LoginApi";
+import loginState from "../../../recoil/atoms/loginState";
+import LoginApi from "../../../api/blog-services/login/LoginApi";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
-import logo from "../../assets/images/logo.png";
-import kakaologo from "../../assets/images/kakao.webp";
-import naverlogo from "../../assets/images/naver.png";
-import googlelogo from "../../assets/images/google.png";
+import logo from "../../../assets/images/logo.png";
+import kakaologo from "../../../assets/images/kakao.webp";
+import naverlogo from "../../../assets/images/naver.png";
+import googlelogo from "../../../assets/images/google.png";
 
 const LoginPage = () => {
   const [userState, setUserState] = useRecoilState(loginState);

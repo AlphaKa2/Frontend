@@ -2,8 +2,8 @@ import React, { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faPhone, faKey } from "@fortawesome/free-solid-svg-icons";
-import RequestAuthCodeApi from "../../api/blog-services/common/RequestAuthCodeApi";
-import VerifyAuthCodeApi from "../../api/blog-services/common/VerifyAuthCodeApi";
+import RequestAuthCodeApi from "../../../api/blog-services/common/RequestAuthCodeApi";
+import VerifyAuthCodeApi from "../../../api/blog-services/common/VerifyAuthCodeApi";
 
 const SignupPage = () => {
   const [smsConfirmation, setSmsConfirmation] = useState("");

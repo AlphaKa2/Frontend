@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
-import loginState  from "../../recoil/atoms/loginState";
-import HandIcon from "../../assets/images/hand_icon.png";
-import UpdateUserMbtiApi from "../../api/blog-services/mbti/UpdateUserMbtiApi";
+import loginState  from "../../../recoil/atoms/loginState";
+import HandIcon from "../../../assets/images/hand_icon.png";
 import { useNavigate } from "react-router-dom";
 
 

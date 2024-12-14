@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faPhone } from "@fortawesome/free-solid-svg-icons";
-import VerifyAuthCodeApi from '../../api/blog-services/common/VerifyAuthCodeApi';
-import RequestAuthCodeApi from '../../api/blog-services/common/RequestAuthCodeApi';
-import ResetPasswordApi from '../../api/blog-services/common/ResetPasswordApi';
+import VerifyAuthCodeApi from '../../../api/blog-services/common/VerifyAuthCodeApi';
+import RequestAuthCodeApi from '../../../api/blog-services/common/RequestAuthCodeApi';
+import ResetPasswordApi from '../../../api/blog-services/common/ResetPasswordApi';
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 import {

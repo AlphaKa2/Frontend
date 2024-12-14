@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import loginState from "../../recoil/atoms/loginState";
+import loginState from "../../../recoil/atoms/loginState";
 import { useRecoilState } from "recoil";
-import LoginApi from "../../api/blog-services/login/LoginApi";
+import LoginApi from "../../../api/blog-services/login/LoginApi";
 
 
 const SignupCompletePage = () => {

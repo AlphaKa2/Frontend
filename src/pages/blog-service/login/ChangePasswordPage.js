@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
-import UpdatePasswordApi from "../../api/blog-services/common/UpdatePasswordApi";
-import loginState from "../../recoil/atoms/loginState"; 
+import UpdatePasswordApi from "../../../api/blog-services/common/UpdatePasswordApi";
+import loginState from "../../../recoil/atoms/loginState"; 
 import { useRecoilState } from "recoil";
 
 const PasswordChangePage = () => {

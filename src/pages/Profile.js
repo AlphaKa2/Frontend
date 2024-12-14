@@ -10,6 +10,11 @@ const Profile = () => {
   const writePage = () => {
     navigate("/blog-service/auth/api/posts");
   };
+
+  const handleUserReport = () => {
+    navigate("/userreport");
+  }
+
   const goLoginPage = () => {
     navigate("/login");
   };

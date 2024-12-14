@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import GetFollowingListApi from "../../api/blog-services/follow/GetFollowingListApi";
-import FollowUserApi from "../../api/blog-services/follow/FollowUserApi";
-import UnfollowUserApi from "../../api/blog-services/follow/UnfollowUserApi";
+import GetFollowingListApi from "../../../api/blog-services/follow/GetFollowingListApi";
+import FollowUserApi from "../../../api/blog-services/follow/FollowUserApi";
+import UnfollowUserApi from "../../../api/blog-services/follow/UnfollowUserApi";
 
 const FollowingListPage = () => {
   const [followers, setFollowers] = useState([]); // 팔로잉 목록 데이터

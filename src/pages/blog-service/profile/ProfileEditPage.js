@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import loginState from "../../recoil/atoms/loginState";
+import loginState from "../../../recoil/atoms/loginState";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUpload,
@@ -9,14 +9,14 @@ import {
   faSun,
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
-import GetUserProfileApi from "../../api/blog-services/profile/GetUserProfile";
-import UpdateUserProfileApi from "../../api/blog-services/profile/UpdateUserProfileApi";
-import RequestS3urlApi from "../../api/blog-services/profile/RequestS3urlApi";
-import RequestImageUpdateApi from "../../api/blog-services/profile/RequestImageUpdateApi";
-import UpdateUserImageApi from "../../api/blog-services/profile/UpdateUserImageApi";
-import CancelAccountApi from "../../api/blog-services/profile/CancelAccountApi";
-import themeState from "../../recoil/atoms/themeState";
-import notificationState from "../../recoil/atoms/notificationState";
+import GetUserProfileApi from "../../../api/blog-services/profile/GetUserProfile";
+import UpdateUserProfileApi from "../../../api/blog-services/profile/UpdateUserProfileApi";
+import RequestS3urlApi from "../../../api/blog-services/profile/RequestS3urlApi";
+import RequestImageUpdateApi from "../../../api/blog-services/profile/RequestImageUpdateApi";
+import UpdateUserImageApi from "../../../api/blog-services/profile/UpdateUserImageApi";
+import CancelAccountApi from "../../../api/blog-services/profile/CancelAccountApi";
+import themeState from "../../../recoil/atoms/themeState";
+import notificationState from "../../../recoil/atoms/notificationState";
 
 const ProfileEditPage = () => {
   const [nickname, setNickname] = useState("");

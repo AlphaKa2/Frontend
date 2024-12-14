@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+ import React, { useState, useEffect } from "react";
 import CommentEdit from "./CommentEdit";
 import { useRecoilValue } from "recoil";
 import loginState from "../recoil/atoms/loginState";
@@ -9,10 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import authorState from "../recoil/atoms/authorState"; // Recoil atom 가져오기
 
-const safeFormatDate = (dateString, fallback = "Invalid Date") => {
-  const date = new Date(dateString);
-  return isNaN(date) ? fallback : format(date, "yyyy-MM-dd HH:mm");
-};
 
 const EachComment = ({
   postId,
@@ -55,6 +51,16 @@ const EachComment = ({
     navigate(`/blog-service/api/posts/blog/${author}`); 
     console.log(`Author set to: ${author}`);
   };
+
+  const safeFormatDate = (dateString, fallback = "Invalid Date") => {
+    const date = new Date(dateString);
+    return isNaN(date) ? fallback : format(date, "yyyy-MM-dd HH:mm");
+  };
+  
+  const handleCommentReport = () => {
+    navigate("/commentreport");
+  }
+  
   
 
   const handleSubmit = async () => {

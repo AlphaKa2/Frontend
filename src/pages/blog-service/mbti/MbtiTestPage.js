@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import mbtiQuestions from "../../data/mbtiQuestions";
+import mbtiQuestions from "../../../data/mbtiQuestions";
 import { useNavigate } from "react-router-dom";
 
 const MbtiTestPage = () => {
@@ -24,10 +24,35 @@ const MbtiTestPage = () => {
 
   const currentQuestionData = mbtiQuestions[currentQuestion - 1]; // 현재 질문
 
-  // 현재 선택한 옵션
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option);
-  };
+// 현재 선택한 옵션
+const handleOptionSelect = (option) => {
+  setSelectedOption(option);
+
+  // 선택과 동시에 다음 질문으로 넘어감
+  const updatedSelections = [...selections];
+  updatedSelections[currentQuestion - 1] =
+    currentQuestionData.options[option].alphabet; // 선택한 알파벳 저장
+  setSelections(updatedSelections);
+
+  if (currentQuestion < totalQuestions) {
+    setTimeout(() => {
+      setCurrentQuestion((prev) => prev + 1);
+      setSelectedOption(
+        updatedSelections[currentQuestion]
+          ? currentQuestionData.options.findIndex(
+              (opt) => opt.alphabet === updatedSelections[currentQuestion]
+            )
+          : null
+      ); // 다음 선택 복원
+    }, 300); // 약간의 딜레이를 주어 자연스러운 전환
+  } else {
+    // 모든 질문 완료 시 결과 페이지로 이동
+    setTimeout(() => {
+      navigate("/mbti/result", { state: { selections: updatedSelections } });
+    }, 300); // 약간의 딜레이 후 결과 페이지로 이동
+  }
+};
+
 
   // 이전 버튼 처리함수
   const handlePrevious = () => {
@@ -65,6 +90,7 @@ const handleNext = () => {
     navigate("/mbti/result", { state: { selections: updatedSelections } });
   }
 };
+
 
 
 
@@ -144,7 +170,7 @@ const handleNext = () => {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="w-full max-w-3xl px-4 mt-12 flex justify-between">
+      <div className="w-full max-w-3xl px-4 mt-12 flex justify-center">
         <button
           onClick={handlePrevious}
           disabled={currentQuestion === 1}
@@ -154,12 +180,7 @@ const handleNext = () => {
         >
           ←
         </button>
-        <button
-          onClick={handleNext}
-          className="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600"
-        >
-          →
-        </button>
+
       </div>
     </div>
   );

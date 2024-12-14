@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import CheckEmailApi from "../../api/blog-services/common/CheckEmailApi";
-import CheckNicknameApi from "../../api/blog-services/common/CheckNicknameApi";
-import SignupApi from "../../api/blog-services/signup/SignupApi";
+import CheckEmailApi from "../../../api/blog-services/common/CheckEmailApi";
+import CheckNicknameApi from "../../../api/blog-services/common/CheckNicknameApi";
+import SignupApi from "../../../api/blog-services/signup/SignupApi";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
