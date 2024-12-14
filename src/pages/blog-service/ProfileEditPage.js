@@ -369,24 +369,56 @@ const ProfileEditPage = () => {
               <div>
                 <div className="flex items-center justify-between">
                   <p className="font-medium text-gray-800">화면 모드</p>
-                  <label className="relative inline-block w-10 h-6">
-                    <input
-                      type="checkbox"
-                      checked={darkMode}
-                      onChange={() => setDarkMode(!darkMode)}
-                      className="hidden"
-                    />
-                    <span
-                      className={`absolute left-0 top-0 bottom-0 w-full rounded-full cursor-pointer transition ${
-                        darkMode ? "bg-blue-500" : "bg-gray-300"
-                      }`}
-                    ></span>
-                    <span
-                      className={`absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition transform ${
-                        darkMode ? "translate-x-4" : ""
-                      }`}
-                    ></span>
-                  </label>
+                  <label className="relative inline-flex items-center cursor-pointer">
+  <input
+    type="checkbox"
+    checked={darkMode}
+    onChange={() => setDarkMode(!darkMode)}
+    className="hidden"
+  />
+<label className="relative inline-flex items-center cursor-pointer">
+  <input
+    type="checkbox"
+    checked={darkMode}
+    onChange={() => setDarkMode(!darkMode)}
+    className="hidden"
+  />
+  {/* 라이트 모드 상태 (Dark 버튼) */}
+  <button
+    type="button"
+    className={`hs-dark-mode ${darkMode ? "hidden" : "flex"} bg-gray-300 text-black px-4 py-2 rounded-lg items-center space-x-2`}
+    onClick={() => setDarkMode(true)}
+  >
+    {/* 해 모양 */}
+    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="12" cy="12" r="5" />
+      <path
+        d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M16.36 16.36l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M16.36 7.64l1.42-1.42"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+    </svg>
+    <span></span>
+  </button>
+
+  {/* 다크 모드 상태 (Light 버튼) */}
+  <button
+    type="button"
+    className={`hs-dark-mode ${darkMode ? "flex" : "hidden"} bg-blue-500 text-white px-4 py-2 rounded-lg items-center space-x-2`}
+    onClick={() => setDarkMode(false)}
+  >
+    {/* 달 모양 */}
+    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+      <path
+        d="M21.75 12.73a9.72 9.72 0 01-9.75 9.75A9.72 9.72 0 012.25 12a7.5 7.5 0 0011.5-11.5 9.72 9.72 0 018 12.23z"
+      />
+    </svg>
+    <span>Dark</span>
+  </button>
+</label>
+
+</label>
+
                 </div>
                 <p className="text-sm text-gray-400 mt-2">
                   화면 테마를 선택할 수 있습니다.

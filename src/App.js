@@ -106,7 +106,7 @@ function AppContent() {
         <Route path="/report" element={<ReportPage />} />
         <Route path="/mbti" element={<MbtiPage />} />
         <Route path="/postdetail" element={<PostDetailPage />} />
-        <Route path="/createpost" element={<CreatePostPage />} />
+        <Route path="/blog-service/auth/api/posts" element={<CreatePostPage />} />
         <Route path="/postpage" element={<PostPage />} />
         <Route path="/mbti/test" element={ <MbtiTestPage /> } />
         <Route path="/mbti/result" element={ <MbtiResultPage/>} />
