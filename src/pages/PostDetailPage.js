@@ -140,7 +140,7 @@ const PostDetailPage = () => {
       );
       if (response.status === 200) {
         alert("게시글이 성공적으로 삭제되었습니다.");
-        navigate("/blog-service/api/posts/blog"); // 삭제 후 게시글 목록으로 이동
+        navigate("/blog-service/api/posts/blog/:nickname"); // 삭제 후 게시글 목록으로 이동
       } else {
         console.error("게시글 삭제 실패");
         alert("게시글 삭제에 실패했습니다.");

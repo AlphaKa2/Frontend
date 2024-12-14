@@ -4,17 +4,40 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import loginState from "../../recoil/atoms/loginState";
 import { useRecoilState } from "recoil";
+import LoginApi from "../../api/blog-services/login/LoginApi";
 
 
 const SignupCompletePage = () => {
   const location = useLocation();
-  const { nickname } = location.state || { nickname: "홍길동" }; // 전달된 닉네임이 없을 경우 기본값
+  const { nickname, email, password } = location.state || { nickname: "" }; // 전달된 닉네임이 없을 경우 기본값
   const navigate = useNavigate();
   const [userState, setUserState] = useRecoilState(loginState);
 
-  const handleGoHome = () => {
-    navigate("/");
-  };
+  const handleGoHome = async () => {
+    try {
+      // 로그인 API 호출
+      const { userId, nickname, profileImageUrl, accessToken } = await LoginApi(
+        email,
+        password
+      );
+
+      
+      // Access Token을 localStorage에 저장
+      localStorage.setItem("accessToken", accessToken);
+
+      // Recoil 상태 업데이트
+      setUserState({
+        isAuthenticated: true,
+        userId,
+        nickname,
+        profileImageUrl,
+        accessToken,
+      });
+      navigate("/"); 
+    } catch (error) {
+      alert(error.message);
+      }
+    };
 
   return (
     <div className="w-full h-auto bg-white py-32">
