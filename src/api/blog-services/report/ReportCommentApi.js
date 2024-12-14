@@ -15,13 +15,9 @@ const ReportCommentApi = async (targetId, reason, details) => {
   } catch (error) {
     if (error.response) {
       const {status, code, message } = error.response;
-      if (status == 400 && code == "RPT001") {
+      if (status == 400 && code == "CMT001") {
         throw new Error(message);
-      } else if (status == 404 && code == "CMT001") {
-        throw new Error(message);
-      } else if (status == 404 && code == "PST001") {
-        throw new Error(message); 
-      }
+      } 
     } else if (error.request) {
       console.error("서버 응답 없음:", error.request);
       throw new Error(
