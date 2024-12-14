@@ -34,14 +34,14 @@ const Tags = ({ nickname, onFilterChange }) => {
   };
 
   return (
-    <div className="w-[100%] mt-6 text-left p-2 space-y-2">
-      <div className="font-semibold text-[1.2em]">태그 목록</div>
-      <div className="w-[100%] border-[0.5px] border-black"></div>
-      <div className="w-[100%] space-y-2 h-[220px] overflow-y-scroll">
+    <div className="w-[11vw] mt-[0.5vh] text-left px-[0.3vw] space-y-[1vh]">
+      <div className="font-semibold text-[20px]">태그 목록</div>
+      <div className="w-[11vw] border-[0.5px] border-black"></div>
+      <div className="w-[11vw] space-y-2 h-[36vh] overflow-y-scroll">
         <div
           onClick={() => handleTagClick("all")}
           className={`cursor-pointer hover:underline ${
-            selectedTag === "all" ? "font-bold" : ""
+            selectedTag === "all" ? "font-semibold" : ""
           }`}
         >
           전체보기
@@ -51,7 +51,7 @@ const Tags = ({ nickname, onFilterChange }) => {
             key={tag.tagName}
             onClick={() => handleTagClick(tag.tagName)}
             className={`cursor-pointer hover:underline ${
-              selectedTag === tag.tagName ? "font-bold" : ""
+              selectedTag === tag.tagName ? "font-semibold" : ""
             }`}
           >
             {`${tag.tagName} (${tag.postCount})`}
