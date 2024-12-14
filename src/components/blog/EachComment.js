@@ -1,13 +1,13 @@
- import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import CommentEdit from "./CommentEdit";
 import { useRecoilValue } from "recoil";
-import loginState from "../recoil/atoms/loginState";
-import axios from "../api/axios";
+import loginState from "../../recoil/atoms/loginState";
+import axios from "../../api/axios";
 import { format } from "date-fns";
-import heart from "../assets/images/heart_black.png";
+import heart from "../../assets/images/heart_black.png";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import authorState from "../recoil/atoms/authorState"; // Recoil atom 가져오기
+import authorState from "../../recoil/atoms/authorState"; // Recoil atom 가져오기
 
 
 const EachComment = ({

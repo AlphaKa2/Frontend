@@ -2,13 +2,13 @@ import React, { useRef, useState, useEffect } from "react";
 import { Editor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "../api/axios";
-import apiClient from "../api/axios";
+import axios from "../../../api/axios";
+import apiClient from "../../../api/axios";
 import { v4 as uuidv4 } from "uuid";
 import { jwtDecode } from "jwt-decode";
-import TagInput from "./TagInput";
-import ToggleButton from "./ToggleButton";
-import CancelCheck from "./CancelCheck";
+import TagInput from "../../../components/blog/TagInput";
+import ToggleButton from "../../../components/blog/ToggleButton";
+import CancelCheck from "../../../components/blog/CancelCheck";
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 10MB
 const ALLOWED_FILE_TYPES = [

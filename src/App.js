@@ -43,11 +43,11 @@ import MbtiTestPage from './pages/blog-service/mbti/MbtiTestPage';
 import MbtiPage from './pages/blog-service/mbti/MbtiPage';
 import MbtiResultPage from './pages/blog-service/mbti/MbtiResultPage';
 // 블로그 
-import PostDetailPage from './pages/PostDetailPage';
-import CreatePostPage from './pages/CreatePostPage';
-import PostPage from './pages/PostPage' ;
-import PostEditPage from "./pages/PostEditPage";
-import CommentSection from "./pages/CommentSection";
+import PostDetailPage from './pages/blog-service/blog/PostDetailPage';
+import CreatePostPage from './pages/blog-service/blog/CreatePostPage';
+import PostPage from './pages/blog-service/blog/PostPage' ;
+import PostEditPage from "./pages/blog-service/blog/PostEditPage";
+import CommentSection from "./components/blog/CommentSection";
 // Hooks
 import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";

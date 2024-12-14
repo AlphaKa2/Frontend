@@ -3,20 +3,19 @@ import { useState, useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import detail_1 from "../assets/images/surf.png";
-import detail_2 from "../assets/images/report-card.png";
-import detail_3 from "../assets/images/heart.png";
-import detail_4 from "../assets/images/right-arrow.png";
-import detail_5 from "../assets/images/left-arrow.png";
-import detail_6 from "../assets/images/mountain.png";
-import detail_7 from "../assets/images/beach.png";
-import detail_8 from "../assets/images/snow.png";
-import HeaderBar from "../components/HeaderBar";
-import FooterBar from "../components/FooterBar";
-import CommentSection from "./CommentSection";
+import detail_2 from "../../../assets/images/report-card.png";
+import detail_3 from "../../../assets/images/heart.png";
+import detail_4 from "../../../assets/images/right-arrow.png";
+import detail_5 from "../../../assets/images/left-arrow.png";
+import detail_6 from "../../../assets/images/mountain.png";
+import detail_7 from "../../../assets/images/beach.png";
+import detail_8 from "../../../assets/images/snow.png";
+import HeaderBar from "../../../components/HeaderBar";
+import FooterBar from "../../../components/FooterBar";
+import CommentSection from "../../../components/blog/CommentSection";
 import { format } from "date-fns";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "../api/axios";
+import axios from "../../../api/axios";
 
 
 

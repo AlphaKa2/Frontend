@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { format } from "date-fns"; // date-fns 라이브러리 사용
-import like_pic from "../assets/images/like.png";
-import comment_pic from "../assets/images/comment.png";
+import like_pic from "../../assets/images/like.png";
+import comment_pic from "../../assets/images/comment.png";
 import { useNavigate } from "react-router-dom";
 
 const EachPost = ({

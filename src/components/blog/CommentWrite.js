@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 import { useRecoilValue } from "recoil";
-import loginState from "../recoil/atoms/loginState";
+import loginState from "../../recoil/atoms/loginState";
 
 const CommentWrite = ({ postId, originComments, fetchComments }) => {
   const [newComment, setNewComment] = useState(""); // 댓글 입력 상태

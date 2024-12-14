@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 
 
 const Tags = ({ nickname, onFilterChange }) => {

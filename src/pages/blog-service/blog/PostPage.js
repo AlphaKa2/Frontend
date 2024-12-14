@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import axios from "../api/axios";
-import Profile from "./Profile";
-import EachPost from "./EachPost";
-import HeaderBar from "../components/HeaderBar";
-import Dropdown from "./DropdownButton";
-import Tags from "./Tags";
+import { fetchPosts, fetchSearchResults } from "../../../api/blog-services/blog/PostListApi"; // API 호출 분리
+import Profile from "../../../components/blog/Profile";
+import EachPost from "../../../components/blog/EachPost";
+import HeaderBar from "../../../components/HeaderBar";
+import Dropdown from "../../../components/blog/DropdownButton";
+import Tags from "../../../components/blog/Tags";
 import { useRecoilValue } from "recoil";
-import loginState from "../recoil/atoms/loginState";
-import authorState from "../recoil/atoms/authorState"; // Recoil atom 가져오기
+import loginState from "../../../recoil/atoms/loginState";
+import authorState from "../../../recoil/atoms/authorState";
 
 const PostPage = () => {
   const [posts, setPosts] = useState(null); // 게시글 데이터
@@ -19,59 +19,46 @@ const PostPage = () => {
   const [isSearching, setIsSearching] = useState(false); // 검색 여부
   const [selectedTag, setSelectedTag] = useState("all"); // 필터링 태그 상태
   const { nickname } = useRecoilValue(loginState);
-  const { author } = useRecoilValue(authorState); // Recoil 상태에서 author 값 가져오기
+  const { author } = useRecoilValue(authorState);
 
-  const fetchPosts = async () => {
+  // 게시글 데이터 가져오기
+  const loadPosts = async () => {
     try {
-      const endpoint = `/blog-service/api/posts/blog/${nickname}`;
-
-      const params = {
-        page: currentPage,
-        size: postsPerPage,
-        sort,
-      };
-
-      const response = await axios.get(endpoint, { params });
-      const { content, isFirst, isLast, totalPages, totalElements } =
-        response.data.data;
-
+      const data = await fetchPosts(nickname, currentPage, postsPerPage, sort);
+      const { content, isFirst, isLast, totalPages, totalElements } = data;
       setPosts(content);
       setPaginationInfo({ isFirst, isLast, totalPages, totalElements });
     } catch (error) {
-      console.error("데이터를 불러오는데 실패했습니다:", error);
+      console.error(error);
     }
   };
 
-  // 검색 결과 요청 함수
-  const fetchSearch = async () => {
+  // 검색 결과 데이터 가져오기
+  const loadSearchResults = async () => {
     try {
-      const userNickname = nickname; // nickname은 props로 받음
-      const endpoint = `/blog-service/api/posts/search`; // 검색 요청 URL
-      console.log("검색 엔드포인트 URL:", endpoint); // 디버깅용
-
-      const params = {
-        page: currentPage,
-        size: postsPerPage,
+      const data = await fetchSearchResults(
+        currentPage,
+        postsPerPage,
         sort,
-        keyword,
-      };
-
-      const response = await axios.get(endpoint, { params });
-      const { content, isFirst, isLast, totalPages, totalElements } =
-        response.data.data;
-
+        keyword
+      );
+      const { content, isFirst, isLast, totalPages, totalElements } = data;
       setPosts(content);
       setPaginationInfo({ isFirst, isLast, totalPages, totalElements });
     } catch (error) {
-      console.error("검색 데이터를 불러오는데 실패했습니다:", error);
+      console.error(error);
     }
   };
 
   useEffect(() => {
     if (author || nickname) {
-      fetchPosts(); // author 또는 nickname이 존재하면 요청 실행
+      if (isSearching) {
+        loadSearchResults(); // 검색 중이면 검색 결과 호출
+      } else {
+        loadPosts(); // 기본 게시글 호출
+      }
     }
-  }, [author, nickname, currentPage, postsPerPage, sort, isSearching]); // selectedTag 추가
+  }, [author, nickname, currentPage, postsPerPage, sort, isSearching]);
 
   // 정렬 변경 핸들러
   const handleSortChange = (sort) => {
@@ -85,9 +72,7 @@ const PostPage = () => {
       alert("검색어는 최소 2글자 이상 입력해주세요.");
       return;
     }
-
     setIsSearching(true); // 검색 상태로 전환
-    fetchSearch();
     setCurrentPage(1); // 검색 시 첫 페이지로 이동
   };
 
@@ -104,7 +89,7 @@ const PostPage = () => {
   };
 
   const handleFilterChange = (tagName) => {
-    setSelectedTag(tagName); // 선택된 태그 업데이트
+    setSelectedTag(tagName);
     setCurrentPage(1); // 첫 페이지로 초기화
   };
 

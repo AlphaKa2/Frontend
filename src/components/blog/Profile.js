@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useRecoilValue } from "recoil";
-import loginState from "../recoil/atoms/loginState";
+import loginState from "../../recoil/atoms/loginState";
 import { useNavigate } from "react-router-dom";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -11,9 +11,6 @@ const Profile = () => {
     navigate("/blog-service/auth/api/posts");
   };
 
-  const handleUserReport = () => {
-    navigate("/userreport");
-  }
 
   const goLoginPage = () => {
     navigate("/login");
@@ -62,11 +59,11 @@ const Profile = () => {
         // 로그인 상태이고, 본인의 프로필인 경우
         return (
           <>
-            <button className="text-black border-[1px] border-black rounded-full px-[0.7vw] py-[0.6vh] font-semibold">
+            <button className="text-black border-[1px] border-black rounded-full px-[0.7vw] pt-[0.7vh] pb-[0.3vh]  font-semibold">
               프로필 수정
             </button>
             <button
-              className="text-black border-[1px] border-black rounded-full px-[0.7vw] py-[0.6vh] font-semibold"
+              className="text-black border-[1px] border-black rounded-full px-[0.7vw] pt-[0.7vh] pb-[0.3vh] font-semibold"
               onClick={writePage}
             >
               + 글쓰기
@@ -94,11 +91,11 @@ const Profile = () => {
 
   // 프로필 정보를 렌더링
   return (
-    <div className="w-[11.3vw] h-[55vh] px-[0.5vw] pt-[2vh] flex flex-col justify-start items-center overflow-hidden">
+    <div className="w-[11.7vw] h-[55vh] px-[0.5vw] pt-[2vh] flex flex-col justify-start items-center overflow-hidden">
       <img
         src={profileData.profileImage}
         alt="프로필사진"
-        className="w-[11vw] h-[18vh] rounded-full"
+        className="w-[10.3vw] h-[18.4vh] rounded-full"
       />
       <div className="w-[10vw] h-[3.5vh] text-[22px] mt-[2vh] text-gray-600 font-semibold overflow-hidden">
         {profileData.nickname}
