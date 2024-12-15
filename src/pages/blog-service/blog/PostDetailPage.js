@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -15,52 +14,48 @@ import FooterBar from "../../../components/FooterBar";
 import CommentSection from "../../../components/blog/CommentSection";
 import { format } from "date-fns";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "../../../api/axios";
-
-
-
-
+import {
+  fetchPostData,
+  fetchCommentsData,
+  sendLikeRequest,
+  deletePostData,
+} from "../../../api/blog-services/blog/PostDetailApi";
 
 const PostDetailPage = () => {
   const { postId } = useParams(); // URL에서 postId 추출
   const [post, setPost] = useState(null); // 게시글 데이터 상태
   const [comments, setComments] = useState([]);
-  const [isLocalLiked, setIsLocalLiked] = useState();
+  const [isLocalLiked, setIsLocalLiked] = useState(false);
   const [localLikeCount, setLocalLikeCount] = useState(0);
-  /* const [isCommentLiked, setIsCommentLiked] = useState(false);
-  const [commentLikeCount, setCommentLikeCount] = useState(0); */
   const navigate = useNavigate();
 
-const handlePostReport = () => {
-  navigate("/report/post", {state: postId});
-}
+  const handlePostReport = () => {
+    navigate("/report/post", { state: postId });
+  };
 
+  const NextArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <button
+        className="color-grey-600 absolute right-[-45px] top-[45%]"
+        onClick={onClick}
+      >
+        <img src={detail_4} alt="detail_4" className="detail_4 w-8 h-6" />
+      </button>
+    );
+  };
 
-const NextArrow = (props) => {
-
-
-  const { onClick } = props;
-  return (
-    <button
-      className="color-grey-600 absolute right-[-45px] top-[45%]"
-      onClick={onClick}
-    >
-      <img src={detail_4} alt="detail_4" className="detail_4 w-8 h-6" />
-    </button>
-  );
-};
-
-const PrevArrow = (props) => {
-  const { onClick } = props;
-  return (
-    <button
-      className="color-grey-600 absolute left-[-40px] top-[45%]"
-      onClick={onClick}
-    >
-      <img src={detail_5} alt="detail_5" className="detail_5 w-8 h-6" />
-    </button>
-  );
-};
+  const PrevArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <button
+        className="color-grey-600 absolute left-[-40px] top-[45%]"
+        onClick={onClick}
+      >
+        <img src={detail_5} alt="detail_5" className="detail_5 w-8 h-6" />
+      </button>
+    );
+  };
 
   const formattedCreatedAt = post?.createdAt
     ? format(new Date(post.createdAt), "yyyy-MM-dd HH:mm")
@@ -71,93 +66,64 @@ const PrevArrow = (props) => {
     : formattedCreatedAt;
 
   useEffect(() => {
-    // API 요청 보내기
+    // 게시글 데이터를 불러오는 함수
     const fetchPost = async () => {
       try {
-        const response = await axios.get(
-          `/blog-service/auth/api/posts/${postId}`
-        ); // 예상 API URL
-        const postData = response.data.data; // 데이터 가져오기
-        setPost(postData); // 응답 데이터 상태에 저장
-        console.log(postData.liked);
+        const postData = await fetchPostData(postId); // API 호출 함수 사용
+        setPost(postData);
         setIsLocalLiked(postData.liked);
         setLocalLikeCount(postData.likeCount);
-        console.log(localLikeCount);
       } catch (error) {
-        console.error("게시글을 가져오는데 실패", error);
+        console.error("게시글을 가져오는데 실패:", error);
       }
     };
 
     fetchPost();
   }, [postId]);
 
-  // 댓글 데이터를 서버에서 가져오는 함수
-  const fetchComments = async () => {
+    // 댓글 데이터를 불러오는 함수
+  const fetchComments = async (postId) => {
     try {
-      const response = await axios.get(
-        `/blog-service/auth/api/comments/post/${postId}`
-      );
-      const commentsData = response.data.data;
+      const commentsData = await fetchCommentsData(postId); // API 호출 함수 사용
       setComments(commentsData); // 서버에서 가져온 댓글 데이터
-      
     } catch (error) {
-      console.error("댓글 불러오기 실패:", error);
+      console.error("댓글을 불러오는 중 오류 발생:", error);
     }
   };
+
+  // 댓글을 로드하는 useEffect
   useEffect(() => {
-    fetchComments(); // 컴포넌트 마운트 시 댓글 데이터 로드
+    fetchComments(postId); // 댓글 데이터를 불러오는 함수 호출
   }, [postId]);
+
 
   const handleLikeClick = async () => {
     try {
-      await axios.post(`/blog-service/auth/api/likes/post/${postId}`);
-      setIsLocalLiked(!isLocalLiked); 
-      console.log(isLocalLiked);
-      if (isLocalLiked == false) {
-        setLocalLikeCount((localLikeCount) => localLikeCount + 1);// 상태를 토글
-
-      } else {
-          setLocalLikeCount((localLikeCount) => localLikeCount - 1);
-      }
+      await sendLikeRequest(postId); // API 호출 함수 사용
+      setIsLocalLiked(!isLocalLiked);
+      setLocalLikeCount((prev) => (isLocalLiked ? prev - 1 : prev + 1));
     } catch (error) {
       console.error("좋아요 요청 중 오류 발생:", error);
     }
   };
 
-
   const handleEditPost = () => {
-    alert("수정버튼 클릭됨");
-    navigate(`/blog-service/auth/api/posts/${postId}/edit`); // 수정 페이지로 리디렉션
+    alert("수정 버튼 클릭됨");
+    navigate(`/blog-service/auth/api/posts/${postId}/edit`);
   };
 
-  // 로딩 중 처리
-  if (!post) {
-    return (
-      <div className="flex justify-center items-center text-[40px] font-bold mt-[9em]">
-        Loading...
-      </div>
-    );
-  }
-
   const handleDeletePost = async () => {
-    if (!window.confirm("정말 이 게시글을 삭제하시겠습니까?")) {
-      return;
-    }
+    if (!window.confirm("정말 이 게시글을 삭제하시겠습니까?")) return;
 
     try {
-      const response = await axios.delete(
-        `/blog-service/auth/api/posts/${postId}`
-      );
-      if (response.status === 200) {
+      const responseStatus = await deletePostData(postId); // API 호출 함수 사용
+      if (responseStatus === 200) {
         alert("게시글이 성공적으로 삭제되었습니다.");
-        navigate("/blog-service/api/posts/blog/:nickname"); // 삭제 후 게시글 목록으로 이동
-      } else {
-        console.error("게시글 삭제 실패");
-        alert("게시글 삭제에 실패했습니다.");
+        navigate("/blog-service/api/posts/blog/:nickname");
       }
     } catch (error) {
-      console.error("삭제 요청 중 오류 발생:", error);
-      alert("서버와의 통신 중 오류가 발생했습니다. 다시 시도해주세요.");
+      console.error("게시글 삭제 중 오류 발생:", error);
+      alert("게시글 삭제에 실패했습니다.");
     }
   };
 
@@ -169,14 +135,22 @@ const PrevArrow = (props) => {
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    arrows: true, // 화살표가 항상 보이도록 설정
+    arrows: true,
   };
 
-  // HTML 태그를 제거하는 함수
   const stripHtmlTags = (html) => {
     const doc = new DOMParser().parseFromString(html, "text/html");
     return doc.body.textContent || "";
   };
+
+  // 로딩 중 처리
+  if (!post) {
+    return (
+      <div className="flex justify-center items-center text-[40px] font-bold mt-[9em]">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <>

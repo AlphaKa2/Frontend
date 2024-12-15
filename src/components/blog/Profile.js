@@ -45,10 +45,8 @@ const Profile = () => {
   // 프로필 정보 로딩 중인 경우의 UI
   if (!profileData) {
     return (
-      <div className="w-[20vw] h-screen px-12 py-12">
-        <div className="border-[0.1px] border-gray-400 shadow-md rounded-2xl h-[90%] p-4 mt-16 text-center">
+      <div className="w-[11vw] h-screen text-left py-[2vh]">  
           <p className="text-gray-500">프로필 정보를 불러오는 중입니다...</p>
-        </div>
       </div>
     );
   }
