@@ -142,7 +142,7 @@ const MbtiTestPage = () => {
                 <span className="text-2xl font-bold">{index + 1}</span>
               </div>
               <h3
-                className={`text-xl font-extrabold mb-6 ${
+                className={`text-xl mb-6 ${
                   selectedOption === index
                     ? "text-blue-700"
                     : "text-gray-700"
