@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import mbtiQuestions from "../../../data/mbtiQuestions";
+import mbtiQuestions from "../../../data/mbti/mbtiQuestions";
 import { useNavigate } from "react-router-dom";
 
 const MbtiTestPage = () => {

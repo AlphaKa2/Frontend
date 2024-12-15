@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import mbtiDescriptions from "../../../data/mbtiDescriptions";
+import mbtiDescriptions from "../../../data/mbti/mbtiDescriptions";
+import mbtiShortDescriptions from "../../../data/mbti/mbtiShortDescriptions";
 import UpdateUserMbtiApi from "../../../api/blog-services/mbti/UpdateUserMbtiApi";
 import { useRecoilValue } from "recoil";
 import loginState from "../../../recoil/atoms/loginState";
@@ -68,11 +69,14 @@ const MbtiResultPage = () => {
         <img
           src={imagePath(mbtiResult)}
           alt={`MBTI 결과 ${mbtiResult}`}
-          className="w-64 h-64 object-contain mx-auto"
+          className="w-96 h-64 object-contain mx-auto"
         />
       </div>
       <div className="bg-white rounded-3xl shadow-2xl text-center p-10 max-w-2xl w-full">
         <h2 className="text-4xl font-bold text-blue-600 mb-6">{mbtiResult}</h2>
+        <p className="text-blue-500 text-lg font-semibold mb-4">
+          {mbtiShortDescriptions[mbtiResult]}
+        </p>
         <p className="text-gray-600 text-lg leading-relaxed">
           {mbtiDescriptions[mbtiResult]}
         </p>
