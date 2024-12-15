@@ -2,7 +2,7 @@ import axiosInstance from "../../Config";
 
 const FollowUserApi = async (targetUserId) => {
   try {
-    const response = axiosInstance.post(
+    const response = await axiosInstance.post(
       `/user-service/auth/users/${targetUserId}/following`
     );
     const result = response.data;

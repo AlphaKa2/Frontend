@@ -2,7 +2,7 @@ import axiosInstance from "../../Config";
 
 const UnfollowUserApi = async (targetUserId) => {
   try {
-    const response = axiosInstance.delete(
+    const response = await axiosInstance.delete(
       `/user-service/auth/users/${targetUserId}/following`
     );
     const result = response.data;
