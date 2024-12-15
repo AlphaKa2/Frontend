@@ -1,24 +1,71 @@
-// src/pages/travel-service/MyTripList.js
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import UnregisteredTripsTab from './UnregisteredTripsTab';
 import RegisteredTripsTab from './RegisteredTripsTab';
 import CompletedTripsTab from './CompletedTripsTab';
+import GetUserProfileApi from '../../api/blog-services/profile/GetUserProfile';
+import {useRecoilValue} from "recoil";
+import loginState from '../../recoil/atoms/loginState';
 
 const MyTripList = () => {
   const [activeTab, setActiveTab] = useState('unregistered');
+  const [profileData, setProfileData] = useState({}); // 프로필 데이터를 저장할 상태
+  const [error, setError] = useState(null); // 에러 메시지 상태
+  const [loading, setLoading] = useState(true); // 로딩 상태
+  const { userId } = useRecoilValue(loginState);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+         // 사용자 ID 가져오기
+        if (!userId) throw new Error('사용자 ID가 없습니다.');
+
+        const userProfile = await GetUserProfileApi(userId); // 프로필 정보 API 호출
+        const {profileImage, nickname, mbti} = userProfile.data;
+        setProfileData({
+          profileImage,
+          nickname,
+          mbti,
+        }); // 프로필 데이터 설정
+      } catch (err) {
+        console.error('Error fetching user profile:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserProfile();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        Loading...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6">
       {/* 프로필 섹션 */}
       <div className="flex flex-col items-center mb-6">
         <img
-          src={`${process.env.PUBLIC_URL}/assets/images/사진.jpg`}
+          src={profileData?.profileImage || `${process.env.PUBLIC_URL}/assets/images/사진.jpg`}
           alt="Profile"
           className="w-32 h-32 rounded-full object-cover"
         />
-        <h1 className="text-2xl font-bold mt-4">JAY</h1>
-        <p className="text-sm text-gray-500 mt-2">ACLJ (자유로운 탐험가)</p>
+        <h1 className="text-2xl font-bold mt-4">{profileData?.nickname || '사용자'}</h1>
+        <p className="text-sm text-gray-500 mt-2">
+          {profileData?.mbti ? `${profileData.mbti} (${profileData.mbtiDescription || 'MBTI 설명 없음'})` : 'MBTI 정보를 가져올 수 없습니다.'}
+        </p>
+        <p className="text-sm text-gray-700 mt-2">{profileData?.profileDescription || '프로필 설명 없음'}</p>
       </div>
 
       {/* 탭 섹션 */}
