@@ -1,0 +1,23 @@
+.App-link {
+  color: #e9e9e9;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+}
+
+.tui-editor-defaultUI .tui-md-switch {
+  display: none !important;
+}

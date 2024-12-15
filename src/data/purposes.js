@@ -1,0 +1,25 @@
+const purposes = [
+  { label: '쇼핑', value: 'SHOPPING' },
+  { label: '테마파크', value: 'THEME_PARK' },
+  { label: '역사 유적지', value: 'HISTORIC_SITE' },
+  { label: '시티 투어', value: 'CITY_TOUR' },
+  { label: '야외 스포츠', value: 'OUTDOOR_SPORTS' },
+  { label: '문화 행사', value: 'CULTURAL_EVENT' },
+  { label: '유흥/오락', value: 'NIGHTLIFE' },
+  { label: '캠핑', value: 'CAMPING' },
+  { label: '지역 축제', value: 'LOCAL_FESTIVAL' },
+  { label: '스파', value: 'SPA' },
+  { label: '교육', value: 'EDUCATION' },
+  { label: '영화 촬영지', value: 'FILM_LOCATION' },
+  { label: '순례 여행', value: 'PILGRIMAGE' },
+  { label: '웰니스', value: 'WELLNESS' },
+  { label: 'SNS 핫플', value: 'SNS_SHOT' },
+  { label: '호캉스', value: 'HOTEL_STAYCATION' },
+  { label: '새로운 여행지', value: 'NEW_TRAVEL_DESTINATION' },
+  { label: '반려동물 친화', value: 'PET_FRIENDLY' },
+  { label: '인플루언서 따라잡기', value: 'INFLUENCER_FOLLOW' },
+  { label: '친환경 여행', value: 'ECO_TRAVEL' },
+  { label: '하이킹', value: 'HIKING' },
+];
+
+export default purposes;

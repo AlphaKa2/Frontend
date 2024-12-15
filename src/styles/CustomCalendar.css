@@ -1,0 +1,35 @@
+.double-view .react-calendar__viewContainer {
+  display: flex;
+  gap: 20px; /* 두 달력 사이의 간격 조정 */
+}
+
+.custom-calendar {
+  border: none;
+}
+
+.custom-calendar .react-calendar__tile {
+  text-align: center;
+  padding: 10px 0;
+  font-size: 1.5rem; /* 숫자 크기를 키움 */
+  font-weight: bold; /* 숫자 굵기 */  
+  cursor: pointer;
+}
+
+.custom-calendar .react-calendar__tile--active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.custom-calendar .react-calendar__tile--range {
+  background-color: #bfdbfe;
+}
+
+.custom-calendar .react-calendar__tile--rangeStart,
+.custom-calendar .react-calendar__tile--rangeEnd {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.custom-calendar .react-calendar__month-view__days__day {
+  padding: 1rem; /* 날짜 간격 조정 */
+}
