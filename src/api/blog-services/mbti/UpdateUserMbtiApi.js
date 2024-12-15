@@ -2,7 +2,7 @@ import axiosInstance from "../../Config";
 
 const UpdateUserMbtiApi = async (userId,mbti) => {
   try {
-    const response = axiosInstance.put(
+    const response = await axiosInstance.put(
       `/user-service/auth/users/${userId}/mbti`, {
         mbti,
       }

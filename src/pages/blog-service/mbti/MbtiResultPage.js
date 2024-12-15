@@ -85,7 +85,7 @@ const MbtiResultPage = () => {
         </p>
       </div>
       <button
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/mbti/test")}
         className="mt-12 bg-blue-500 text-white py-3 px-10 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-300"
       >
         다시 테스트하기
