@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchPosts, fetchSearchResults } from "../../../api/blog-services/blog/PostListApi"; // API 호출 분리
+import { fetchPosts, fetchSearchResults } from "../../../api/blog-services/blog/PostApi"; // API 호출 분리
 import Profile from "../../../components/blog/Profile";
 import EachPost from "../../../components/blog/EachPost";
 import HeaderBar from "../../../components/HeaderBar";

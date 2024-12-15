@@ -8,7 +8,7 @@ import heart from "../../assets/images/heart_black.png";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import authorState from "../../recoil/atoms/authorState"; // Recoil atom 가져오기
-
+import { deleteComment, submitComment, toggleCommentLike } from "../../api/blog-services/blog/CommentApi";
 
 const EachComment = ({
   postId,
@@ -71,12 +71,12 @@ const EachComment = ({
 
     setIsSubmitting(true);
     try {
-      await axios.post("/blog-service/auth/api/comments", {
+      await submitComment(
         postId,
-        content: Reply,
-        parentId: commentId,
-        isPublic: true,
-      });
+        Reply,
+        commentId,
+        true,
+      );
       alert("답글이 등록되었습니다!");
       setReply("");
       setShowReplyInput(false);
@@ -105,19 +105,20 @@ const EachComment = ({
   const handleDeleteComment = async () => {
     if (window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
       try {
-        await axios.delete(`/blog-service/auth/api/comments/${commentId}`);
+        await deleteComment(commentId); // 분리된 API 호출 함수 사용
         alert("댓글이 삭제되었습니다.");
-        fetchComments();
+        fetchComments(); // 댓글 목록을 새로 고침
       } catch (error) {
         console.error("댓글 삭제 중 오류가 발생했습니다:", error);
         alert("댓글 삭제에 실패했습니다.");
       }
     }
   };
+  
 
   const handleCommentLikeClick = async () => {
     try {
-      await axios.post(`/blog-service/auth/api/likes/comment/${commentId}`);
+      await toggleCommentLike(commentId);
       console.log(likeCount);
       setIsCommentLiked(!isCommentLiked); // 상태를 토글
       if (isCommentLiked == false) {

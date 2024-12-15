@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "../../api/axios";
 import { useRecoilValue } from "recoil";
 import loginState from "../../recoil/atoms/loginState";
+import { submitComment } from "../../api/blog-services/blog/CommentApi";
 
 const CommentWrite = ({ postId, originComments, fetchComments }) => {
   const [newComment, setNewComment] = useState(""); // 댓글 입력 상태
@@ -20,15 +21,12 @@ const CommentWrite = ({ postId, originComments, fetchComments }) => {
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post("/blog-service/auth/api/comments", {
+      await submitComment(
         postId, // 게시글 ID
-        content: newComment, // 댓글 내용
-        parentId: originComments.parentId || null, // 부모 댓글 ID (답글 아님)
-        isPublic: true, // 공개 여부
-      });
-
-      // 성공적으로 등록되었을 경우 originComments에 추가
-      console.log("등록된 댓글:", response.data);
+        newComment, // 댓글 내용
+        originComments.parentId || null, // 부모 댓글 ID (답글 아님)
+        true, // 공개 여부
+      );
       fetchComments();
       setNewComment(""); // 입력 필드 초기화
     } catch (error) {

@@ -3,52 +3,46 @@ import PropTypes from "prop-types";
 import { useRecoilValue } from "recoil";
 import loginState from "../../recoil/atoms/loginState";
 import { useNavigate } from "react-router-dom";
-import axios from "../../api/axios";
+import { fetchProfile } from "../../api/blog-services/blog/PostApi";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const [profileData, setProfileData] = useState(null);
+  const { isAuthenticated, nickname: userNickname } = useRecoilValue(loginState);
+  const { userId: userId } = useRecoilValue(loginState);
+
   const writePage = () => {
     navigate("/blog-service/auth/api/posts");
   };
-
-
   const goLoginPage = () => {
     navigate("/login");
   };
-  const [profileData, setProfileData] = useState(null);
-  const { isAuthenticated, nickname: userNickname } =
-    useRecoilValue(loginState);
-  const { userId: userId } = useRecoilValue(loginState);
 
   useEffect(() => {
-    const fetchTags = async () => {
+    const loadProfile = async () => {
       try {
-        const response = await axios.get(
-          `/user-service/users/${userId}/profile`
-        );
-        if (response.status === 200) {
-          setProfileData(response.data.data); // API에서 가져온 태그 데이터를 상태에 저장
-          console.log(response.data.data);
-        } else {
-          console.error("태그 데이터를 가져오는 데 실패했습니다.");
-        }
+        const data = await fetchProfile(userId); // 분리된 API 호출 함수 사용
+        setProfileData(data); // 데이터 상태 업데이트
+        console.log(data);
       } catch (error) {
         console.error("태그 데이터를 가져오는 중 오류 발생:", error);
       }
     };
 
     if (userId) {
-      fetchTags();
+      loadProfile();
     }
   }, [userId]);
+
+  
 
   // 프로필 정보 로딩 중인 경우의 UI
   if (!profileData) {
     return (
-      <div className="w-[20vw] h-screen px-12 py-12">
-        <div className="border-[0.1px] border-gray-400 shadow-md rounded-2xl h-[90%] p-4 mt-16 text-center">
+      <div className="w-[12vw] h-screen text-left pt-[2vh]">
+        
           <p className="text-gray-500">프로필 정보를 불러오는 중입니다...</p>
-        </div>
+       
       </div>
     );
   }

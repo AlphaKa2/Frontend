@@ -2,12 +2,13 @@ import React, { useRef, useState, useEffect } from "react";
 import { Editor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../../../api/axios";
+import axios from "../../../api/axios";
 import { v4 as uuidv4 } from "uuid";
 import { jwtDecode } from "jwt-decode";
 import TagInput from "../../../components/blog/TagInput";
 import ToggleButton from "../../../components/blog/ToggleButton";
 import CancelCheck from "../../../components/blog/CancelCheck";
+import { getPresignedUrl, uploadToS3, savePost} from "../../../api/blog-services/blog/PostApi";
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 10MB
 const ALLOWED_FILE_TYPES = [
@@ -89,73 +90,56 @@ const CreatePostPage = () => {
     if (!validateFile(file)) {
       return null;
     }
+  
     const uniqueIdentifier = uuidv4();
     const fileExtension = file.name.split(".").pop();
     const fileName = `${uniqueIdentifier}.${fileExtension}`;
+  
     try {
-      const { data: presignedData } = await apiClient.post(
-        "/blog-service/api/posts/presigned-url",
-        {
-          fileName,
-          contentType: file.type,
-        }
-      );
-      const presignedUrl = presignedData.data.url;
-      console.log("Presigned URL 담기는지 확인:", presignedUrl);
-
-      const uploadResponse = await apiClient.put(presignedUrl, file, {
-        headers: { "Content-Type": file.type },
-      });
-
+      // Presigned URL 얻기
+      const presignedUrl = await getPresignedUrl(fileName, file.type);
+      console.log("Presigned URL:", presignedUrl);
+  
+      // S3에 파일 업로드
+      const uploadResponse = await uploadToS3(presignedUrl, file);
+  
       // S3 업로드 응답 로그
       console.log("S3 업로드 응답 상태:", uploadResponse.status);
       console.log("S3 업로드 응답 데이터:", uploadResponse.data);
-
-      const imageUrl = `https://alphaka-storage.s3.amazonaws.com/posts/${fileName}`; // S3에 저장된 최종 이미지 URL
-      return imageUrl; // 이미지 URL 반환
+  
+      // 최종 이미지 URL 반환
+      const imageUrl = `https://alphaka-storage.s3.amazonaws.com/posts/${fileName}`;
+      return imageUrl;
+  
     } catch (error) {
-      if (error.response) {
-        console.error("S3 업로드 실패: 응답 상태 코드", error.response.status);
-        console.error("S3 업로드 실패: 응답 데이터", error.response.data);
-      } else {
-        console.error("S3 업로드 중 발생한 오류:", error.message);
-      }
-      return null;
+      return null; // 오류 발생 시 null 반환
     }
   };
 
   const handleSave = async () => {
     const editorInstance = editorRef.current.getInstance();
     const content = editorInstance.getHTML();
-
+  
     if (!title.trim()) {
       alert("제목을 입력해주세요.");
       return;
     }
-
+  
     if (!content.trim()) {
       alert("내용을 입력해주세요.");
       return;
     }
-
+  
     const postData = {
       title: title.trim(),
       content: content.trim(),
       isPublic: isPublic,
       isCommentable: isCommentable,
-      tagNames: tags, // 태그 배열 추가
+      tagNames: tags,
     };
-
+  
     try {
-      const response = await apiClient.post(
-        "/blog-service/auth/api/posts",
-        postData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await savePost(postData);
       if (response.status === 200) {
         console.log("게시글 저장 성공");
         alert("저장되었습니다.");

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import axios from "../../api/axios";
+import { getTags } from "../../api/blog-services/blog/PostApi";
 
 
 const Tags = ({ nickname, onFilterChange }) => {
@@ -8,23 +8,19 @@ const Tags = ({ nickname, onFilterChange }) => {
   const [selectedTag, setSelectedTag] = useState("all"); // 현재 선택된 태그 상태
 
   useEffect(() => {
-    const fetchTags = async () => {
+    const loadTags = async () => {
       try {
-        const response = await axios.get(`/blog-service/api/tags/blog/${nickname}`);
-        if (response.status === 200) {
-          setTags(response.data.data); // API에서 가져온 태그 데이터를 상태에 저장
-          console.log("태그요청이 정상작동됐습니다.");
-          console.log(response.data.data);
-        } else {
-          console.error("태그 데이터를 가져오는 데 실패했습니다.");
-        }
+        const data = await getTags(nickname); // 분리된 API 호출 함수 사용
+        setTags(data); // 데이터 상태 업데이트
+        console.log("태그요청이 정상작동됐습니다.");
+        console.log(data);
       } catch (error) {
         console.error("태그 데이터를 가져오는 중 오류 발생:", error);
       }
     };
 
     if (nickname) {
-      fetchTags();
+      loadTags(); // nickname이 있을 때만 호출
     }
   }, [nickname]); // nickname이 변경될 때마다 요청 실행
 

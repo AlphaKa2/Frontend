@@ -14,11 +14,9 @@ import HeaderBar from "../../../components/HeaderBar";
 import FooterBar from "../../../components/FooterBar";
 import CommentSection from "../../../components/blog/CommentSection";
 import { format } from "date-fns";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "../../../api/axios";
-
-
-
+import { fetchPostById, togglePostLike, deletePost} from "../../../api/blog-services/blog/PostApi";
 
 
 const PostDetailPage = () => {
@@ -27,40 +25,38 @@ const PostDetailPage = () => {
   const [comments, setComments] = useState([]);
   const [isLocalLiked, setIsLocalLiked] = useState();
   const [localLikeCount, setLocalLikeCount] = useState(0);
-  /* const [isCommentLiked, setIsCommentLiked] = useState(false);
-  const [commentLikeCount, setCommentLikeCount] = useState(0); */
+  // const location = useLocation();
   const navigate = useNavigate();
-
-const handlePostReport = () => {
-  navigate("/report/post", {state: postId});
-}
+  // const {title, content, image} = location.state || {};
 
 
-const NextArrow = (props) => {
+  const handlePostReport = () => {
+    navigate("/report/post", { state: postId });
+  };
 
+  const NextArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <button
+        className="color-grey-600 absolute right-[-45px] top-[45%]"
+        onClick={onClick}
+      >
+        <img src={detail_4} alt="detail_4" className="detail_4 w-8 h-6" />
+      </button>
+    );
+  };
 
-  const { onClick } = props;
-  return (
-    <button
-      className="color-grey-600 absolute right-[-45px] top-[45%]"
-      onClick={onClick}
-    >
-      <img src={detail_4} alt="detail_4" className="detail_4 w-8 h-6" />
-    </button>
-  );
-};
-
-const PrevArrow = (props) => {
-  const { onClick } = props;
-  return (
-    <button
-      className="color-grey-600 absolute left-[-40px] top-[45%]"
-      onClick={onClick}
-    >
-      <img src={detail_5} alt="detail_5" className="detail_5 w-8 h-6" />
-    </button>
-  );
-};
+  const PrevArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <button
+        className="color-grey-600 absolute left-[-40px] top-[45%]"
+        onClick={onClick}
+      >
+        <img src={detail_5} alt="detail_5" className="detail_5 w-8 h-6" />
+      </button>
+    );
+  };
 
   const formattedCreatedAt = post?.createdAt
     ? format(new Date(post.createdAt), "yyyy-MM-dd HH:mm")
@@ -71,13 +67,9 @@ const PrevArrow = (props) => {
     : formattedCreatedAt;
 
   useEffect(() => {
-    // API 요청 보내기
     const fetchPost = async () => {
       try {
-        const response = await axios.get(
-          `/blog-service/auth/api/posts/${postId}`
-        ); // 예상 API URL
-        const postData = response.data.data; // 데이터 가져오기
+        const postData = await fetchPostById(postId); // 분리된 API 호출
         setPost(postData); // 응답 데이터 상태에 저장
         console.log(postData.liked);
         setIsLocalLiked(postData.liked);
@@ -88,15 +80,16 @@ const PrevArrow = (props) => {
       }
     };
 
-    fetchPost();
+    if (postId) {
+      fetchPost();
+    }
   }, [postId]);
 
   // 댓글 데이터를 서버에서 가져오는 함수
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `/blog-service/auth/api/comments/post/${postId}`
-      );
+        `/blog-service/auth/api/comments/post/${postId}`);
       const commentsData = response.data.data;
       setComments(commentsData); // 서버에서 가져온 댓글 데이터
       
@@ -108,22 +101,21 @@ const PrevArrow = (props) => {
     fetchComments(); // 컴포넌트 마운트 시 댓글 데이터 로드
   }, [postId]);
 
+
   const handleLikeClick = async () => {
-    try {
-      await axios.post(`/blog-service/auth/api/likes/post/${postId}`);
-      setIsLocalLiked(!isLocalLiked); 
-      console.log(isLocalLiked);
-      if (isLocalLiked == false) {
-        setLocalLikeCount((localLikeCount) => localLikeCount + 1);// 상태를 토글
-
-      } else {
-          setLocalLikeCount((localLikeCount) => localLikeCount - 1);
-      }
-    } catch (error) {
-      console.error("좋아요 요청 중 오류 발생:", error);
+  try {
+    await togglePostLike(postId);
+    setIsLocalLiked(!isLocalLiked);
+    console.log(isLocalLiked);
+    if (isLocalLiked === false) {
+      setLocalLikeCount((localLikeCount) => localLikeCount + 1);
+    } else {
+      setLocalLikeCount((localLikeCount) => localLikeCount - 1);
     }
-  };
-
+  } catch (error) {
+    console.error("좋아요 요청 중 오류 발생:", error);
+  }
+};
 
   const handleEditPost = () => {
     alert("수정버튼 클릭됨");
@@ -143,20 +135,16 @@ const PrevArrow = (props) => {
     if (!window.confirm("정말 이 게시글을 삭제하시겠습니까?")) {
       return;
     }
-
+  
     try {
-      const response = await axios.delete(
-        `/blog-service/auth/api/posts/${postId}`
-      );
-      if (response.status === 200) {
+      const isDeleted = await deletePost(postId);
+      if (isDeleted) {
         alert("게시글이 성공적으로 삭제되었습니다.");
-        navigate("/blog-service/api/posts/blog/:nickname"); // 삭제 후 게시글 목록으로 이동
+        navigate("/blog-service/api/posts/blog/:nickname");
       } else {
-        console.error("게시글 삭제 실패");
         alert("게시글 삭제에 실패했습니다.");
       }
     } catch (error) {
-      console.error("삭제 요청 중 오류 발생:", error);
       alert("서버와의 통신 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
@@ -216,7 +204,8 @@ const PrevArrow = (props) => {
           </div>
 
           <div className="w-[100%] border-t-[3px] border-t-gray-300 border-b-[3px] border-b-gray-300 z-20 mt-[0.7em] py-3 px-1">
-            <p className="py-[1em]">{stripHtmlTags(post.content)}</p>
+            {/* <p className="py-[1em]">{stripHtmlTags(post.content)}</p> */}
+            <div dangerouslySetInnerHTML={{ __html: post.content }} />
           </div>
 
           {/* 좋아요 및 신고하기 섹션 */}

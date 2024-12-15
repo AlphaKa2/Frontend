@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "../../api/axios";
+import { updateComment } from "../../api/blog-services/blog/CommentApi";
 
 
 const CommentEdit = ({ commentId, initialContent, onCancel, onSuccess, fetchComments}) => {
@@ -15,12 +15,9 @@ const CommentEdit = ({ commentId, initialContent, onCancel, onSuccess, fetchComm
       alert("내용을 입력하세요.");
       return;
     }
-
     setIsSubmitting(true);
     try {
-      await axios.put(`/blog-service/auth/api/comments/${commentId}`, {
-        content: editContent,
-      });
+      await updateComment(commentId, editContent);
       alert("댓글이 수정되었습니다.");
       fetchComments();
       onSuccess();
