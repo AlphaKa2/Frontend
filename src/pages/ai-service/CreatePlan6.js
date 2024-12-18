@@ -5,12 +5,12 @@ import purposes from '../../data/purposes';
 import { useNavigate } from 'react-router-dom';
 import { createRecommendation } from '../../api/ai-service/recommendations'; // API 호출 함수 import
 import Sky6 from '../../assets/images/Sky6.png';
+import LoadingCard from '../../components/cards/LoadingCard'; // 로딩 카드 import
 
 function CreatePlan6() {
   const travelPlan = useRecoilValue(travelPlanState);
   const [selectedPurposes, setSelectedPurposes] = useState(travelPlan.TRAVEL_PURPOSE || []);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [notification, setNotification] = useState(null); // 알림 메시지 상태 추가
   const navigate = useNavigate();
 
   const togglePurpose = (value) => {
@@ -33,53 +33,36 @@ function CreatePlan6() {
 
       console.log('전송 데이터:', request_data);
 
-      const response = await createRecommendation(request_data); // API 호출
+      // API 호출
+      await createRecommendation(request_data);
 
-      if (response.status === 200) {
-        console.log('추천 생성 성공:', response.data);
-
-        // 성공 알림 메시지 표시
-        setNotification('여행 계획이 성공적으로 생성되었습니다!');
-
-        // 일정 시간 뒤 메인 페이지로 이동
-        setTimeout(() => {
-          navigate('/');
-        }, 2000); // 2초 후 이동
-      } else {
-        alert('응답 데이터가 올바르지 않습니다.');
-      }
+      // 로딩 후 홈으로 이동
+      setTimeout(() => {
+        navigate('/');
+      }, 2000); // 2초 후 이동
     } catch (error) {
-      console.error('오류 발생:', error);
-      alert('여행 계획 생성 중 오류가 발생했습니다.');
+      console.error('요청 오류 발생:', error);
+      setTimeout(() => {
+        navigate('/'); // 실패해도 홈으로 이동
+      }, 2000);
     } finally {
-      setIsSubmitting(false); // 로딩 상태 해제
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-blue-100 justify-center mt-8"
-    style={{
-      backgroundImage: `url(${Sky6})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-    }}>
-      {isSubmitting && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50 z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg text-center">
-            <h2 className="text-xl font-bold">AI 여행 계획 생성 중...</h2>
-            <p className="mt-4 text-lg">잠시만 기다려 주세요.</p>
-          </div>
-        </div>
-      )}
-      <div className="relative bg-white w-full max-w-2xl p-8 rounded-xl shadow-lg text-center md:w-3/4 lg:w-2/3 xl:w-1/2">
-        {/* 알림 메시지 */}
-        {notification && (
-          <div className="mb-4 text-green-600 font-semibold">
-            {notification}
-          </div>
-        )}
+    <div
+      className="flex flex-col items-center min-h-screen bg-blue-100 justify-center"
+      style={{
+        backgroundImage: `url(${Sky6})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      {isSubmitting && <LoadingCard />} {/* 로딩 카드 표시 */}
 
+      <div className="relative bg-white w-full max-w-2xl p-8 rounded-xl shadow-lg text-center md:w-3/4 lg:w-2/3 xl:w-1/2">
         {/* 여행 목적 선택 */}
         <h1 className="text-2xl font-bold mb-2">여행 목적을 선택해 주세요</h1>
         <p className="text-gray-500 mb-6">다중 선택이 가능합니다</p>

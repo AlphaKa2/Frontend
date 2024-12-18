@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getTravelById } from "../../api/ai-service/trip-id";
-import GoogleMapsComponent from "../../api/google-maps";
+import GoogleMap from "../../components/Maps/GoogleMap";
 import ParticipantsList from "../../components/ParticipantsList";
 import ParticipantsImage from "../../assets/images/Participants.png";
 
@@ -9,7 +9,6 @@ const RegisterItineraryPage = () => {
   const { travelId } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
-  const [center, setCenter] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [showAllDays, setShowAllDays] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -26,17 +25,6 @@ const RegisterItineraryPage = () => {
         setLoading(true);
         const tripDetails = await getTravelById(travelId);
         setData(tripDetails.data);
-
-        if (
-          tripDetails.data.days?.length > 0 &&
-          tripDetails.data.days[0].schedules?.length > 0
-        ) {
-          const firstPlace = tripDetails.data.days[0].schedules[0].place;
-          setCenter({
-            lat: parseFloat(firstPlace.latitude),
-            lng: parseFloat(firstPlace.longitude),
-          });
-        }
       } catch (error) {
         console.error("Error fetching trip details:", error);
       } finally {
@@ -48,12 +36,16 @@ const RegisterItineraryPage = () => {
   }, [travelId]);
 
   const handleEdit = () => {
+    if (data?.permission !== "EDIT") {
+      alert("현재 편집 권한이 없습니다");
+      return;
+    }
     navigate(`/edit-itinerary/${travelId}`);
   };
 
   const formatTime = (time) => {
     if (!time || time === "00:00:00") return null;
-    return time.slice(0, 5); // 'hh:mm:ss'에서 'hh:mm'만 추출
+    return time.slice(0, 5);
   };
 
   const formatScheduleList = (day) => (
@@ -94,49 +86,20 @@ const RegisterItineraryPage = () => {
   );
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        Loading...
-      </div>
-    );
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   if (!data) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        데이터를 불러오지 못했습니다.
-      </div>
-    );
+    return <div className="flex items-center justify-center h-screen">데이터를 불러오지 못했습니다.</div>;
   }
-
-  const markers = data
-    ? showAllDays
-      ? data.days.flatMap((day) =>
-          day.schedules.map((item) => ({
-            lat: parseFloat(item.place.latitude),
-            lng: parseFloat(item.place.longitude),
-            label: item.place.placeName,
-          }))
-        )
-      : data.days
-          .find((day) => String(day.dayNumber) === String(selectedDay))
-          ?.schedules.map((item) => ({
-            lat: parseFloat(item.place.latitude),
-            lng: parseFloat(item.place.longitude),
-            label: item.place.placeName,
-          })) || []
-    : [];
 
   return (
     <div className="flex flex-col lg:flex-row h-screen">
-      {/* Map Section */}
       <div className="w-full lg:w-[64.5%] h-[50%] lg:h-full">
-        <GoogleMapsComponent center={center} markers={markers} />
+        <GoogleMap tripData={data} showAllDays={showAllDays} selectedDay={selectedDay} />
       </div>
 
-      {/* Itinerary Section */}
       <div className="w-full lg:w-[25.5%] bg-white flex flex-col relative h-[50%] lg:h-full">
-        {/* Title Section */}
         <div className="bg-white z-10 p-4 w-full mb-2 lg:mb-16 sticky top-0 lg:top-[64px]">
           <h1 className="text-xl lg:text-xl font-bold text-left">{data.title}</h1>
           <p className="text-base font-semibold text-gray-600 text-left mt-2">
@@ -156,11 +119,12 @@ const RegisterItineraryPage = () => {
               />
             </button>
           </div>
-
         </div>
 
-        {/* Schedule Section */}
-        <div className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+        <div
+          className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
+          style={{ maxHeight: "calc(100vh - 160px)" }}
+        >
           {showAllDays
             ? data.days.map((day) => (
                 <div key={day.dayNumber} className="mb-8">
@@ -185,9 +149,7 @@ const RegisterItineraryPage = () => {
         </div>
       </div>
 
-      {/* Day Navigation Section */}
       <div className="hidden lg:flex lg:w-[10%] bg-white flex-col items-center p-4 gap-4">
-        {/* 전체 일정 버튼 */}
         <div className="absolute top-[160px] flex flex-col items-center gap-4">
           <button
             onClick={() => {
@@ -201,7 +163,6 @@ const RegisterItineraryPage = () => {
             전체 일정
           </button>
 
-          {/* n일차 버튼 */}
           {data.days.map((day) => (
             <button
               key={day.dayNumber}
@@ -220,7 +181,6 @@ const RegisterItineraryPage = () => {
           ))}
         </div>
 
-        {/* 편집 버튼 */}
         <div className="mt-auto w-full flex justify-center">
           <button
             onClick={handleEdit}

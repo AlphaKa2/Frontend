@@ -30,13 +30,21 @@ export const fetchInvitations = async () => {
 // 초대한 목록 가져오기
 export const fetchSentInvitations = async (travelId) => {
   try {
-    const response = await axiosInstance.get(`travel-service/auth/api/invitations/${travelId}`); // GET 요청
-    return response.data.data; // data 필드에 있는 배열만 반환
+    const response = await axiosInstance.get(
+      `/travel-service/auth/api/invitations/${travelId}`,
+      {
+        headers: {
+          skipAuthHandler: true, // 401 에러 무시
+        },
+      }
+    );
+    return response.data.data;
   } catch (error) {
-    console.error('Error fetching sent invitations:', error);
-    throw error; 
+    console.error("Error fetching sent invitations:", error);
+    throw error; // UI에서 별도로 처리
   }
 };
+
 
 
 // 초대받은 목록 가져오기

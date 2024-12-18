@@ -7,7 +7,7 @@ import {
 import { FaCrown } from "react-icons/fa";
 import FriendInvitePopup from "./FriendInvitePopup";
 
-const ParticipantsPopup = ({ travelId, onClose, currentUserId }) => {
+const ParticipantsPopup = ({ travelId, onClose }) => {
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showInvitePopup, setShowInvitePopup] = useState(false);
@@ -47,13 +47,6 @@ const ParticipantsPopup = ({ travelId, onClose, currentUserId }) => {
   };
 
   const handleDelete = async (participantId) => {
-    const participant = participants.find((p) => p.participantId === participantId);
-
-    if (participant && participant.userId === currentUserId) {
-      alert("자기 자신은 강퇴할 수 없습니다!");
-      return;
-    }
-
     try {
       await deleteParticipants(participantId);
       setParticipants((prev) =>
@@ -84,7 +77,9 @@ const ParticipantsPopup = ({ travelId, onClose, currentUserId }) => {
         </button>
 
         <h2 className="text-2xl font-bold mb-4 text-center">참여자 목록</h2>
-        <p className="text-sm font-light mb-6 text-left text-gray-600">최대 6명까지 참여가 가능합니다</p>
+        <p className="text-sm font-light mb-6 text-left text-gray-500">
+          최대 6명까지 참여가 가능합니다
+        </p>
 
         <div className="space-y-3">
           {participants.map((participant, index) => (
@@ -92,12 +87,9 @@ const ParticipantsPopup = ({ travelId, onClose, currentUserId }) => {
               key={participant.participantId}
               className="flex items-center p-4 rounded-md relative"
             >
-              {/* 닉네임과 왕관 아이콘을 동일한 정렬 기준으로 묶음 */}
               <div className="flex items-center gap-2">
-                {/* 왕관 아이콘: 첫 번째 참여자만 표시 */}
+                {/* 첫 번째 참여자에게 왕관 아이콘 표시 */}
                 {index === 0 && <FaCrown className="text-blue-500 text-xl" />}
-
-                {/* 닉네임 및 권한 */}
                 <span className="text-lg font-semibold text-blue-600">
                   {participant.nickname}{" "}
                   <span className="text-sm text-gray-500">
@@ -106,41 +98,41 @@ const ParticipantsPopup = ({ travelId, onClose, currentUserId }) => {
                 </span>
               </div>
 
-              {/* Action Menu: 첫 번째 사용자는 제외 */}
-              {index !== 0 && (
-                <div className="ml-auto relative">
-                  <button
-                    onClick={() =>
-                      setMenuOpen(menuOpen === participant.participantId ? null : participant.participantId)
-                    }
-                    className="text-gray-600 hover:text-gray-800 text-2xl"
-                  >
-                    ⋮
-                  </button>
+              {/* 점 세개 메뉴 버튼: 모든 참여자에게 표시 */}
+              <div className="ml-auto relative">
+                <button
+                  onClick={() =>
+                    setMenuOpen(
+                      menuOpen === participant.participantId ? null : participant.participantId
+                    )
+                  }
+                  className="text-gray-600 hover:text-gray-800 text-2xl"
+                >
+                  ⋮
+                </button>
 
-                  {menuOpen === participant.participantId && (
-                    <div className="absolute right-0 top-8 bg-white border rounded shadow-lg w-32 py-2 z-10">
-                      <button
-                        onClick={() =>
-                          handlePermissionChange(
-                            participant.participantId,
-                            participant.permission
-                          )
-                        }
-                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                      >
-                        {participant.permission === "EDIT" ? "View Mode 전환" : "Edit Mode 전환"}
-                      </button>
-                      <button
-                        onClick={() => handleDelete(participant.participantId)}
-                        className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
-                      >
-                        강퇴
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
+                {menuOpen === participant.participantId && (
+                  <div className="absolute right-0 top-8 bg-white border rounded shadow-lg w-32 py-2 z-10">
+                    <button
+                      onClick={() =>
+                        handlePermissionChange(
+                          participant.participantId,
+                          participant.permission
+                        )
+                      }
+                      className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    >
+                      {participant.permission === "EDIT" ? "To View Only" : "To Edit"}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(participant.participantId)}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
+                    >
+                      강제 퇴장
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>

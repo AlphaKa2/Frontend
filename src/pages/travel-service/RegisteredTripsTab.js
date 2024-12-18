@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchRegisteredTrips } from '../../api/ai-service/trips';
-import { deleteTripById } from '../../api/ai-service/trip-id';
+import { DeleteTravelApi } from '../../api/ai-service/trip-id';
 import { participantsList } from '../../api/travel-service/participants';
 import { useNavigate } from 'react-router-dom';
 import { updateTravelStatus } from '../../api/travel-service/complete-travel';
@@ -70,19 +70,26 @@ const RegisteredTripsTab = ({ currentUserNickname }) => {
   };
 
   const handleDelete = async (travelId) => {
-    if (window.confirm('정말 이 여행을 삭제하시겠습니까?')) {
+    if (window.confirm("정말 이 여행을 삭제하시겠습니까?")) {
       try {
-        await deleteTripById(travelId);
-        alert('여행이 성공적으로 삭제되었습니다.');
+        const result = await DeleteTravelApi(travelId);
+        if (result.error) {
+          // 401 에러에 대한 사용자 경고
+          alert(result.message);
+          return; // 더 이상의 로직 실행 중단
+        }
+        alert("여행이 성공적으로 삭제되었습니다.");
         setRegisteredTrips((prevTrips) =>
           prevTrips.filter((trip) => trip.travelId !== travelId)
         );
       } catch (error) {
-        console.error('Error deleting trip:', error);
-        alert('여행 삭제 중 문제가 발생했습니다.');
+        console.error("Error deleting trip:", error);
+        alert("여행 삭제 중 문제가 발생했습니다.");
       }
     }
   };
+  
+  
 
   const toggleMenu = (travelId) => {
     setIsMenuOpen(isMenuOpen === travelId ? null : travelId);
@@ -180,7 +187,8 @@ const RegisteredTripsTab = ({ currentUserNickname }) => {
           </button>
 
           {isMenuOpen === trip.travelId && (
-            <div className="absolute top-10 right-8 bg-white border rounded shadow-lg py-2 w-40">
+            <div className="absolute top-10 right-8 bg-white border rounded shadow-lg py-2 w-40"
+            style={{ zIndex: 9990 }}>
               <button
                 className="flex items-center justify-start px-4 py-2 hover:bg-gray-100 w-full text-left"
                 onClick={(e) => {
@@ -203,13 +211,14 @@ const RegisteredTripsTab = ({ currentUserNickname }) => {
                 초대하기
               </button>
               <button
-                className="flex items-center justify-start px-4 py-2 hover:bg-gray-100 w-full text-left"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(trip.travelId);
-                }}
-              >
-                <img src={TrashCanImage} alt="삭제" className="w-5 h-5 mr-2" />
+            className="flex items-center justify-start px-4 py-2 hover:bg-gray-100 w-full text-left"
+            
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(trip.travelId); // 삭제 버튼에 함수 연결
+            }}
+          >
+            <img src={TrashCanImage} alt="삭제" className="w-5 h-5 mr-2" />
                 삭제
               </button>
             </div>

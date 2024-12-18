@@ -1,9 +1,8 @@
-// src/pages/travel-service/CompletedItineraryPage.js
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getTravelById } from '../../api/ai-service/trip-id'; // RegisterItineraryPage와 동일하게 getTravelById 사용
-import GoogleMapsComponent from '../../api/google-maps';
+import { getTravelById } from '../../api/ai-service/trip-id';
+// 여기도 GoogleMapsComponent 대신 GoogleMap 사용
+import GoogleMap from '../../components/Maps/GoogleMap';
 
 const CompletedItineraryPage = () => {
   const { travelId } = useParams();
@@ -28,7 +27,6 @@ const CompletedItineraryPage = () => {
         const tripDetails = await getTravelById(travelId);
         setData(tripDetails.data);
 
-        // 지도 중심 설정
         if (
           tripDetails.data.days?.length > 0 &&
           tripDetails.data.days[0].schedules?.length > 0
@@ -76,7 +74,7 @@ const CompletedItineraryPage = () => {
 
   const formatTime = (time) => {
     if (!time || time === "00:00:00") return null;
-    return time.slice(0, 5); // 'hh:mm:ss'에서 'hh:mm'만 추출
+    return time.slice(0, 5); 
   };
 
   if (loading) {
@@ -150,12 +148,11 @@ const CompletedItineraryPage = () => {
     <div className="flex h-screen">
       {/* Left: Map Section */}
       <div className="w-[64.5%] h-full">
-        <GoogleMapsComponent center={center} markers={markers} />
+        <GoogleMap center={center} markers={markers} />
       </div>
 
       {/* Right: Itinerary Section */}
       <div className="w-[25.5%] bg-white flex flex-col relative">
-        {/* Title Section */}
         <div
           className="bg-white z-10 p-4 w-full mb-24"
           style={{
@@ -173,7 +170,6 @@ const CompletedItineraryPage = () => {
           </p>
         </div>
 
-        {/* Itinerary List */}
         <div
           className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
           style={{
@@ -209,49 +205,45 @@ const CompletedItineraryPage = () => {
       </div>
 
       {/* Right Buttons Section */}
-<div className="w-[10%] bg-white flex flex-col items-center p-4 gap-4 relative">
-  {/* 별점매기기 버튼 (수정하지 말 것) */}
-  <button
-    onClick={() => navigate(`/rating/${travelId}`)}
-    className="absolute bottom-4 right-4 bg-blue-500 text-white py-4 px-4 rounded-lg shadow hover:bg-blue-600 text-base font-semibold"
-  >
-    별점 매기기
-  </button>
+      <div className="w-[10%] bg-white flex flex-col items-center p-4 gap-4 relative">
+        <button
+          onClick={() => navigate(`/rating/${travelId}`)}
+          className="absolute bottom-4 right-4 bg-blue-500 text-white py-4 px-4 rounded-lg shadow hover:bg-blue-600 text-base font-semibold"
+        >
+          별점 매기기
+        </button>
 
-  {/* 전체 일정 버튼 */}
-  <div className="absolute top-[160px] flex flex-col items-center gap-4">
-    <button
-      onClick={() => {
-        setShowAllDays(true);
-        setSelectedDay(null);
-      }}
-      className={`py-4 px-4 rounded-lg shadow text-lg font-semibold ${
-        showAllDays ? "bg-blue-500 text-white" : "bg-white text-black"
-      } whitespace-nowrap`}
-    >
-      전체 일정
-    </button>
+        <div className="absolute top-[160px] flex flex-col items-center gap-4">
+          <button
+            onClick={() => {
+              setShowAllDays(true);
+              setSelectedDay(null);
+            }}
+            className={`py-4 px-4 rounded-lg shadow text-lg font-semibold ${
+              showAllDays ? "bg-blue-500 text-white" : "bg-white text-black"
+            } whitespace-nowrap`}
+          >
+            전체 일정
+          </button>
 
-    {/* n일차 버튼 */}
-    {data.days.map((day) => (
-      <button
-        key={day.dayNumber}
-        onClick={() => {
-          setShowAllDays(false);
-          setSelectedDay(day.dayNumber);
-        }}
-        className={`py-4 px-6 rounded-lg shadow text-lg font-semibold ${
-          String(selectedDay) === String(day.dayNumber)
-            ? "bg-blue-500 text-white"
-            : "bg-white text-black"
-        } whitespace-nowrap`}
-      >
-        {`${day.dayNumber}일차`}
-      </button>
-    ))}
-  </div>
-</div>
-
+          {data.days.map((day) => (
+            <button
+              key={day.dayNumber}
+              onClick={() => {
+                setShowAllDays(false);
+                setSelectedDay(day.dayNumber);
+              }}
+              className={`py-4 px-6 rounded-lg shadow text-lg font-semibold ${
+                String(selectedDay) === String(day.dayNumber)
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-black"
+              } whitespace-nowrap`}
+            >
+              {`${day.dayNumber}일차`}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

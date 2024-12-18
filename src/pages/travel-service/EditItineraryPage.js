@@ -1,10 +1,8 @@
-// src/pages/travel-service/EditItineraryPage.js
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getTravelById } from "../../api/ai-service/trip-id";
 import { updateTravel } from "../../api/travel-service/updateTravel";
-import GoogleMapsComponent from "../../api/google-maps";
+import GoogleMap from "../../components/Maps/GoogleMap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import ParticipantsList from "../../components/ParticipantsList";
@@ -22,7 +20,7 @@ const EditItineraryPage = () => {
   const [newPlaceStartTime, setNewPlaceStartTime] = useState("");
   const [newPlaceEndTime, setNewPlaceEndTime] = useState("");
   const [markers, setMarkers] = useState([]);
-  const [isParticipantsOpen, setIsParticipantsOpen] = useState(false); // 참여자 팝업 열림 상태
+  const [isParticipantsOpen, setIsParticipantsOpen] = useState(false);
 
   const validateTime = (time) => {
     if (time.trim() === "") return true;
@@ -75,6 +73,12 @@ const EditItineraryPage = () => {
         const tripDetails = await getTravelById(travelId);
         let tripData = tripDetails.data;
 
+        if (tripData.permission === "VIEW") {
+          alert("잘못된 경로로 들어왔습니다.");
+          navigate("/");
+          return;
+        }
+
         tripData.days = tripData.days.map((day) => {
           return {
             ...day,
@@ -104,10 +108,11 @@ const EditItineraryPage = () => {
     };
 
     fetchData();
-  }, [travelId]);
+  }, [travelId, navigate]);
 
   useEffect(() => {
     if (!data) return;
+    // 마커 업데이트
     updateMarkers();
 
     if (showAllDays) {
@@ -133,22 +138,21 @@ const EditItineraryPage = () => {
   }, [selectedDay, showAllDays, data]);
 
   const updateMarkers = () => {
-    const newMarkers = data
-      ? showAllDays
-        ? data.days.flatMap((day) =>
-            day.schedules.map((item) => ({
-              lat: parseFloat(item.place.latitude),
-              lng: parseFloat(item.place.longitude),
-              label: item.place.placeName,
-            }))
-          )
-        : (data.days.find((day) => String(day.dayNumber) === String(selectedDay))
-            ?.schedules.map((item) => ({
-              lat: parseFloat(item.place.latitude),
-              lng: parseFloat(item.place.longitude),
-              label: item.place.placeName,
-            })) || [])
-      : [];
+    if (!data) return;
+    const newMarkers = showAllDays
+      ? data.days.flatMap((day) =>
+          day.schedules.map((item) => ({
+            lat: parseFloat(item.place.latitude),
+            lng: parseFloat(item.place.longitude),
+            label: item.place.placeName,
+          }))
+        )
+      : (data.days.find((day) => String(day.dayNumber) === String(selectedDay))
+          ?.schedules.map((item) => ({
+            lat: parseFloat(item.place.latitude),
+            lng: parseFloat(item.place.longitude),
+            label: item.place.placeName,
+          })) || []);
     setMarkers(newMarkers);
   };
 
@@ -172,7 +176,27 @@ const EditItineraryPage = () => {
     });
   };
 
-  const handleAddPlace = (dayNumber) => {
+  const geocodeAddress = async (address) => {
+    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) {
+      console.error("Google Maps API Key is not set.");
+      return null;
+    }
+
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`
+    );
+    const geocodeData = await response.json();
+
+    if (geocodeData.status === "OK" && geocodeData.results.length > 0) {
+      return geocodeData.results[0].geometry.location; // {lat: number, lng: number}
+    } else {
+      console.error("Geocoding failed:", geocodeData.status, geocodeData.error_message);
+      return null;
+    }
+  };
+
+  const handleAddPlace = async (dayNumber) => {
     if (!newPlaceName.trim()) {
       alert("장소 이름을 입력해주세요.");
       return;
@@ -188,6 +212,12 @@ const EditItineraryPage = () => {
       return;
     }
 
+    const location = await geocodeAddress(newPlaceName.trim());
+    if (!location) {
+      alert("해당 장소를 찾을 수 없습니다.");
+      return;
+    }
+
     const newPlace = {
       order: 0,
       startTime: newPlaceStartTime.trim() === "" ? "00:00:00" : newPlaceStartTime,
@@ -196,8 +226,8 @@ const EditItineraryPage = () => {
         travelPlaceId: null,
         placeName: newPlaceName.trim(),
         address: "새로운 주소",
-        latitude: "37.5665",
-        longitude: "126.9780",
+        latitude: location.lat.toString(),
+        longitude: location.lng.toString(),
       },
     };
 
@@ -221,6 +251,8 @@ const EditItineraryPage = () => {
     setNewPlaceName("");
     setNewPlaceStartTime("");
     setNewPlaceEndTime("");
+
+    updateMarkers();
   };
 
   const handleSave = async () => {
@@ -266,27 +298,6 @@ const EditItineraryPage = () => {
   const handleGoBack = () => {
     navigate(`/register-itinerary/${travelId}`);
   };
-
-  const handleShowParticipants = () => {
-    setIsParticipantsOpen(true);
-  };
-
-  // 로딩 상태 및 데이터 유효성 검사
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        Loading...
-      </div>
-    );
-  }
-
-  if (!data) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        데이터를 불러오지 못했습니다.
-      </div>
-    );
-  }
 
   const renderSchedules = (day) => (
     <div key={day.dayNumber} className="mb-16">
@@ -383,15 +394,29 @@ const EditItineraryPage = () => {
     </div>
   );
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        데이터를 불러오지 못했습니다.
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen">
       <div className="w-[64.5%] h-full">
-        <GoogleMapsComponent center={center} markers={markers} />
+        <GoogleMap center={center} markers={markers} />
       </div>
 
-      {/* Itinerary Section */}
       <div className="w-full lg:w-[25.5%] bg-white flex flex-col relative h-[50%] lg:h-full">
-        {/* Title Section */}
         <div className="bg-white z-10 p-4 w-full mb-2 lg:mb-16 sticky top-0 lg:top-[64px]">
           <h1 className="text-xl lg:text-xl font-bold text-left">{data.title}</h1>
           <p className="text-base font-semibold text-gray-600 text-left mt-2">
@@ -411,7 +436,6 @@ const EditItineraryPage = () => {
               />
             </button>
           </div>
-
         </div>
 
         <div
@@ -429,7 +453,6 @@ const EditItineraryPage = () => {
       </div>
 
       <div className="hidden lg:flex lg:w-[10%] bg-white flex-col items-center p-4 gap-4">
-        {/* Day Buttons Section */}
         <div className="absolute top-[160px] flex flex-col items-center gap-4">
           <button
             onClick={() => {
@@ -461,10 +484,9 @@ const EditItineraryPage = () => {
           ))}
         </div>
 
-        {/* Bottom Buttons Section */}
         <div className="mt-auto flex flex-col items-center gap-4 w-full">
           <button
-            onClick={handleGoBack}
+            onClick={() => navigate(`/register-itinerary/${travelId}`)}
             className="w-full bg-gray-400 text-white py-2 rounded-lg shadow hover:bg-gray-600 text-lg font-semibold"
           >
             돌아가기
@@ -478,8 +500,6 @@ const EditItineraryPage = () => {
         </div>
       </div>
 
-
-      {/* 참여자 리스트 팝업 표시 */}
       {isParticipantsOpen && (
         <ParticipantsList
           travelId={travelId}

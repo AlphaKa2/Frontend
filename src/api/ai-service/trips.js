@@ -1,21 +1,16 @@
-import axios from 'axios';
-import axiosInstance from '../axios'; // 상대 경로 주의
-
+import axiosInstance from '../axios';
 /**
  * Fetch unregistered trips
  * @returns {Promise} - Axios response
  */
 export const fetchUnregisteredTrips = async () => {
-  const accessToken = localStorage.getItem('accessToken');
-  return axios.get('http://ec2-13-125-174-132.ap-northeast-2.compute.amazonaws.com:8000/recommendations/all', {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'X-User-Id': '1',
-      'X-User-Role': 'admin',
-      'X-User-Profile': 'profile_data',
-      'X-User-Nickname': 'nickname',
-    },
-  });
+  try {
+    const response = await axiosInstance.get('ai-service/auth/recommendations/all');
+    return response;
+  } catch (error) {
+    console.error('Error fetching unregistered trips:', error);
+    throw error; // 에러를 호출자에게 전달
+  }
 };
 
 
