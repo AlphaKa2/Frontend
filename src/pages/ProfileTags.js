@@ -1,8 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import profile from "../assets/images/profile-picture.jpg";
+import { useNavigate } from "react-router-dom";
 
 const ProfileTags = ({ onFilterChange, onButtonClick }) => {
+  const navigate = useNavigate();
   return (
     <>
       <div className="w-[20%] h-screen px-12 py-12">
@@ -41,7 +43,8 @@ const ProfileTags = ({ onFilterChange, onButtonClick }) => {
             <button className="text-black border-[1px] border-black rounded-full px-4 py-1 font-semibold">
               프로필 수정
             </button>
-            <button className="text-black border-[1px] border-black rounded-full px-4 py-1 font-semibold">
+            <button className="text-black border-[1px] border-black rounded-full px-4 py-1 font-semibold"
+            onClick = {()=> {navigate('/createpost')}}>
               + 글쓰기
             </button>
           </div>

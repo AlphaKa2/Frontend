@@ -2,17 +2,18 @@ import axiosInstance from "../../Config";
 
 const GetUserProfileApi = async (userId) => {
   try {
-    const response = axiosInstance.get(
-      `/user-service/users/${userId}/profile`
+    const response = await axiosInstance.get(
+      `/user-service/auth/users/${userId}/profile`
+
     );
-    const profile = response.data.data;
-    return profile;
+    const result = response.data;
+    return result;
 
   } catch (error) {
     if (error.response) {
-      const { status, code} = error.response.data;
+      const { status, code, message } = error.response.data;
       if (status == 404 && code == "USR018") {
-        throw new Error("존재하지 않는 사용자입니다.");
+        throw new Error(message);
       }
     } else if (error.request) {
       console.error("서버 응답 없음:", error.request);
@@ -27,3 +28,4 @@ const GetUserProfileApi = async (userId) => {
 };
 
 export default GetUserProfileApi;
+

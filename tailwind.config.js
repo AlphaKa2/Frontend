@@ -37,6 +37,9 @@ module.exports = {
         '5%': '5%',
         '10%': '10%',
       },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'], // Tailwind 기본 sans 폰트를 Inter로 변경
+      },
     },
   },
   plugins: [

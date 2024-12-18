@@ -2,21 +2,25 @@ import axiosInstance from "../../Config";
 
 const UpdateUserProfileApi = async (userId,nickname,profileDescription) => {
   try {
-    const response = axiosInstance.put(
-      `/user-service/users/${userId}/details`, {
+    const response = await axiosInstance.put(
+      `/user-service/auth/users/${userId}/details`, {
         nickname,
         profileDescription,
       }
     );
-    return {message : "프로필 수정이 완료되었습니다."};
+    return response; 
 
   } catch (error) {
     if (error.response) {
-      const { status, code} = error.response.data;
-      if (status == 409 && code == "USR007") {
-        throw new Error("이미 사용중인 닉네임입니다.");
+      const { status, code, message} = error.response.data;
+      if (status == 400 && code == "USR009") {
+        throw new Error(message);
       } else if (status == 401 && code == "USR016") {
-        throw new Error("유효하지 않은 토큰입니다.");
+        throw new Error(message);
+      } else if ( status == 404 && code == "USR018") {
+        throw new Error(message); 
+      } else if ( status == 409 && code == "USR007") {
+        throw new Error(message);
       }
     } else if (error.request) {
       console.error("서버 응답 없음:", error.request);

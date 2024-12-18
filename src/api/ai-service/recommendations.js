@@ -1,4 +1,6 @@
-import axios from 'axios';
+
+import axios from '../axios';
+import axiosInstance from '../axios';
 
 /**
  * 여행 추천 생성 API
@@ -6,22 +8,19 @@ import axios from 'axios';
  * @returns {Promise} - Axios 응답
  */
 export const createRecommendation = async (requestData) => {
-  const accessToken = localStorage.getItem('accessToken'); // 토큰 가져오기
-  
-  // 추천 생성 API 호출
-  return axios.post(
-    'http://ec2-13-125-174-132.ap-northeast-2.compute.amazonaws.com:8000/recommendations',
-    requestData,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`, // 인증 헤더 추가
-        'X-User-Id': '1',
-        'X-User-Role': 'admin',
-        'X-User-Profile': 'profile_data',
-        'X-User-Nickname': 'nickname',
-      },
-    }
-  );
+
+  try {
+    // 추천 생성 API 호출
+    const response = await axiosInstance.post(
+      '/ai-service/auth/recommendations', // 경로만 작성
+      requestData // 요청 데이터
+    );
+
+    return response.data; // 성공 시 응답 데이터 반환
+  } catch (error) {
+    console.error("Error creating recommendation:", error);
+    throw error; // 호출한 쪽에서 에러 처리 가능
+  }
 };
 
 /**
@@ -34,14 +33,12 @@ export const getRecommendationById = async (recommendationId) => {
   
   // 추천 조회 API 호출
   return axios.get(
-    `http://ec2-13-125-174-132.ap-northeast-2.compute.amazonaws.com:8000/recommendations/${recommendationId}`,
+
+    `ai-service/auth/recommendations/${recommendationId}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`, // 인증 헤더 추가
-        'X-User-Id': '1',
-        'X-User-Role': 'admin',
-        'X-User-Profile': 'profile_data',
-        'X-User-Nickname': 'nickname',
+        
       },
     }
   );

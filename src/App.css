@@ -10,6 +10,13 @@
     transform: rotate(360deg);
   }
 }
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+}
 
 .tui-editor-defaultUI .tui-md-switch {
   display: none !important;

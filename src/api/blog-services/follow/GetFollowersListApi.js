@@ -2,13 +2,15 @@ import axiosInstance from "../../Config";
 
 const GetFollowersListApi = async (userId) => {
   try {
-    const response = axiosInstance.get(`/user-service/users/${userId}/follower`);
-    const user = response.data.data;
+    const response = await axiosInstance.get(`/user-service/users/${userId}/follower`);
+    const user = response.data;
+
     return user;
   } catch (error) {
     if (error.response) {
       const { status, code } = error.response.data;
-      if (status == 404 && code == USR018) {
+      if (status == 404 && code == "USR018") {
+
         throw new Error("존재하지 않는 사용자입니다.");
       }
     } else if (error.request) {

@@ -2,17 +2,20 @@ import axiosInstance from "../../Config";
 
 const FollowUserApi = async (targetUserId) => {
   try {
-    const response = axiosInstance.post(
-      `/user-service/users/${targetUserId}/following`
+    const response = await axiosInstance.post(
+
+      `/user-service/auth/users/${targetUserId}/following`
     );
-    return true;
+    const result = response.data;
+    return result;
+
   } catch (error) {
     if (error.response) {
       const { status, code, message } = error.response.data;
-      if (status == 400 && code == USR009) {
-        throw new Error("팔로우 할 수 없습니다.");
-      } else if (status == 404 && code == USR018) {
-        throw new Error("존재하지 않는 사용자입니다.");
+      if (status == 400 && code == "USR009") {
+        throw new Error(message);
+      } else if (status == 401 && code == "USR016") {
+        throw new Error(message);
       }
     } else if (error.request) {
       console.error("서버 응답 없음:", error.request);

@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { fetchTripDetailsById } from "../../api/ai-service/trip-id"; // API 호출 함수 import
-import { GoogleMapsComponent } from "../../api/google-maps"; // Google Maps 컴포넌트 import
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchTripDetailsById } from "../../api/ai-service/trip-id";
+import { registerTravel } from "../../api/travel-service/register"; 
+import GoogleMap from "../../components/Maps/GoogleMap"; 
 
 const ItineraryPage = () => {
   const { recommendation_trip_id } = useParams();
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [center, setCenter] = useState(null);
-  const [selectedDay, setSelectedDay] = useState("1");
-  const [showAllDays, setShowAllDays] = useState(false);
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [showAllDays, setShowAllDays] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [allMarkers, setAllMarkers] = useState([]); 
+  const [dayRoutes, setDayRoutes] = useState([]); // 각 일차별 directions 결과 저장
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,7 +27,10 @@ const ItineraryPage = () => {
         const tripDetails = await fetchTripDetailsById(recommendation_trip_id);
         setData(tripDetails);
 
-        if (tripDetails.days?.length > 0 && tripDetails.days[0].schedule?.length > 0) {
+        if (
+          tripDetails.days?.length > 0 &&
+          tripDetails.days[0].schedule?.length > 0
+        ) {
           const firstPlace = tripDetails.days[0].schedule[0].place;
           setCenter({
             lat: parseFloat(firstPlace.latitude),
@@ -40,122 +47,272 @@ const ItineraryPage = () => {
     fetchData();
   }, [recommendation_trip_id]);
 
+  // 모든 핑(장소) 추출
+  useEffect(() => {
+    if (!data) return;
+    const markers = data.days.flatMap((day) =>
+      day.schedule.map((item) => ({
+        lat: parseFloat(item.place.latitude),
+        lng: parseFloat(item.place.longitude),
+        label: item.place.place,
+        dayNumber: day.dayNumber
+      }))
+    );
+    setAllMarkers(markers);
+  }, [data]);
+
+  // 선택된 일자나 showAllDays 변경 시 맵 중심 업데이트
+  useEffect(() => {
+    if (!data) return;
+
+    if (showAllDays) {
+      if (
+        data.days?.length > 0 &&
+        data.days[0].schedule?.length > 0
+      ) {
+        const firstPlace = data.days[0].schedule[0].place;
+        setCenter({
+          lat: parseFloat(firstPlace.latitude),
+          lng: parseFloat(firstPlace.longitude),
+        });
+      }
+    } else {
+      const selectedDayData = data.days.find(
+        (day) => String(day.dayNumber) === String(selectedDay)
+      );
+      if (selectedDayData && selectedDayData.schedule.length > 0) {
+        const firstPlace = selectedDayData.schedule[0].place;
+        setCenter({
+          lat: parseFloat(firstPlace.latitude),
+          lng: parseFloat(firstPlace.longitude),
+        });
+      }
+    }
+  }, [selectedDay, showAllDays, data]);
+
+  // Day별 경로 계산 함수
+  const calculateDayRoutes = async () => {
+    if (!data) return;
+
+    const daysToShow = showAllDays
+      ? data.days
+      : data.days.filter((day) => String(day.dayNumber) === String(selectedDay));
+
+    const fetchDirections = (places) => {
+      return new Promise((resolve, reject) => {
+        if (places.length < 2) {
+          return resolve(null);
+        }
+        const directionsService = new window.google.maps.DirectionsService();
+        const waypoints = places.slice(1, -1).map((p) => ({
+          location: { lat: p.lat, lng: p.lng },
+          stopover: true,
+        }));
+        directionsService.route(
+          {
+            origin: { lat: places[0].lat, lng: places[0].lng },
+            destination: { lat: places[places.length - 1].lat, lng: places[places.length - 1].lng },
+            waypoints: waypoints,
+            travelMode: window.google.maps.TravelMode.DRIVING,
+          },
+          (result, status) => {
+            if (status === window.google.maps.DirectionsStatus.OK) {
+              resolve(result);
+            } else {
+              console.error("Directions API Error:", status);
+              resolve(null);
+            }
+          }
+        );
+      });
+    };
+
+    const newDayRoutes = [];
+    for (const day of daysToShow) {
+      const dayMarkers = day.schedule.map((item) => ({
+        lat: parseFloat(item.place.latitude),
+        lng: parseFloat(item.place.longitude),
+        label: item.place.place
+      }));
+
+      const directions = await fetchDirections(dayMarkers);
+      if (directions) {
+        newDayRoutes.push({ dayNumber: day.dayNumber, directions });
+      }
+    }
+    setDayRoutes(newDayRoutes);
+  };
+
+  // showAllDays 또는 selectedDay 변경 시 dayRoutes 재계산
+  useEffect(() => {
+    if (!data) return;
+    if (window.google && window.google.maps) {
+      calculateDayRoutes();
+    } else {
+      setTimeout(() => {
+        if (window.google && window.google.maps) {
+          calculateDayRoutes();
+        }
+      }, 1000);
+    }
+  }, [data, showAllDays, selectedDay]);
+
+  const handleRegister = async () => {
+    if (!data) return;
+
+    try {
+      const requestData = {
+        travelName: data.title,
+        description: data.description || "여행 설명이 없습니다.",
+        travelType: data.type || "AI_GENERATED",
+        preferenceId: data.preferenceId || 7,
+        startDate: data.start_date,
+        endDate: data.end_date,
+        days: data.days.map((day) => ({
+          dayNumber: day.dayNumber,
+          date: day.date,
+          schedules: day.schedule.map((schedule) => ({
+            order: schedule.order,
+            startTime: "00:00",
+            endTime: "00:00",
+            place: {
+              placeName: schedule.place.place,
+              address: schedule.place.address,
+              latitude: schedule.place.latitude,
+              longitude: schedule.place.longitude,
+            },
+          })),
+        })),
+      };
+
+      await registerTravel(requestData);
+      alert("여행이 성공적으로 등록되었습니다!");
+      navigate("/my-trip-list");
+    } catch (error) {
+      console.error("Error registering travel:", error);
+      alert("여행 등록 중 문제가 발생했습니다.");
+    }
+  };
+
   if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        Loading...
+      </div>
+    );
   }
 
   if (!data) {
-    return <div className="flex items-center justify-center h-screen">데이터를 불러오지 못했습니다.</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        데이터를 불러오지 못했습니다.
+      </div>
+    );
   }
 
+  const formatScheduleList = (day) => (
+    <ul className="space-y-2">
+      {day.schedule.map((item, index) => (
+        <li
+          key={index}
+          className="relative flex items-center gap-6"
+          style={{ padding: "20px 0" }}
+        >
+          {index < day.schedule.length - 1 && (
+            <div
+              className="absolute left-4 w-0.5 bg-red-500"
+              style={{
+                top: "50%",
+                bottom: "-70px",
+              }}
+            ></div>
+          )}
+          <div className="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center z-10">
+            {item.order}
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold">{item.place.place}</h3>
+            {item.place.content && (
+              <p className="text-xs text-gray-500">{item.place.content}</p>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+
   const markers = showAllDays
-    ? data.days.flatMap((day) => day.schedule.map((item) => ({
-        lat: item.place.latitude,
-        lng: item.place.longitude,
-        label: item.place.place,
-      })))
-    : data.days
-        .find((day) => day.dayNumber === selectedDay)
-        ?.schedule.map((item) => ({
-          lat: item.place.latitude,
-          lng: item.place.longitude,
-          label: item.place.place,
-        })) || [];
+    ? allMarkers
+    : allMarkers.filter(m => m.dayNumber === selectedDay);
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="flex-1 flex">
-        {/* Google Maps 컴포넌트 사용 */}
-        <div className="w-[60%] h-full">
-          <GoogleMapsComponent center={center} markers={markers} />
+    <div className="flex h-screen">
+      <div className="w-[64.5%] h-full">
+        {/* 여기서 GoogleMapsComponent -> GoogleMap으로 변경 */}
+        <GoogleMap center={center} markers={markers} />
+      </div>
+
+      <div className="w-[25.5%] bg-white flex flex-col relative">
+        <div className="bg-white z-10 p-4 w-full mb-2 lg:mb-16 sticky top-0 lg:top-[64px]">
+          <h1 className="text-xl lg:text-xl font-bold text-left">{data.title}</h1>
+          <p className="text-base font-semibold text-gray-600 text-left mt-2">
+            {data.start_date && data.end_date
+              ? `${data.start_date} ~ ${data.end_date}`
+              : `${data.days?.length || 0}일 여행 코스`}
+          </p>
         </div>
 
-        {/* 일정 섹션 */}
-        <div className="w-[30%] bg-white shadow-lg flex flex-col relative">
-          {/* 제목 */}
-          {/* 제목 */}
-          <div className="sticky top-[70px] bg-white z-10 p-4 shadow">
-          <h1 className="text-lg font-bold">{data.title}</h1>
-          <p className="text-sm text-gray-500">
-          {data.start_date && data.end_date
-            ? `${data.start_date} ~ ${data.end_date}`
-            : `${data.days?.length || 0}일 여행 코스`}
-           </p>
-          </div>
-
-
-          {/* 일정 리스트 */}
-          <div
-            className="flex-1 overflow-y-auto p-4 pt-6 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
-            style={{
-              maxHeight: "calc(100vh - 140px)", // 제목과 등록 버튼을 제외한 높이 설정
-            }}
-          >
-            {showAllDays
-              ? data.days.map((day) => (
-                  <div key={day.dayNumber} className="mb-8">
-                    <h2 className="text-md font-semibold mb-6">{`${day.dayNumber}일차`}</h2>
-                    <ul className="space-y-8"> {/* 간격 조정 */}
-                      {day.schedule.map((item, index) => (
-                        <li
-                          key={index}
-                          className="flex items-center gap-4"
-                          style={{ padding: "10px 0" }}
-                        >
-                          <div className="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center">
-                            {item.order}
-                          </div>
-                          <h3 className="text-sm font-semibold">{item.place.place}</h3>
-                          <p className="text-xs text-gray-500 pl-12">{item.place.content}</p>
-                        </li>
-                      ))}
-                    </ul>
+        <div
+          className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
+          style={{
+            maxHeight: "calc(100vh - 160px)",
+          }}
+        >
+          {showAllDays
+            ? data.days.map((day) => (
+                <div key={day.dayNumber} className="mb-8">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold">{`${day.dayNumber}일차`}</h2>
+                    <p className="text-base font-semibold text-gray-600">{day.date}</p>
                   </div>
-                ))
-              : data.days
-                  .filter((day) => day.dayNumber === selectedDay)
-                  .map((day) => (
-                    <div key={day.dayNumber} className="mb-12">
-                      <h2 className="text-md font-semibold mb-6">{`${day.dayNumber}일차`}</h2>
-                      <ul className="space-y-8"> {/* 간격 조정 */}
-                        {day.schedule.map((item, index) => (
-                          <li
-                            key={index}
-                            className="flex items-center gap-4"
-                            style={{ padding: "10px 0" }}
-                          >
-                            <div className="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center">
-                              {item.order}
-                            </div>
-                            <h3 className="text-sm font-semibold">{item.place.place}</h3>
-                          </li>
-                        ))}
-                      </ul>
+                  {formatScheduleList(day)}
+                </div>
+              ))
+            : data.days
+                .filter((day) => String(day.dayNumber) === String(selectedDay))
+                .map((day) => (
+                  <div key={day.dayNumber} className="mb-12">
+                    <div className="flex justify-between items-center mb-6">
+                      <h2 className="text-xl font-bold">{`${day.dayNumber}일차`}</h2>
+                      <p className="text-base font-semibold text-gray-600">{day.date}</p>
                     </div>
-                  ))}
-          </div>
-
-          {/* 등록 버튼 */}
-          <div className="sticky bottom-0 bg-white z-10 p-4 shadow">
-            <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-600">
-              등록
-            </button>
-          </div>
+                    {formatScheduleList(day)}
+                  </div>
+                ))}
         </div>
+      </div>
 
-        {/* 우측 버튼 */}
-        <div className="w-[10%] bg-gray-100 flex flex-col items-center p-4 gap-4 pt-[80px]">
+      <div className="w-[10%] bg-white flex flex-col items-center p-4 gap-4 relative">
+        <button
+          onClick={handleRegister}
+          className="absolute bottom-4 right-4 bg-blue-500 text-white py-6 px-10 rounded-lg shadow hover:bg-blue-600 text-lg font-semibold"
+        >
+          등록
+        </button>
+
+        <div className="absolute top-[160px] flex flex-col items-center gap-4">
           <button
             onClick={() => {
               setShowAllDays(true);
               setSelectedDay(null);
             }}
-            className={`py-2 px-4 rounded-lg shadow ${
-              showAllDays ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
-            }`}
+            className={`py-4 px-4 rounded-lg shadow text-lg font-semibold ${
+              showAllDays ? "bg-blue-500 text-white" : "bg-white text-black"
+            } whitespace-nowrap`}
           >
-            전체일정
+            전체 일정
           </button>
+
           {data.days.map((day) => (
             <button
               key={day.dayNumber}
@@ -163,11 +320,11 @@ const ItineraryPage = () => {
                 setShowAllDays(false);
                 setSelectedDay(day.dayNumber);
               }}
-              className={`py-2 px-4 rounded-lg shadow ${
-                selectedDay === day.dayNumber
+              className={`py-4 px-6 rounded-lg shadow text-lg font-semibold ${
+                String(selectedDay) === String(day.dayNumber)
                   ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-gray-700"
-              }`}
+                  : "bg-white text-black"
+              } whitespace-nowrap`}
             >
               {`${day.dayNumber}일차`}
             </button>

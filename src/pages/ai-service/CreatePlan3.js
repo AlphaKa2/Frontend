@@ -5,6 +5,7 @@ import '../../styles/CustomCalendar.css';
 import { useRecoilState } from 'recoil'; // Recoil 훅
 import { travelPlanState } from '../../recoil/atoms/ai-atoms'; // Recoil Atom
 import { useNavigate } from 'react-router-dom';
+import Sky3 from '../../assets/images/Sky3.png';
 
 function CreatePlan3() {
   const [travelPlan, setTravelPlan] = useRecoilState(travelPlanState); // Recoil 상태 가져오기
@@ -25,7 +26,8 @@ function CreatePlan3() {
 
   // 날짜 계산 유틸리티 (시간대 영향 제거)
   const calculateDays = (start, end) => {
-    // 시간을 00:00:00으로 설정하여 정확히 날짜만 비교
+
+
     const startDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
     const endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
     return (endDate - startDate) / (1000 * 3600 * 24) + 1;
@@ -60,9 +62,10 @@ function CreatePlan3() {
       // Recoil 상태 업데이트
       setTravelPlan({
         ...travelPlan,
-        start_date: startDate, // Key 수정
-        end_date: endDate, // Key 수정
-        TRAVEL_STATUS_DAYS: travelDays, // Key 수정
+
+        start_date: startDate,
+        end_date: endDate,
+        TRAVEL_STATUS_DAYS: travelDays,
       });
 
       navigate('/create-plan4');
@@ -70,10 +73,19 @@ function CreatePlan3() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-blue-100 justify-center">
-      <div className="relative bg-white w-full max-w-4xl p-8 rounded-xl shadow-lg text-center">
 
-      <div className="absolute top-4 left-4 text-indigo-600 font-semibold text-sm md:text-base">
+    <div 
+      className="flex flex-col items-center min-h-screen bg-blue-100 justify-center"
+      style={{
+        backgroundImage: `url(${Sky3})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      <div className="relative bg-white w-full max-w-4xl p-8 rounded-xl shadow-lg text-center mt-12">
+
+        <div className="absolute top-4 left-4 text-indigo-600 font-semibold text-sm md:text-base">
           온길 AI 여행 코스 추천
         </div>
 
@@ -81,12 +93,11 @@ function CreatePlan3() {
           <span className="font-semibold">03</span> / 06
         </div>
 
-        <h1 className="text-gray-500 font-medium text-lg mt-10">여행 시작일과 종료일을 선택해주세요.</h1>
-        <p className="text-sm text-gray-400 mt-2">
-          최대 5일까지 선택이 가능합니다.
-        </p>
 
-        {/* 두 달력을 하나로 연결 */}
+        {/* 상단 타이틀 및 안내문구 */}
+        <h1 className="text-2xl font-bold text-gray-900 mt-8">여행 일자변경</h1>
+        <p className="text-sm text-gray-400 mt-2">최대 5일까지 여행 계획 생성이 가능합니다</p>
+
         <div className="flex justify-center mt-5">
           <Calendar
             onChange={onDateChange}
@@ -96,19 +107,21 @@ function CreatePlan3() {
             className="custom-calendar double-view"
             showDoubleView={true}
             activeStartDate={currentDate}
+            locale="ko-KR"
             onActiveStartDateChange={({ activeStartDate }) =>
               setCurrentDate(activeStartDate)
             }
-            showNeighboringMonth={false}
+            showNeighboringMonth={false}  
+            formatDay={(locale, date) => date.getDate().toString()}
+            showFixedNumberOfWeeks={false} /* 현재 달의 날짜만 표시 */
           />
         </div>
 
         {/* 선택한 날짜 표시 */}
-        <div className="mt-4 text-gray-700">
+        <div className="mt-6 text-black font-semibold">
           {selectedDates[0] && selectedDates[1] ? (
             <p>
-              선택한 기간: {selectedDates[0].toLocaleDateString()} ~{' '}
-              {selectedDates[1].toLocaleDateString()}
+              선택한 기간: {selectedDates[0].getFullYear()}. {selectedDates[0].getMonth() + 1}. {selectedDates[0].getDate()}. ~ {selectedDates[1].getFullYear()}. {selectedDates[1].getMonth() + 1}. {selectedDates[1].getDate()}.
             </p>
           ) : (
             <p>날짜를 선택해 주세요.</p>
@@ -119,7 +132,8 @@ function CreatePlan3() {
         <div className="flex justify-between mt-10">
           <button
             onClick={handleBack}
-            className="bg-white border border-gray-400 text-gray-600 font-medium py-2 px-6 rounded-lg shadow transition duration-200 hover:bg-gray-100"
+
+            className="bg-white border border-gray-400 text-gray-600 font-medium py-2 px-6 rounded-lg hover:bg-gray-100 transition duration-200"
           >
             이전
           </button>
@@ -128,7 +142,8 @@ function CreatePlan3() {
             disabled={!selectedDates[0] || !selectedDates[1]}
             className={`${
               selectedDates[0] && selectedDates[1]
-                ? 'bg-blue-500 text-white'
+
+                ? 'bg-black text-white'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             } font-medium py-2 px-6 rounded-lg transition duration-200`}
           >

@@ -1,95 +1,59 @@
-// src/axios.js
-import axios from 'axios';
+
+import axios from "axios";
 
 // Axios 인스턴스 생성
-const instance = axios.create({
-  baseURL: 'http://172.16.210.54:31214', // API 기본 URL
-  timeout: 30000, // 요청 타임아웃 (30000초)
+const axiosInstance = axios.create({
+  baseURL: "https://172.16.210.54.nip.io:32085", // API 기본 URL
+  timeout: 30000, // 요청 타임아웃 (30초)
   headers: {
-    'Content-Type': 'application/json', // 기본 헤더 설정
+    "Content-Type": "application/json",
   },
-  withCredentials: true
+  withCredentials: true // 쿠키 전송 활성화
 });
 
-// Define LOGIN object at the top
-const LOGIN = {
-  MESSAGE: {
-    EXPIRED: '세션이 만료되었습니다. 다시 로그인해주세요.',
-    ETC: '에러 발생',
-  },
-};
-
-//refresh token api
-export async function postRefreshToken() {
-  const response = await axios.post('/auth-service/reissue', {
-    refreshToken: localStorage.getItem('refreshToken'),
-  });
-  return response;
-}
-
-//토큰을 함께보내는 privateApi에 interceptor를 적용합니다
-axios.interceptors.response.use(
-  // 200번대 응답이 올때 처리
-  (response) => {
-    return response;
-  },
-  // 200번대 응답이 아닐 경우 처리
+// 응답 인터셉터 수정
+axiosInstance.interceptors.response.use(
+  (response) => response, // 성공 응답 처리
   async (error) => {
-    const {
-      config,
-      response: { status },
-    } = error;
-    
-	//토큰이 만료되을 때
-    if (status === 401) {
-      if (error.response.data.message === 'Unauthorized') {
-        const originRequest = config;
-        //리프레시 토큰 api
-        const response = await postRefreshToken();
-        //리프레시 토큰 요청이 성공할 때
-        if (response.status === 200) {
-          const newAccessToken = response.data.token;
-          localStorage.setItem('accessToken', response.data.token);
-          localStorage.setItem('refreshToken', response.data.refreshToken);
-          axios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
-          //진행중이던 요청 이어서하기
-          originRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          return axios(originRequest);
-        //리프레시 토큰 요청이 실패할때(리프레시 토큰도 만료되었을때 = 재로그인 안내)
-        } else if (response.status === 404) {
-          alert(LOGIN.MESSAGE.EXPIRED);
-        } else {
-          alert(LOGIN.MESSAGE.ETC);
-        }
+
+    const originalRequest = error.config;
+
+    // 401 Unauthorized 처리
+    if (error.response?.status === 401) {
+      const errorMessage = error.response.data?.message;
+
+      if (errorMessage === "유효하지 않은 토큰입니다.") {
+        console.error("세션 만료: 유효하지 않은 토큰.");
+        alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+
+        // 세션 초기화
+        localStorage.removeItem("accessToken");
+        window.location.href = "/login"; // 로그인 페이지로 리다이렉션
+      } else {
+        console.warn("권한 문제 발생:", errorMessage);
+        alert("권한 문제가 발생했습니다.");
       }
+
+      return Promise.reject(error); // 에러 반환
     }
-    return Promise.reject(error);
-  },
-);
 
-
-
-
-instance.interceptors.request.use(
-  function (config) {
-    // 로컬 스토리지에서 accessToken 가져오기
-    const accessToken = localStorage.getItem('accessToken');
-    console.log(accessToken);
-    
-    
-    // accessToken이 존재하면 Authorization 헤더에 추가
-    if (accessToken) {
-      
-      config.headers['Authorization'] = `Bearer ${accessToken}`;
-    }
-    
-    // 변경된 config 반환
-    return config;
-  },
-  function (error) {
-    // 요청 오류가 있는 경우 처리
+    // 다른 오류는 그대로 반환
     return Promise.reject(error);
   }
 );
 
-export default instance;
+// 요청 인터셉터: Access Token 추가
+axiosInstance.interceptors.request.use(
+  (config) => {
+
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+export default axiosInstance;
