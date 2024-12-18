@@ -7,7 +7,7 @@ import {
   useLoadScript,
 } from "@react-google-maps/api";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyCDoiGbTTs3Bw_93ymwbMvz9H-lKdaxwkY"; // 실제 API_KEY로 교체
+const GOOGLE_MAPS_API_KEY = "안쓰는 코드"; // 실제 API_KEY로 교체
 
 const mapContainerStyle = {
   width: "100%",
