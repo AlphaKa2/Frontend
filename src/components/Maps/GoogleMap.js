@@ -4,6 +4,7 @@ import styles from "./GoogleMap.module.css";
 const GoogleMap = ({ center, markers }) => {
   const [googleMap, setGoogleMap] = useState(null);
   const markersRef = useRef([]);
+  const infoWindowsRef = useRef([]);
 
   const mapRef = useCallback((node) => {
     if (node && !googleMap && window.google && window.google.maps) {
@@ -18,9 +19,11 @@ const GoogleMap = ({ center, markers }) => {
 
   useEffect(() => {
     if (googleMap && markers) {
-      // 기존 마커 제거
+      // 기존 마커 및 InfoWindow 제거
       markersRef.current.forEach(m => m.setMap(null));
       markersRef.current = [];
+      infoWindowsRef.current.forEach(iw => iw.close());
+      infoWindowsRef.current = [];
 
       if (markers.length > 0) {
         const bounds = new window.google.maps.LatLngBounds();
@@ -33,6 +36,17 @@ const GoogleMap = ({ center, markers }) => {
               title: markerData.label || "",
             });
             markersRef.current.push(marker);
+
+            const infoWindow = new window.google.maps.InfoWindow({
+              content: `<div style="font-size:18px;font-weight:bold;color:black;text-align:center;">${markerData.label || ""}</div>`
+            });
+            infoWindowsRef.current.push(infoWindow);
+
+            marker.addListener('click', () => {
+              infoWindowsRef.current.forEach(iw => iw.close());
+              infoWindow.open(googleMap, marker);
+            });
+
             bounds.extend({ lat: markerData.lat, lng: markerData.lng });
           }
         });
@@ -44,7 +58,6 @@ const GoogleMap = ({ center, markers }) => {
           googleMap.setZoom(12);
         }
       } else if (center) {
-        // 마커가 없고 center만 있는 경우
         googleMap.setCenter(center);
         googleMap.setZoom(12);
       }

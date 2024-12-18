@@ -9,6 +9,7 @@ import CreatePlan4 from './pages/ai-service/CreatePlan4';
 import CreatePlan5 from './pages/ai-service/CreatePlan5';
 import CreatePlan6 from './pages/ai-service/CreatePlan6';
 import ItineraryPage from './pages/ai-service/ItineraryPage';
+
 import YoutubePage from "./pages/ai-service/YoutubePage";
 import MyTripList from './pages/travel-service/MyTripList';
 import RegisterItineraryPage from './pages/travel-service/RegisterItineraryPage';
@@ -88,6 +89,7 @@ function AppContent() {
 
         <Route path="/invitation-list" element={<InvitationList />} />
         <Route path="/itinerary/:recommendation_trip_id" element={<ItineraryPage />} />
+        
         <Route path="/register-itinerary/:travelId" element={<RegisterItineraryPage />} />
         <Route path="/edit-itinerary/:travelId" element={<EditItineraryPage />} />
         <Route path="/completed-itinerary/:travelId" element={<CompletedItineraryPage />} />

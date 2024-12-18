@@ -25,7 +25,7 @@ const HeaderBar = () => {
 
   // 흰색 배경을 적용할 페이지 경로 목록
   const backgroundPages = [
-    //"/itinerary/:recommendation_trip_id",
+    "/itinerary/:recommendation_trip_id",
     "/register-itinerary/:travelId",
     "/edit-itinerary/:travelId",
     "/completed-itinerary/:travelId",

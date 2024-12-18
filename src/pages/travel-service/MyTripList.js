@@ -81,7 +81,7 @@ const MyTripList = () => {
               : 'text-gray-500'
           }`}
         >
-          미등록 여행
+          추천 여행
         </button>
         <button
           onClick={() => setActiveTab('registered')}
@@ -91,7 +91,7 @@ const MyTripList = () => {
               : 'text-gray-500'
           }`}
         >
-          등록한 여행
+          나의 여행
         </button>
         <button
           onClick={() => setActiveTab('completed')}

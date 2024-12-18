@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getTravelById } from '../../api/ai-service/trip-id';
-// 여기도 GoogleMapsComponent 대신 GoogleMap 사용
 import GoogleMap from '../../components/Maps/GoogleMap';
 
 const CompletedItineraryPage = () => {
@@ -146,12 +145,10 @@ const CompletedItineraryPage = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Left: Map Section */}
       <div className="w-[64.5%] h-full">
         <GoogleMap center={center} markers={markers} />
       </div>
 
-      {/* Right: Itinerary Section */}
       <div className="w-[25.5%] bg-white flex flex-col relative">
         <div
           className="bg-white z-10 p-4 w-full mb-24"
@@ -204,7 +201,6 @@ const CompletedItineraryPage = () => {
         </div>
       </div>
 
-      {/* Right Buttons Section */}
       <div className="w-[10%] bg-white flex flex-col items-center p-4 gap-4 relative">
         <button
           onClick={() => navigate(`/rating/${travelId}`)}

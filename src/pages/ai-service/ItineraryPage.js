@@ -2,10 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchTripDetailsById } from "../../api/ai-service/trip-id";
 import { registerTravel } from "../../api/travel-service/register"; 
-// 여기서 GoogleMapsComponent 대신 GoogleMap을 import
 import GoogleMap from "../../components/Maps/GoogleMap"; 
-import ParticipantsList from "../../components/ParticipantsList";
-import ParticipantsImage from "../../assets/images/Participants.png";
 
 const ItineraryPage = () => {
   const { recommendation_trip_id } = useParams();
@@ -226,7 +223,7 @@ const ItineraryPage = () => {
               className="absolute left-4 w-0.5 bg-red-500"
               style={{
                 top: "50%",
-                bottom: "-70px",
+                bottom: "-60px",
               }}
             ></div>
           )}

@@ -8,16 +8,20 @@ import ParticipantsImage from "../../assets/images/Participants.png";
 const RegisterItineraryPage = () => {
   const { travelId } = useParams();
   const navigate = useNavigate();
+
   const [data, setData] = useState(null);
+  const [center, setCenter] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [showAllDays, setShowAllDays] = useState(true);
   const [loading, setLoading] = useState(true);
   const [isParticipantsOpen, setIsParticipantsOpen] = useState(false);
 
+  // 데이터 fetch를 위한 useEffect
   useEffect(() => {
     const fetchData = async () => {
       if (!travelId) {
         console.error("Travel ID is required.");
+        setLoading(false);
         return;
       }
 
@@ -25,6 +29,17 @@ const RegisterItineraryPage = () => {
         setLoading(true);
         const tripDetails = await getTravelById(travelId);
         setData(tripDetails.data);
+
+        if (
+          tripDetails.data.days?.length > 0 &&
+          tripDetails.data.days[0].schedules?.length > 0
+        ) {
+          const firstPlace = tripDetails.data.days[0].schedules[0].place;
+          setCenter({
+            lat: parseFloat(firstPlace.latitude),
+            lng: parseFloat(firstPlace.longitude),
+          });
+        }
       } catch (error) {
         console.error("Error fetching trip details:", error);
       } finally {
@@ -35,18 +50,78 @@ const RegisterItineraryPage = () => {
     fetchData();
   }, [travelId]);
 
-  const handleEdit = () => {
-    if (data?.permission !== "EDIT") {
-      alert("현재 편집 권한이 없습니다");
-      return;
+  // selectedDay, showAllDays 변경 시 center 업데이트
+  useEffect(() => {
+    if (!data) return;
+
+    if (showAllDays) {
+      if (data.days?.length > 0 && data.days[0].schedules?.length > 0) {
+        const firstPlace = data.days[0].schedules[0].place;
+        setCenter({
+          lat: parseFloat(firstPlace.latitude),
+          lng: parseFloat(firstPlace.longitude),
+        });
+      }
+    } else {
+      const selectedDayData = data.days.find(
+        (day) => String(day.dayNumber) === String(selectedDay)
+      );
+      if (selectedDayData && selectedDayData.schedules.length > 0) {
+        const firstPlace = selectedDayData.schedules[0].place;
+        setCenter({
+          lat: parseFloat(firstPlace.latitude),
+          lng: parseFloat(firstPlace.longitude),
+        });
+      }
     }
-    navigate(`/edit-itinerary/${travelId}`);
-  };
+  }, [selectedDay, showAllDays, data]);
 
   const formatTime = (time) => {
     if (!time || time === "00:00:00") return null;
     return time.slice(0, 5);
   };
+
+  // 로딩 상태 처리와 데이터 유효성 검사 훅 호출 후에 조건부 return
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        데이터를 불러오지 못했습니다.
+      </div>
+    );
+  }
+
+  // markers 생성 로직 (data가 존재하는 상태에서)
+  const markers = showAllDays
+    ? data.days.flatMap((day) =>
+        day.schedules.map((item) => ({
+          lat: parseFloat(item.place.latitude),
+          lng: parseFloat(item.place.longitude),
+          label: item.place.placeName,
+        }))
+      )
+    : data.days
+        .find((day) => String(day.dayNumber) === String(selectedDay))
+        ?.schedules.map((item) => ({
+          lat: parseFloat(item.place.latitude),
+          lng: parseFloat(item.place.longitude),
+          label: item.place.placeName,
+        })) || [];
+        
+        const handleEdit = () => {
+          if (data?.permission !== "EDIT") {
+            alert("현재 편집 권한이 없습니다");
+            return;
+          }
+          navigate(`/edit-itinerary/${travelId}`);
+        };
 
   const formatScheduleList = (day) => (
     <ul className="space-y-12">
@@ -85,20 +160,14 @@ const RegisterItineraryPage = () => {
     </ul>
   );
 
-  if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
-  }
-
-  if (!data) {
-    return <div className="flex items-center justify-center h-screen">데이터를 불러오지 못했습니다.</div>;
-  }
-
   return (
     <div className="flex flex-col lg:flex-row h-screen">
+      {/* Map Section */}
       <div className="w-full lg:w-[64.5%] h-[50%] lg:h-full">
-        <GoogleMap tripData={data} showAllDays={showAllDays} selectedDay={selectedDay} />
+        <GoogleMap center={center} markers={markers} />
       </div>
 
+      {/* Itinerary Section */}
       <div className="w-full lg:w-[25.5%] bg-white flex flex-col relative h-[50%] lg:h-full">
         <div className="bg-white z-10 p-4 w-full mb-2 lg:mb-16 sticky top-0 lg:top-[64px]">
           <h1 className="text-xl lg:text-xl font-bold text-left">{data.title}</h1>
@@ -123,7 +192,9 @@ const RegisterItineraryPage = () => {
 
         <div
           className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
-          style={{ maxHeight: "calc(100vh - 160px)" }}
+          style={{
+            maxHeight: "calc(100vh - 160px)",
+          }}
         >
           {showAllDays
             ? data.days.map((day) => (
@@ -180,7 +251,6 @@ const RegisterItineraryPage = () => {
             </button>
           ))}
         </div>
-
         <div className="mt-auto w-full flex justify-center">
           <button
             onClick={handleEdit}
@@ -190,7 +260,10 @@ const RegisterItineraryPage = () => {
           </button>
         </div>
       </div>
+      
 
+        
+      
       {isParticipantsOpen && (
         <ParticipantsList
           travelId={travelId}
