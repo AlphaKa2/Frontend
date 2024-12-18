@@ -301,6 +301,7 @@ const MainPage = () => {
           <button className="animation mt-[4em] shadow-xl text-lg text-center text-white font-bold rounded bg-gradient-to-r from-[#A1C4FD] to-[#C2E9FB] px-6 py-3 opacity-0 transition-opacity hover:bg-black hover:text-white transform hover:-translate-y-1 active:translate-y-0 duration-500 ease-in delay-[400ms]"
           onClick={handleTotalPost}
           >
+
             게시글 보러가기
           </button>
         </div>

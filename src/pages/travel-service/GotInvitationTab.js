@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { gotInvitations, updateInvitationStatus } from '../../api/travel-service/invitations';
 
-import SeoulImage from '../../assets/images/YoutubeTest.png';
+import getImageForLocation from '../../utils/getImageForLocation'; // 이미지 매핑 유틸리티 추가
 import InvitedUser from '../../assets/images/InvitedUser.png';
 
 const GotInvitationTab = ({ currentUserNickname = 'JAY' }) => {
@@ -66,6 +66,10 @@ const GotInvitationTab = ({ currentUserNickname = 'JAY' }) => {
       const { travelId, invitationId, invitationMessage, startDate, endDate, invitedNick } =
         invitation;
 
+
+      // invitationMessage에서 지역명 기반으로 이미지 선택
+      const invitationImage = getImageForLocation(invitationMessage);
+
       return (
         <div
           key={invitationId}
@@ -74,7 +78,8 @@ const GotInvitationTab = ({ currentUserNickname = 'JAY' }) => {
         >
           {/* 이미지 */}
           <img
-            src={SeoulImage}
+
+            src={invitationImage} // 지역 이미지 사용
             alt="Invitation"
             className="w-36 h-36 rounded-md object-cover flex-shrink-0"
           />
@@ -90,45 +95,48 @@ const GotInvitationTab = ({ currentUserNickname = 'JAY' }) => {
             </p>
 
             {/* 초대한 사람 (하단) */}
-              <p className="font-bold text-sm text-blue-600 flex items-center">
-                <img
-                  src={InvitedUser}
-                  alt="InvitedUser"
-                  className="w-5 h-5 rounded-md object-cover inline-block mr-2"
-                />
-                {invitedNick}
-              </p>
-            </div>
+
+            <p className="font-bold text-sm text-blue-600 flex items-center">
+              <img
+                src={InvitedUser}
+                alt="InvitedUser"
+                className="w-5 h-5 rounded-md object-cover inline-block mr-2"
+              />
+              {invitedNick}
+            </p>
+          </div>
+
+          {/* 상태 버튼 */}
           <div className="absolute bottom-8 right-4 flex items-center gap-6">
             {/* 거절 버튼 */}
-              <button
-                className="bg-gray-100 text-gray-700 hover:bg-gray-200 py-3 px-12 rounded-full text-sm font-medium shadow-sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRejectInvitation(invitationId, travelId);
-                }}
-              >
-                거절
-              </button>
+            <button
+              className="bg-gray-100 text-gray-700 hover:bg-gray-200 py-3 px-12 rounded-full text-sm font-medium shadow-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRejectInvitation(invitationId, travelId);
+              }}
+            >
+              거절
+            </button>
 
-              {/* 수락 버튼 */}
-              <button
-                className="bg-blue-100 text-blue-600 hover:bg-blue-200 py-3 px-12 rounded-full text-sm font-medium shadow-sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAcceptInvitation(invitationId, travelId);
-                }}
-              >
-                수락
-              </button>
+            {/* 수락 버튼 */}
+            <button
+              className="bg-blue-100 text-blue-600 hover:bg-blue-200 py-3 px-12 rounded-full text-sm font-medium shadow-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAcceptInvitation(invitationId, travelId);
+              }}
+            >
+              수락
+            </button>
           </div>
         </div>
-        
       );
     });
   };
 
   return <div className="p-4">{renderInvitations(invitationsList)}</div>;
 };
+
 
 export default GotInvitationTab;

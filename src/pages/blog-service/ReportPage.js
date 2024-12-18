@@ -17,6 +17,7 @@ const ReportPage = () => {
 
 
   // const targetId = 8; 테스트용 타겟 아이디 하드코딩
+
   const handleCancelClick = () => {
     setIsModalOpen(true);
   };
@@ -68,6 +69,7 @@ const ReportPage = () => {
       }
     } catch (error) {
       alert(error.message);
+
     }
   };
   

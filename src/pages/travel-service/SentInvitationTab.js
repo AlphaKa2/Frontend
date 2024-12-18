@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { fetchSentInvitations } from '../../api/travel-service/invitations';
-import SeoulImage from '../../assets/images/YoutubeTest.png';
+
+
 import InvitedUser from '../../assets/images/InvitedUser.png';
+import getImageForLocation from '../../utils/getImageForLocation';
 
 const SentInvitationTab = ({ travelId }) => {
   const [loading, setLoading] = useState(true);
@@ -13,8 +15,10 @@ const SentInvitationTab = ({ travelId }) => {
         setLoading(true);
         const invitations = await fetchSentInvitations(travelId);
         setInvitationsList(invitations);
-      } catch (error) {
-        console.error('Error loading sent invitations:', error);
+
+      } catch (err) {
+        console.error('Error loading sent invitations:', err);
+        // 다른 에러는 무시
       } finally {
         setLoading(false);
       }
@@ -27,11 +31,12 @@ const SentInvitationTab = ({ travelId }) => {
     }
   }, [travelId]);
 
-  const renderInvitations = (invitations) => {
-    if (loading) {
-      return <p className="text-gray-500 text-center">Loading...</p>;
-    }
 
+  if (loading) {
+    return <p className="text-gray-500 text-center">Loading...</p>;
+  }
+
+  const renderInvitations = (invitations) => {
     if (!Array.isArray(invitations) || invitations.length === 0) {
       return (
         <div className="flex justify-center items-center h-40">
@@ -42,6 +47,9 @@ const SentInvitationTab = ({ travelId }) => {
 
     return invitations.map((invitation) => {
       const { invitationId, invitationMessage, invitationStatus, nickname } = invitation;
+
+
+      const invitationImage = getImageForLocation(invitationMessage);
 
       const statusText =
         invitationStatus === 'PENDING'
@@ -54,34 +62,30 @@ const SentInvitationTab = ({ travelId }) => {
         <div
           key={invitationId}
           className="flex items-center justify-between border-b p-8 hover:bg-gray-100 relative"
-          style={{ minHeight: '150px', height: '150px' }} // CompletedTripsTab 크기와 동일하게 조정
+
+          style={{ minHeight: '150px', height: '150px' }}
         >
-          {/* 초대 이미지 */}
           <div className="flex items-center gap-4">
             <img
-              src={SeoulImage}
+              src={invitationImage} // 지역 이미지 사용
               alt="Invitation"
-              className="w-32 h-32 rounded-md object-cover flex-shrink-0" // CompletedTripsTab 이미지 크기
+              className="w-36 h-36 rounded-md object-cover flex-shrink-0"
             />
 
-            {/* 초대 메시지 및 참여자 */}
             <div className="flex flex-col justify-between h-full">
-              {/* 초대 메시지 */}
               <h3 className="font-bold text-lg text-gray-800 mb-16">{invitationMessage}</h3>
-
-              {/* 초대받은 사람 */}
               <div className="flex items-center">
                 <img
                   src={InvitedUser}
                   alt="InvitedUser"
-                  className="w-5 h-5 rounded-md object-cover flex-shrink-0 inline-block mr-2" // CompletedTripsTab 아이콘 크기
+
+                  className="w-5 h-5 rounded-md object-cover flex-shrink-0 inline-block mr-2"
                 />
                 <p className="font-bold text-sm text-blue-600">{nickname}</p>
               </div>
             </div>
           </div>
 
-          {/* 상태 표시 */}
           <div
             className="absolute right-6 top-1/2 transform -translate-y-1/2 px-8 py-4 text-base rounded-full"
             style={{

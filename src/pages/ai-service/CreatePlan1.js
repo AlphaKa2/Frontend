@@ -24,6 +24,7 @@ function CreatePlan() {
 
   return (
     <div
+<<<<<<< HEAD
       className="relative flex flex-col items-center justify-center h-screen m-0 p-0 bg-cover bg-center mt-8"
       style={{
         backgroundImage: `url(${Sky1})`,
@@ -33,6 +34,19 @@ function CreatePlan() {
       }}
     >
       <div className="relative bg-white w-full max-w-2xl p-8 rounded-xl shadow-lg text-center md:w-3/4 lg:w-2/3 xl:w-1/2">
+=======
+  className="absolute inset-0 flex flex-col items-center justify-center m-0 p-0 bg-cover bg-center"
+  style={{
+    backgroundImage: `url(${Sky1})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+  }}
+>
+
+      {/* 고정된 컨테이너 크기 적용: w-[672px] */}
+      <div className="relative bg-white mt-12 p-8 rounded-xl shadow-lg text-center" style={{ width: '672px' }}>
+>>>>>>> 7af8e738f6c7e792c68b24c2c52150cae43412bb
         <div className="absolute top-4 left-4 text-blue-600 font-semibold text-sm md:text-base">
           온길 AI 여행 코스 추천
         </div>
@@ -42,7 +56,13 @@ function CreatePlan() {
         </div>
 
         <h1 className="text-gray-500 font-semibold text-lg mt-8">이번 여행, 어디로 떠나볼까요?</h1>
+<<<<<<< HEAD
         <h2 className="text-2xl font-bold mt-4">여행을 떠나고 싶은 지역을 <br /> 선택해 주세요.</h2>
+=======
+        <h2 className="text-2xl font-bold mt-4">
+          여행을 떠나고 싶은 지역을 <br /> 선택해 주세요.
+        </h2>
+>>>>>>> 7af8e738f6c7e792c68b24c2c52150cae43412bb
 
         <div className="grid grid-cols-3 gap-4 mt-10 md:grid-cols-4 lg:grid-cols-5">
           {Object.keys(regions).map((region) => (
@@ -51,7 +71,11 @@ function CreatePlan() {
               onClick={() => selectLocation(region)}
               className={`${
                 roadAddr === region ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'
+<<<<<<< HEAD
               } font-semibold py-2 rounded-full transition duration-200 w-20 h-20 flex items-center justify-center text-lg md:w-24 md:h-24`}
+=======
+              } font-semibold py-2 rounded-full transition duration-200 w-[80px] h-[80px] md:w-[96px] md:h-[96px] flex items-center justify-center text-lg`}
+>>>>>>> 7af8e738f6c7e792c68b24c2c52150cae43412bb
             >
               {region}
             </button>

@@ -39,6 +39,7 @@ const SignupCompletePage = () => {
       }
     };
 
+
   return (
     <div className="w-full h-auto bg-white py-32">
       <div className="flex flex-col items-center max-w-4xl mx-auto">

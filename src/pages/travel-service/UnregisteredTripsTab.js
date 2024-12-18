@@ -4,8 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { fetchUnregisteredTrips } from '../../api/ai-service/trips';
 import { deleteTripById } from '../../api/ai-service/trip-id';
 import { useNavigate } from 'react-router-dom';
+<<<<<<< HEAD
 
 import SeoulImage from '../../assets/images/YoutubeTest.png';
+=======
+import getImageForLocation from '../../utils/getImageForLocation'; // 유틸리티 함수 import
+>>>>>>> 7af8e738f6c7e792c68b24c2c52150cae43412bb
 import TrashCanImage from '../../assets/images/Trash 3.png';
 import AiImage from '../../assets/images/Ai-generate.png';
 import YoutubeLogo from '../../assets/images/YoutubeLogo.png';
@@ -13,7 +17,10 @@ import YoutubeLogo from '../../assets/images/YoutubeLogo.png';
 const UnregisteredTripsTab = () => {
   const [unregisteredTrips, setUnregisteredTrips] = useState([]);
   const [loading, setLoading] = useState(true);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7af8e738f6c7e792c68b24c2c52150cae43412bb
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,7 +28,11 @@ const UnregisteredTripsTab = () => {
       try {
         setLoading(true);
         const response = await fetchUnregisteredTrips();
+<<<<<<< HEAD
         setUnregisteredTrips(response);
+=======
+        setUnregisteredTrips(response.data);
+>>>>>>> 7af8e738f6c7e792c68b24c2c52150cae43412bb
       } catch (error) {
         console.error('Error fetching trips:', error);
       } finally {
@@ -42,7 +53,10 @@ const UnregisteredTripsTab = () => {
         await deleteTripById(recommendation_trip_id);
         alert('여행이 성공적으로 삭제되었습니다.');
 
+<<<<<<< HEAD
         // 삭제 후 목록 갱신
+=======
+>>>>>>> 7af8e738f6c7e792c68b24c2c52150cae43412bb
         setUnregisteredTrips((prevTrips) =>
           prevTrips.filter((trip) => trip.recommendation_trip_id !== recommendation_trip_id)
         );
@@ -66,6 +80,7 @@ const UnregisteredTripsTab = () => {
       );
     }
 
+<<<<<<< HEAD
     return trips.map((trip) => (
       <div
         key={trip.id}
@@ -116,6 +131,61 @@ const UnregisteredTripsTab = () => {
         </div>
       </div>
     ));
+=======
+    return trips.map((trip) => {
+      const tripImage = getImageForLocation(trip.title); // 유틸리티 함수 호출
+
+      return (
+        <div
+          key={trip.id}
+          className="flex items-center justify-between border-b p-8 hover:bg-gray-100 cursor-pointer"
+          style={{ minHeight: '150px', height: '150px' }}
+          onClick={() => handleViewDetails(trip.recommendation_trip_id)}
+        >
+          <div className="flex items-center gap-4 h-full">
+            <img
+              src={tripImage}
+              alt={trip.title}
+              className="w-32 h-32 rounded-md object-cover flex-shrink-0"
+            />
+
+            <div className="relative" style={{ top: '-40px' }}>
+              <div className="flex items-center gap-2">
+                {trip.recommendation_type === 'AI-GENERATED' && (
+                  <img src={AiImage} alt="AI Generated" className="w-10 h-6" />
+                )}
+                {trip.recommendation_type === 'YOUTUBER_FOLLOW' && (
+                  <img src={YoutubeLogo} alt="YouTuber Follow" className="w-10 h-7" />
+                )}
+                <h3 className="font-bold mb-6 mt-5" style={{ fontSize: '1.3rem' }}>
+                  {trip.title}
+                </h3>
+              </div>
+              <p className="font-bold text-sm text-gray-600">
+                {trip.start_date} ~ {trip.end_date}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-20">
+            <button
+              className="flex items-center justify-center"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(trip.recommendation_trip_id);
+              }}
+            >
+              <img
+                src={TrashCanImage}
+                alt="삭제"
+                className="w-8 h-8 hover:opacity-80 transition duration-200"
+              />
+            </button>
+          </div>
+        </div>
+      );
+    });
+>>>>>>> 7af8e738f6c7e792c68b24c2c52150cae43412bb
   };
 
   return <div>{renderTrips(unregisteredTrips)}</div>;

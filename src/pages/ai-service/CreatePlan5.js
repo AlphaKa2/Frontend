@@ -48,6 +48,11 @@ function CreatePlan5() {
       backgroundRepeat: 'no-repeat',
     }}>
       <div className="relative bg-white w-full max-w-2xl p-8 rounded-xl shadow-lg text-center md:w-3/4 lg:w-2/3 xl:w-1/2 mt-12">
+
+
+      <div className="absolute top-4 left-4 text-indigo-600 font-semibold text-sm md:text-base">
+          온길 AI 여행 코스 추천
+        </div>
         
         {/* 여행 동기 선택 */}
         <h1 className="text-2xl font-bold mb-2">여행 동기를 선택해 주세요</h1>

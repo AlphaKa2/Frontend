@@ -3,6 +3,8 @@ import { fetchCompletedTrips } from '../../api/ai-service/trips';
 import { fetchInvitations } from '../../api/travel-service/invitations';
 import { useNavigate } from 'react-router-dom';
 
+import getImageForLocation from '../../utils/getImageForLocation';
+
 import SeoulImage from '../../assets/images/YoutubeTest.png';
 import AiImage from '../../assets/images/Ai-generate.png';
 import YoutubeLogo from '../../assets/images/YoutubeLogo.png';
@@ -86,6 +88,8 @@ const CompletedTripsTab = ({ currentUserNickname }) => {
       const formattedDate = formatDate(dateToShow); // 날짜 포맷 변환
       const dateLabel = trip.updatedAt ? '수정일' : '생성일';
 
+      const tripImage = getImageForLocation(trip.title || trip.travelName);
+
       return (
         <div
           key={trip.travelId}
@@ -101,8 +105,9 @@ const CompletedTripsTab = ({ currentUserNickname }) => {
 
           <div className="flex items-center gap-4 h-full">
             <img
-              src={SeoulImage}
-              alt={trip.travelName}
+
+              src={tripImage}
+              alt={trip.travelName || trip.title}
               className="w-32 h-32 rounded-md object-cover flex-shrink-0"
             />
 

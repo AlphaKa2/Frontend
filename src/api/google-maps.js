@@ -1,17 +1,20 @@
-import React, { useRef, useEffect } from "react";
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 
-// Google Maps API Key (환경 변수로 관리 권장)
-const GOOGLE_MAPS_API_KEY = "AIzaSyCDoiGbTTs3Bw_93ymwbMvz9H-lKdaxwkY"; // 본인의 API 키로 대체하세요
+import React, { useRef, useEffect, useState } from "react";
+import {
+  GoogleMap,
+  Marker,
+  DirectionsRenderer,
+  useLoadScript,
+} from "@react-google-maps/api";
 
-// Google Maps 컨테이너 스타일
+const GOOGLE_MAPS_API_KEY = "AIzaSyCDoiGbTTs3Bw_93ymwbMvz9H-lKdaxwkY"; // 실제 API_KEY로 교체
+
 const mapContainerStyle = {
   width: "100%",
   height: "100%",
 };
 
-// Google Maps 컴포넌트
-const GoogleMapsComponent = ({ center, markers = [] }) => {
+const GoogleMapsComponent = ({ center, markers, dayRoutes }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
   });
@@ -22,69 +25,59 @@ const GoogleMapsComponent = ({ center, markers = [] }) => {
     mapRef.current = map;
   };
 
-  // markers가 변경될 때마다 지도의 bounds를 업데이트
+  // 모든 마커에 맞추어 지도 범위 조정
   useEffect(() => {
-    if (mapRef.current && markers.length > 0) {
+    if (mapRef.current && markers && markers.length > 0) {
       const bounds = new window.google.maps.LatLngBounds();
-      markers.forEach((marker) => {
-        bounds.extend({ lat: marker.lat, lng: marker.lng });
-      });
+      markers.forEach((marker) => bounds.extend({ lat: marker.lat, lng: marker.lng }));
       mapRef.current.fitBounds(bounds);
     }
   }, [markers]);
 
   if (loadError) {
-    console.error("Google Maps API 로드 중 오류 발생:", loadError);
+    console.error("Google Maps API Load Error:", loadError);
     return <div>지도 로딩 중 오류가 발생했습니다.</div>;
   }
 
-  if (!isLoaded) {
-    return <div>Loading Google Maps...</div>;
-  }
+  if (!isLoaded) return <div>Loading Google Maps...</div>;
 
   return (
     <GoogleMap
       mapContainerStyle={mapContainerStyle}
-      center={center}
+
+      center={center || { lat: 37.5665, lng: 126.978 }}
+      zoom={10}
       onLoad={onLoad}
     >
+      {/* 모든 마커 표시 */}
       {markers.map((marker, index) => (
         <Marker
           key={index}
-          position={{
-            lat: parseFloat(marker.lat),
-            lng: parseFloat(marker.lng),
-          }}
-          label={{
-            text: marker.label,
-            fontSize: "12px",
-            fontWeight: "bold",
-            fontFamily: "Poppins",
-            color: "black",
-          }}
+          position={{ lat: marker.lat, lng: marker.lng }}
+          label={{ text: marker.label, fontSize: "12px", color: "black" }}
           icon={{
             url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-            labelOrigin: { x: 15, y: 32 },
+            scaledSize: new window.google.maps.Size(40, 40),
+          }}
+        />
+      ))}
+
+      {/* 일차별 경로 표시 */}
+      {dayRoutes && dayRoutes.map((routeObj, idx) => (
+        <DirectionsRenderer
+          key={idx}
+          directions={routeObj.directions}
+          options={{
+            polylineOptions: {
+              strokeColor: "#3b82f6",
+              strokeWeight: 5,
+            },
           }}
         />
       ))}
     </GoogleMap>
   );
 };
-
-// google-maps.js
-
-export const mapStyles = [
-  {
-  "featureType": "all",
-        "elementType": "labels.text",
-        "stylers": [
-            {
-                "color": "#878787"
-            }
-        ]
-      }
-];
 
 
 export default React.memo(GoogleMapsComponent);

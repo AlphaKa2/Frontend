@@ -130,10 +130,10 @@ const SignupSecondPage = () => {
         smsConfirmation,
       );
       if (response.status === 201)
-        
-        navigate("/signup/third", { state: { nickname, email, password} });
+
+        navigate("/signup/third", { state: { nickname } });
     } catch (error) {
-      alert(error.message);
+      alert(error);
     }
   };
 

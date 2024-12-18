@@ -38,3 +38,4 @@ const LoginApi = async (email, password) => {
 };
 
 export default LoginApi;
+

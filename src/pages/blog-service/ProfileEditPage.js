@@ -69,6 +69,7 @@ const ProfileEditPage = () => {
   // 이미지 삭제 함수
   const handleImageDelete = () => {
     setProfileImageUrl("https://alphaka-storage.s3.amazonaws.com/profile/80924099-9220-4b82-9f49-28332ae6bb53defaultProfile");
+
   };
 
   // 이미지 수정 함수

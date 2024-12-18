@@ -1,26 +1,27 @@
-// src/pages/travel-service/RegisterItineraryPage.js
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getTravelById } from "../../api/ai-service/trip-id";
-import GoogleMapsComponent from "../../api/google-maps";
-import ParticipantsList from "../../components/ParticipantsList"; // 참여자 목록 컴포넌트 임포트
-import ParticipantsImage from "../../assets/images/Participants.png"; // 참여자 버튼에 사용할 이미지 (경로 및 파일명 가정)
+import GoogleMap from "../../components/Maps/GoogleMap";
+import ParticipantsList from "../../components/ParticipantsList";
+import ParticipantsImage from "../../assets/images/Participants.png";
 
 const RegisterItineraryPage = () => {
-  const { travelId } = useParams(); 
+  const { travelId } = useParams();
   const navigate = useNavigate();
+
   const [data, setData] = useState(null);
   const [center, setCenter] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [showAllDays, setShowAllDays] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [isParticipantsOpen, setIsParticipantsOpen] = useState(false); // 참여자 팝업 상태
+  const [isParticipantsOpen, setIsParticipantsOpen] = useState(false);
 
+  // 데이터 fetch를 위한 useEffect
   useEffect(() => {
     const fetchData = async () => {
       if (!travelId) {
         console.error("Travel ID is required.");
+        setLoading(false);
         return;
       }
 
@@ -29,7 +30,6 @@ const RegisterItineraryPage = () => {
         const tripDetails = await getTravelById(travelId);
         setData(tripDetails.data);
 
-        // 지도 중심 설정
         if (
           tripDetails.data.days?.length > 0 &&
           tripDetails.data.days[0].schedules?.length > 0
@@ -50,6 +50,7 @@ const RegisterItineraryPage = () => {
     fetchData();
   }, [travelId]);
 
+  // selectedDay, showAllDays 변경 시 center 업데이트
   useEffect(() => {
     if (!data) return;
 
@@ -77,13 +78,10 @@ const RegisterItineraryPage = () => {
 
   const formatTime = (time) => {
     if (!time || time === "00:00:00") return null;
-    return time.slice(0, 5); // 'hh:mm:ss'에서 'hh:mm'만 추출
+    return time.slice(0, 5);
   };
 
-  const handleEdit = () => {
-    navigate(`/edit-itinerary/${travelId}`);
-  };
-
+  // 로딩 상태 처리와 데이터 유효성 검사 훅 호출 후에 조건부 return
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -100,23 +98,30 @@ const RegisterItineraryPage = () => {
     );
   }
 
-  const markers = data
-    ? showAllDays
-      ? data.days.flatMap((day) =>
-          day.schedules.map((item) => ({
-            lat: parseFloat(item.place.latitude),
-            lng: parseFloat(item.place.longitude),
-            label: item.place.placeName,
-          }))
-        )
-      : data.days
-          .find((day) => String(day.dayNumber) === String(selectedDay))
-          ?.schedules.map((item) => ({
-            lat: parseFloat(item.place.latitude),
-            lng: parseFloat(item.place.longitude),
-            label: item.place.placeName,
-          })) || []
-    : [];
+  // markers 생성 로직 (data가 존재하는 상태에서)
+  const markers = showAllDays
+    ? data.days.flatMap((day) =>
+        day.schedules.map((item) => ({
+          lat: parseFloat(item.place.latitude),
+          lng: parseFloat(item.place.longitude),
+          label: item.place.placeName,
+        }))
+      )
+    : data.days
+        .find((day) => String(day.dayNumber) === String(selectedDay))
+        ?.schedules.map((item) => ({
+          lat: parseFloat(item.place.latitude),
+          lng: parseFloat(item.place.longitude),
+          label: item.place.placeName,
+        })) || [];
+        
+        const handleEdit = () => {
+          if (data?.permission !== "EDIT") {
+            alert("현재 편집 권한이 없습니다");
+            return;
+          }
+          navigate(`/edit-itinerary/${travelId}`);
+        };
 
   const formatScheduleList = (day) => (
     <ul className="space-y-12">
@@ -156,42 +161,33 @@ const RegisterItineraryPage = () => {
   );
 
   return (
-    <div className="flex h-screen">
-      {/* Left: Map Section */}
-      <div className="w-[64.5%] h-full">
-        <GoogleMapsComponent center={center} markers={markers} />
+    <div className="flex flex-col lg:flex-row h-screen">
+      {/* Map Section */}
+      <div className="w-full lg:w-[64.5%] h-[50%] lg:h-full">
+        <GoogleMap center={center} markers={markers} />
       </div>
 
-      {/* Right: Itinerary Section */}
-      <div className="w-[25.5%] bg-white flex flex-col relative">
-        {/* Title Section */}
-        <div
-          className="bg-white z-10 p-4 w-full mb-24"
-          style={{
-            position: "sticky",
-            top: "64px",
-          }}
-        >
-          <h1 className="text-lg font-bold text-left md:text-xl lg:text-2xl">
-            {data.title}
-          </h1>
-
+      {/* Itinerary Section */}
+      <div className="w-full lg:w-[25.5%] bg-white flex flex-col relative h-[50%] lg:h-full">
+        <div className="bg-white z-10 p-4 w-full mb-2 lg:mb-16 sticky top-0 lg:top-[64px]">
+          <h1 className="text-xl lg:text-xl font-bold text-left">{data.title}</h1>
           <p className="text-base font-semibold text-gray-600 text-left mt-2">
             {data.startDate && data.endDate
               ? `${data.startDate} ~ ${data.endDate}`
               : `${data.days?.length || 0}일 여행 코스`}
           </p>
-
-          <button
-            onClick={() => setIsParticipantsOpen(true)}
-            className="absolute right-4 bottom-7 flex items-center"
-          >
-            <img
-              src={ParticipantsImage}
-              className="w-14 h-8"
-              alt="Participants"
-            />
-          </button>
+          <div className="flex justify-end items-center p-4">
+            <button
+              onClick={() => setIsParticipantsOpen(true)}
+              className="flex items-center"
+            >
+              <img
+                src={ParticipantsImage}
+                className="w-16 lg:w-16 h-8 lg:h-8"
+                alt="Participants"
+              />
+            </button>
+          </div>
         </div>
 
         <div
@@ -224,44 +220,50 @@ const RegisterItineraryPage = () => {
         </div>
       </div>
 
-      <div className="w-[10%] bg-white flex flex-col items-center p-4 gap-4 pt-[125px]">
-        <button
-          onClick={handleEdit}
-          className="absolute bottom-4 right-4 bg-blue-500 text-white py-6 px-10 rounded-lg shadow hover:bg-blue-600 text-lg font-semibold"
-        >
-          편집
-        </button>
-
-        <button
-          onClick={() => {
-            setShowAllDays(true);
-            setSelectedDay(null);
-          }}
-          className={`py-5 px-4 rounded-lg shadow text-lg font-semibold ${
-            showAllDays ? "bg-blue-500 text-white" : "bg-white text-black"
-          } whitespace-nowrap`}
-        >
-          전체 일정
-        </button>
-
-        {data.days.map((day) => (
+      <div className="hidden lg:flex lg:w-[10%] bg-white flex-col items-center p-4 gap-4">
+        <div className="absolute top-[160px] flex flex-col items-center gap-4">
           <button
-            key={day.dayNumber}
             onClick={() => {
-              setShowAllDays(false);
-              setSelectedDay(day.dayNumber);
+              setShowAllDays(true);
+              setSelectedDay(null);
             }}
-            className={`py-4 px-6 rounded-lg shadow text-lg font-semibold ${
-              String(selectedDay) === String(day.dayNumber)
-                ? "bg-blue-500 text-white"
-                : "bg-white text-black"
+            className={`py-4 px-4 rounded-lg shadow text-lg font-semibold ${
+              showAllDays ? "bg-blue-500 text-white" : "bg-white text-black"
             }`}
           >
-            {`${day.dayNumber}일차`}
+            전체 일정
           </button>
-        ))}
-      </div>
 
+          {data.days.map((day) => (
+            <button
+              key={day.dayNumber}
+              onClick={() => {
+                setShowAllDays(false);
+                setSelectedDay(day.dayNumber);
+              }}
+              className={`py-4 px-6 rounded-lg shadow text-lg font-semibold ${
+                String(selectedDay) === String(day.dayNumber)
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-black"
+              }`}
+            >
+              {`${day.dayNumber}일차`}
+            </button>
+          ))}
+        </div>
+        <div className="mt-auto w-full flex justify-center">
+          <button
+            onClick={handleEdit}
+            className="bg-blue-500 text-white py-7 px-8 rounded-lg shadow hover:bg-blue-600 text-xl font-semibold"
+          >
+            편집
+          </button>
+        </div>
+      </div>
+      
+
+        
+      
       {isParticipantsOpen && (
         <ParticipantsList
           travelId={travelId}

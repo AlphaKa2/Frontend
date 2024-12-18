@@ -1,4 +1,3 @@
-import axios from 'axios';
 
 import axiosInstance from '../axios';
 /**
@@ -8,7 +7,8 @@ import axiosInstance from '../axios';
 export const fetchUnregisteredTrips = async () => {
   try {
     const response = await axiosInstance.get('ai-service/auth/recommendations/all');
-    return response.data;
+
+    return response;
   } catch (error) {
     console.error('Error fetching unregistered trips:', error);
     throw error; // 에러를 호출자에게 전달

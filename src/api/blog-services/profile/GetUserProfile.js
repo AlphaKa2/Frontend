@@ -4,6 +4,7 @@ const GetUserProfileApi = async (userId) => {
   try {
     const response = await axiosInstance.get(
       `/user-service/auth/users/${userId}/profile`
+
     );
     const result = response.data;
     return result;
@@ -27,3 +28,4 @@ const GetUserProfileApi = async (userId) => {
 };
 
 export default GetUserProfileApi;
+

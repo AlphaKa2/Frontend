@@ -15,6 +15,8 @@
     "@testing-library/user-event": "^13.5.0",
     "@toast-ui/editor": "^3.2.2",
     "@toast-ui/react-editor": "^3.2.3",
+    "ajv": "^8.0.0",
+    "ajv-keywords": "^5.0.0",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
     "gsap": "^3.12.5",

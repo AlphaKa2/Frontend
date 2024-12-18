@@ -1,8 +1,6 @@
 // Config.js
 import axios from "axios";
 
-axios.defaults.withCredentials = true;
-
 const axiosInstance = axios.create({
   baseURL: "https://172.16.210.54.nip.io:32085", // API 서버 주소
   headers: {

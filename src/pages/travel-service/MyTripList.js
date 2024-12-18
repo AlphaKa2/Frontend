@@ -20,11 +20,13 @@ const MyTripList = () => {
         if (!userId) throw new Error('사용자 ID가 없습니다.');
 
         const userProfile = await GetUserProfileApi(userId); // 프로필 정보 API 호출
-        const {profileImage, nickname, mbti} = userProfile.data;
+
+        const {profileImage, nickname, mbti, mbtiDescription} = userProfile.data;
         setProfileData({
           profileImage,
           nickname,
           mbti,
+          mbtiDescription,
         }); // 프로필 데이터 설정
       } catch (err) {
         console.error('Error fetching user profile:', err);
@@ -55,17 +57,20 @@ const MyTripList = () => {
   return (
     <div className="container mx-auto p-6">
       {/* 프로필 섹션 */}
-      <div className="flex flex-col items-center mb-6">
+
+      <div className="flex flex-col items-center mt-8 mb-6">
         <img
           src={profileData?.profileImage || `${process.env.PUBLIC_URL}/assets/images/사진.jpg`}
           alt="Profile"
-          className="w-32 h-32 rounded-full object-cover"
+          className="w-24 h-24 rounded-full object-cover"
         />
-        <h1 className="text-2xl font-bold mt-4">{profileData?.nickname || '사용자'}</h1>
-        <p className="text-sm text-gray-500 mt-2">
-          {profileData?.mbti ? `${profileData.mbti} (${profileData.mbtiDescription || 'MBTI 설명 없음'})` : 'MBTI 정보를 가져올 수 없습니다.'}
+        <h1 className="text-xl font-bold mt-4">{profileData?.nickname || '사용자'}님 </h1>
+        <p className="text-sm font-semibold text-blue-500 mt-2">
+        {profileData?.mbti
+            ? `${profileData.mbti} (${profileData.mbtiDescription || 'MBTI 설명 없음'})`
+            : 'MBTI 정보를 가져올 수 없습니다.'}
         </p>
-        <p className="text-sm text-gray-700 mt-2">{profileData?.profileDescription || '프로필 설명 없음'}</p>
+        
       </div>
 
       {/* 탭 섹션 */}
