@@ -28,15 +28,15 @@ export const submitComment = async (postId, content, parentId) => {
   };
   
 
-export const updateComment = async (commentId, content) => {
+export const updateComment = async (EditingCommentId, content) => {
     try {
       const response = await axios.put(
-        `/blog-service/auth/api/comments/${commentId}`,
+        `/blog-service/auth/api/comments/${EditingCommentId}`,
         {
           content,
         }
       );
-      return response.data; // 필요한 데이터 반환
+      return response.data.data; // 필요한 데이터 반환
     } catch (error) {
       console.error("댓글 수정 중 오류가 발생했습니다:", error);
       throw error; // 에러를 다시 던져서 호출한 곳에서 처리할 수 있도록 함

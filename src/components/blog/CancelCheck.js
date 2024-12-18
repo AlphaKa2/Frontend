@@ -10,17 +10,17 @@ const CancelCheck = ({onCancel, onConfirm}) => {
           게시글 작성을 취소하시겠습니까?
         </p>
         <div className="mt-4 flex justify-center space-x-2">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 text-white bg-gray-500 rounded hover:bg-gray-600"
-          >
-            아니오
-          </button>
-          <button
+        <button
             onClick={onConfirm}
-            className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+            className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-500"
           >
             예
+          </button>
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-500"
+          >
+            아니오
           </button>
         </div>
       </div>

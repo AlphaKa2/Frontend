@@ -42,9 +42,9 @@ export const fetchSearchResults = async (
   }
 };
 
-export const fetchProfile = async (userId) => {
+export const fetchProfile = async (nickname) => {
   try {
-    const response = await axios.get(`/user-service/users/${userId}/profile`);
+    const response = await axios.get(`/user-service/users/nickname/${nickname}/profile`);
     return response.data.data;
   } catch (error) {
     console.error("태그 데이터를 가져오는 중 오류 발생:", error);
@@ -168,3 +168,4 @@ export const savePost = async (postData) => {
     throw error;
   }
 };
+

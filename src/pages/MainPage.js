@@ -65,6 +65,10 @@ const MainPage = () => {
     navigate("/youtube-page"); // '/윾튜브 페이지' 경로로 이동
   };
 
+  const handleTotalPost = () => {
+    navigate("/blog-service/api/posts/all");
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowDelayedText(true);
@@ -294,7 +298,9 @@ const MainPage = () => {
               <p className="text-black ml-[1.1em] text-[1.5em]">Ice land</p>
             </div>
           </div>
-          <button className="animation mt-[4em] shadow-xl text-lg text-center text-white font-bold rounded bg-gradient-to-r from-[#A1C4FD] to-[#C2E9FB] px-6 py-3 opacity-0 transition-opacity hover:bg-black hover:text-white transform hover:-translate-y-1 active:translate-y-0 duration-500 ease-in delay-[400ms]">
+          <button className="animation mt-[4em] shadow-xl text-lg text-center text-white font-bold rounded bg-gradient-to-r from-[#A1C4FD] to-[#C2E9FB] px-6 py-3 opacity-0 transition-opacity hover:bg-black hover:text-white transform hover:-translate-y-1 active:translate-y-0 duration-500 ease-in delay-[400ms]"
+          onClick={handleTotalPost}
+          >
             게시글 보러가기
           </button>
         </div>

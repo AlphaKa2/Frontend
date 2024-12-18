@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useRecoilValue } from "recoil";
 import loginState from "../../recoil/atoms/loginState";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchProfile } from "../../api/blog-services/blog/PostApi";
 
 const Profile = () => {
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState(null);
-  const { isAuthenticated, nickname: userNickname } = useRecoilValue(loginState);
-  const { userId: userId } = useRecoilValue(loginState);
+  const {  nickname: userNicknameUrl } = useParams();
+  const { isAuthenticated,nickname:userNickname, userId: userId } = useRecoilValue(loginState);
 
   const writePage = () => {
     navigate("/blog-service/auth/api/posts");
@@ -21,7 +21,7 @@ const Profile = () => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const data = await fetchProfile(userId); // 분리된 API 호출 함수 사용
+        const data = await fetchProfile(userNicknameUrl); // 분리된 API 호출 함수 사용
         setProfileData(data); // 데이터 상태 업데이트
         console.log(data);
       } catch (error) {

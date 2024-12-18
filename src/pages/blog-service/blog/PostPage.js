@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { fetchPosts, fetchSearchResults } from "../../../api/blog-services/blog/PostApi"; // API 호출 분리
+import {
+  fetchPosts,
+  fetchSearchResults,
+} from "../../../api/blog-services/blog/PostApi"; // API 호출 분리
 import Profile from "../../../components/blog/Profile";
 import EachPost from "../../../components/blog/EachPost";
 import HeaderBar from "../../../components/HeaderBar";
 import Dropdown from "../../../components/blog/DropdownButton";
 import Tags from "../../../components/blog/Tags";
 import { useRecoilValue } from "recoil";
+import { useParams } from "react-router-dom";
 import loginState from "../../../recoil/atoms/loginState";
-import authorState from "../../../recoil/atoms/authorState";
 
 const PostPage = () => {
   const [posts, setPosts] = useState(null); // 게시글 데이터
@@ -18,8 +21,20 @@ const PostPage = () => {
   const [keyword, setKeyword] = useState(""); // 검색어 상태
   const [isSearching, setIsSearching] = useState(false); // 검색 여부
   const [selectedTag, setSelectedTag] = useState("all"); // 필터링 태그 상태
-  const { nickname } = useRecoilValue(loginState);
-  const { author } = useRecoilValue(authorState);
+  const { nickname } = useParams();
+
+  /*  const { nickname: urlNickname } = useParams(); // URL의 nickname
+  const loginUser = useRecoilValue(loginState); // Recoil에서 로그인 사용자 정보 가져오기
+  const [isSameNickname, setIsSameNickname] = useState(false); // 닉네임 비교 결과 상태
+
+  useEffect(() => {
+    // URL의 nickname과 로그인한 사용자 정보의 nickname 비교
+    if (loginUser?.nickname && urlNickname) {
+      setIsSameNickname(loginUser.nickname === urlNickname);
+    } else {
+      setIsSameNickname(false); // 하나라도 없으면 false
+    }
+  }, [loginUser, urlNickname]); */
 
   // 게시글 데이터 가져오기
   const loadPosts = async () => {
@@ -51,14 +66,14 @@ const PostPage = () => {
   };
 
   useEffect(() => {
-    if (author || nickname) {
+    if (nickname) {
       if (isSearching) {
         loadSearchResults(); // 검색 중이면 검색 결과 호출
       } else {
         loadPosts(); // 기본 게시글 호출
       }
     }
-  }, [author, nickname, currentPage, postsPerPage, sort, isSearching]);
+  }, [nickname, currentPage, postsPerPage, sort, isSearching]);
 
   // 정렬 변경 핸들러
   const handleSortChange = (sort) => {
@@ -145,21 +160,7 @@ const PostPage = () => {
 
           {/* 게시글 목록 */}
           <div className="absolute top-[15vh] right-[7vw] space-y-[3vh]">
-            {posts.map((post) => (
-              <EachPost
-                key={post.postId}
-                postId={post.postId}
-                title={post.title}
-                content={post.contentSnippet}
-                image={post.representativeImage}
-                tags={post.tags}
-                likeCount={post.likeCount}
-                commentCount={post.commentCount}
-                viewCount={post.viewCount}
-                createdAt={post.createdAt}
-                updatedAt={post.updatedAt}
-              />
-            ))}
+            {posts && <EachPost posts={posts} nickname={nickname} />}
 
             {/* 페이지네이션 */}
             <div className="flex justify-center">

@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import CommentEdit from "./CommentEdit";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import loginState from "../../recoil/atoms/loginState";
-import axios from "../../api/axios";
+import authorState from "../../recoil/atoms/authorState";
 import { format } from "date-fns";
-import heart from "../../assets/images/heart_black.png";
+import heartIcon from "../../assets/images/heart_black.png";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import authorState from "../../recoil/atoms/authorState"; // Recoil atom 가져오기
-import { deleteComment, submitComment, toggleCommentLike } from "../../api/blog-services/blog/CommentApi";
+import {
+  deleteComment,
+  submitComment,
+  toggleCommentLike,
+} from "../../api/blog-services/blog/CommentApi";
+import CommentWrite from "./CommentWrite";
 
 const EachComment = ({
   postId,
@@ -23,236 +26,155 @@ const EachComment = ({
   liked,
   isPublic,
   createdAt,
-  updatedAt,
   fetchComments,
 }) => {
-  const setAuthor = useSetRecoilState(authorState); // Recoil 상태 업데이트 함수
+  const { userId, nickname, profileImageUrl } = useRecoilValue(loginState);
+  const setAuthor = useSetRecoilState(authorState);
   const navigate = useNavigate();
-  const { userId } = useRecoilValue(loginState);
-  const { nickname } = useRecoilValue(loginState);
-  const { profileImageUrl } = useRecoilValue(loginState);
-  const [Reply, setReply] = useState(""); // 댓글 입력 상태
-  const [isEditing, setIsEditing] = useState(false); // Toggle edit mode
+  const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(content);
   const [showReplyInput, setShowReplyInput] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isCommentLiked, setIsCommentLiked] = useState(false);
-  const [commentLikeCount, setCommentLikeCount] = useState(0);
+  const [isCommentLiked, setIsCommentLiked] = useState(liked);
+  const [commentLikeCount, setCommentLikeCount] = useState(likeCount);
+  const [repliesState, setRepliesState] = useState(replies || []);
 
-  useEffect(()=>{
+  useEffect(() => {
     setIsCommentLiked(liked);
     setCommentLikeCount(likeCount);
-    console.log(commentLikeCount);
-    console.log(isCommentLiked);
-  },[fetchComments]);
+    setRepliesState(replies || []);
+    console.log("EachComment postId"+postId)
+  }, [liked, likeCount, replies]);
 
   const handleAuthorClick = () => {
-    setAuthor(author); // 클릭된 author 값을 Recoil 상태에 저장
-    navigate(`/blog-service/api/posts/blog/${author}`); 
-    console.log(`Author set to: ${author}`);
+    setAuthor(author);
+    navigate(`/blog-service/api/posts/blog/${author}`);
   };
 
-  const safeFormatDate = (dateString, fallback = "Invalid Date") => {
+  const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return isNaN(date) ? fallback : format(date, "yyyy-MM-dd HH:mm");
-  };
-  
-  const handleCommentReport = () => {
-    navigate("/commentreport");
-  }
-  
-  
-
-  const handleSubmit = async () => {
-    if (!Reply.trim()) {
-      alert("답글 내용을 입력하세요.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      await submitComment(
-        postId,
-        Reply,
-        commentId,
-        true,
-      );
-      alert("답글이 등록되었습니다!");
-      setReply("");
-      setShowReplyInput(false);
-      fetchComments();
-    } catch (error) {
-      console.error("답글 제출 오류:", error);
-      alert("답글 제출 중 오류가 발생했습니다.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleReplyChange = (e) => {
-    setReply(e.target.value);
-  };
-
-  const handleEditComment = () => {
-    setIsEditing(true);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setEditContent(content);
+    return isNaN(date) ? "Invalid Date" : format(date, "yyyy-MM-dd HH:mm");
   };
 
   const handleDeleteComment = async () => {
-    if (window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
+    if (window.confirm("댓글을 삭제하시겠습니까?")) {
       try {
-        await deleteComment(commentId); // 분리된 API 호출 함수 사용
+        await deleteComment(commentId);
         alert("댓글이 삭제되었습니다.");
-        fetchComments(); // 댓글 목록을 새로 고침
+        fetchComments();
       } catch (error) {
-        console.error("댓글 삭제 중 오류가 발생했습니다:", error);
+        console.error("댓글 삭제 오류:", error);
         alert("댓글 삭제에 실패했습니다.");
       }
     }
   };
-  
 
-  const handleCommentLikeClick = async () => {
+  const handleCommentLikeToggle = async () => {
     try {
       await toggleCommentLike(commentId);
-      console.log(likeCount);
-      setIsCommentLiked(!isCommentLiked); // 상태를 토글
-      if (isCommentLiked == false) {
-        setCommentLikeCount((commentLikeCount) => (commentLikeCount + 1));
-      } else {
-        setCommentLikeCount((commentLikeCount) => (commentLikeCount - 1));
-      }
+      setIsCommentLiked((prev) => !prev);
+      setCommentLikeCount((prev) => (isCommentLiked ? prev - 1 : prev + 1));
     } catch (error) {
-      console.error("좋아요 요청 중 오류 발생:", error);
+      console.error("좋아요 토글 오류:", error);
     }
   };
 
   return (
     <div
-  className={`${
-    !parentId ? "border-b-[3px] border-[#ddd] mt-[2em] pb-3" : "pt-2 pb-4"
-  }`}
->
-  {isEditing ? (
-    <CommentEdit
-      commentId={commentId}
-      initialContent={editContent}
-      onCancel={handleCancelEdit}
-      onSuccess={() => {
-        setIsEditing(false);
-      }}
-      fetchComments={fetchComments}
-    />
-  ) : (
-    <>
-      <div className="flex justify-between items-center mb-[8px] px-1">
-        <button onClick={handleAuthorClick} className="flex justify-center items-center">
-          <img
-            src={authorProfileImage}
-            alt="Profile"
-            className="w-[40px] h-[40px] rounded-[50%] mr-[12px]"
-          />
-          <strong className="text-[18px] font-bold text-[#333]">
-            {author}
-          </strong>
-        </button>
-        {userId === authorId && (
-          <div className="flex">
-            <button
-              onClick={handleEditComment}
-              className="text-gray-500 text-[12px] px-1 py-0.5 rounded-lg"
-            >
-              수정
+      className={`${
+        parentId ? "pt-2 pb-4" : "border-b-2 border-gray-300 mt-6 pb-3"
+      }`}
+    >
+      {isEditing ? (
+        <CommentEdit
+          EditingCommentId={commentId}
+          initialContent={editContent}
+          onCancel={() => setIsEditing(false)}
+          onSuccess={() => {
+            setIsEditing(false);
+            fetchComments();
+            console.log("댓글수정: "+commentId);
+          }}
+        />
+      ) : (
+        <>
+          <div className="flex justify-between items-center mb-2 px-1">
+            <button onClick={handleAuthorClick} className="flex items-center">
+              <img
+                src={authorProfileImage}
+                alt="Profile"
+                className="w-10 h-10 rounded-full mr-3"
+              />
+              <strong className="text-lg font-bold text-gray-800">
+                {author}
+              </strong>
             </button>
-            <button
-              onClick={handleDeleteComment}
-              className="text-gray-500 text-[12px] px-1 py-0.5 rounded-lg"
-            >
-              삭제
-            </button>
+            {userId === authorId && (
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="text-gray-500 text-sm px-2 py-1 rounded-md"
+                >
+                  수정
+                </button>
+                <button
+                  onClick={handleDeleteComment}
+                  className="text-gray-500 text-sm px-2 py-1 rounded-md"
+                >
+                  삭제
+                </button>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-
-      <div className="text-[18px] text-[#555] mb-[16px] leading-[1.6] px-1">
-        {content}
-      </div>
-
-      <div className="flex justify-start items-center space-x-1 px-1">
-        <div className="text-[12px] text-[#666]">
-          {safeFormatDate(createdAt)}
-        </div>
-        <div className="text-[12px] text-[#666]">|</div>
-        <button className="text-[12px] text-[#666]">신고</button>
-      </div>
-
-      {!parentId && (
-        <div className="flex justify-between items-center space-x-1 mt-3 px-1">
-          <button
-            onClick={() => setShowReplyInput(!showReplyInput)}
-            className="text-[12px] text-[#666] border-[0.1px] border-gray-300 px-1 py-0.5"
-          >
-            답글
-          </button>
-          <button onClick={handleCommentLikeClick} className="flex justify-center items-center text-[12px] text-[#666] border-[0.1px] border-gray-300 px-1 py-0.5">
-            <img src={heart} alt="heart" className="w-3.5 h-3.5 mr-1" />
-            {commentLikeCount}
-          </button>
-        </div>
-      )}
-
-      {replies && replies.length > 0 && (
-        <div className="mt-1 border-l-[2px] border-gray-300 pl-5 mt-[1em] ml-[0.4em] mb-[0.5em]">
-          {replies.map((reply) => (
-            <EachComment
-              key={reply.commentId}
-              {...reply}
-              fetchComments={fetchComments}
-            />
-          ))}
-        </div>
-      )}
-
-      {showReplyInput && (
-        <div className="mt-4 pl-4">
-          <div className="flex justify-start items-center">
-            <img
-              src={profileImageUrl}
-              alt="Profile"
-              className="w-[40px] h-[40px] rounded-[50%] mr-[12px]"
-            />
-            <strong className="text-[18px] font-bold text-[#333]">
-              {nickname}
-            </strong>
+          <p className="text-gray-700 text-sm mb-4 px-1">{content}</p>
+          <div className="flex items-center space-x-2 px-1 text-sm text-gray-500">
+            <span>{formatDate(createdAt)}</span>
+            <span>|</span>
+            <button>신고</button>
           </div>
-          <textarea
-            className="w-full h-40 p-4 mt-4 border-2 border-[#ddd] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
-            placeholder="답글 작성하기"
-            value={Reply}
-            onChange={handleReplyChange}
-            disabled={isSubmitting}
-          />
-          <div className="mt-4 text-right">
-            <button
-              onClick={handleSubmit}
-              className={`bg-indigo-500 text-white font-medium px-6 py-2 rounded-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all ${
-                isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "등록 중..." : "등록하기"}
-            </button>
-          </div>
-        </div>
-      )}
-    </>
-  )}
-</div>
 
+          {!parentId && (
+            <div className="flex justify-between items-center mt-3 px-1 space-x-2">
+              <button
+                onClick={() => setShowReplyInput(!showReplyInput)}
+                className="text-sm text-gray-500 border px-2 py-1 rounded-md"
+              >
+                답글
+              </button>
+              <button
+                onClick={handleCommentLikeToggle}
+                className="flex items-center text-sm text-gray-500 border px-2 py-1 rounded-md"
+              >
+                <img src={heartIcon} alt="Like" className="w-4 h-4 mr-1" />
+                {commentLikeCount}
+              </button>
+            </div>
+          )}
+
+          {/* 답글 리스트 */}
+          {repliesState.length > 0 && (
+            <div className="mt-4 ml-4">
+              {repliesState.map((reply) => (
+                <EachComment
+                  key={reply.commentId}
+                  {...reply}
+                  fetchComments={fetchComments}
+                />
+              ))}
+            </div>
+          )}
+          {/* 답글 입력창 */}
+          {showReplyInput && (
+            <div className="mt-4 pl-4">
+              <CommentWrite
+                postId={postId}
+                parentId={commentId} // 부모 댓글 ID 전달
+                fetchComments={fetchComments}
+              />
+            </div>
+          )}
+        </>
+      )}
+    </div>
   );
 };
 
