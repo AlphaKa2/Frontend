@@ -16,7 +16,7 @@ const PostReportPage = () => {
   const { postId } = location.state || {}; // 전달된 props 수신
 
 
-  // const targetId = 8; 테스트용 타겟 아이디 하드코딩
+  // const postId = 8; // 테스트용 타겟 아이디 하드코딩
   const handleCancelClick = () => {
     setIsModalOpen(true);
   };

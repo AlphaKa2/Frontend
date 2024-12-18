@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://172.16.210.54:31214", // API 서버 주소
+  baseURL: "https://172.16.210.54.nip.io:32085", // API 서버 주소
   headers: {
     "Content-Type": "application/json",
   },

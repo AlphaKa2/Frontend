@@ -21,7 +21,7 @@ const UnregisteredTripsTab = () => {
       try {
         setLoading(true);
         const response = await fetchUnregisteredTrips();
-        setUnregisteredTrips(response.data);
+        setUnregisteredTrips(response);
       } catch (error) {
         console.error('Error fetching trips:', error);
       } finally {

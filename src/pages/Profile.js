@@ -7,12 +7,23 @@ import axios from "../api/axios";
 
 const Profile = () => {
   const navigate = useNavigate();
+
+  const targetUserId = 3; // 임시로 타겟 아이디 넘김
+  const handleFollowingList = () => {
+    navigate("/following/list", {state : targetUserId} );
+  }
+
+  const handleFollowerList = () => {
+    navigate(("/follower/list"), {state : targetUserId} );
+  }
+
+
   const writePage = () => {
     navigate("/blog-service/auth/api/posts");
-  };
+};
 
   const handleUserReport = () => {
-    navigate("/userreport");
+    navigate("/report/user");
   }
 
   const goLoginPage = () => {
@@ -125,11 +136,11 @@ const Profile = () => {
 
       <div className="flex space-x-[1vw] mt-[1vh]">
         <div>
-          <div className="font-semibold">팔로워</div>
+          <button onClick={handleFollowerList} className="font-semibold">팔로워</button>
           <div className="text-blue-600">{profileData.followerCount}</div>
         </div>
         <div>
-          <div className="font-semibold">팔로잉</div>
+          <button onClick={handleFollowingList} className="font-semibold">팔로잉</button>
           <div className="text-blue-600">{profileData.followingCount}</div>
         </div>
       </div>

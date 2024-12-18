@@ -75,7 +75,7 @@ const LoginPage = () => {
       <img
         src={logo}
         alt="온길 로고"
-        className="w-24 mb-6 cursor-pointer"
+        className="w-20 mb-6 cursor-pointer"
         onClick={() => navigate("/")}
       />{" "}
       {/* 온길로고*/}

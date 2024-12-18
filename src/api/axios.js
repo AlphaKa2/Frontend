@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Axios 인스턴스 생성
 const axiosInstance = axios.create({
-  baseURL: 'http://172.16.210.54:31214', // API 기본 URL
+  baseURL: 'https://172.16.210.54.nip.io:32085', // API 기본 URL
   timeout: 30000, // 요청 타임아웃 (30초)
   headers: {
     'Content-Type': 'application/json',

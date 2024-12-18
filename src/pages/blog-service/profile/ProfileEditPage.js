@@ -398,7 +398,7 @@ const ProfileEditPage = () => {
         strokeWidth="2"
       />
     </svg>
-    <span></span>
+    <span>Light</span>
   </button>
 
   {/* 다크 모드 상태 (Light 버튼) */}
