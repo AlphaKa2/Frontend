@@ -44,7 +44,7 @@ const HeaderMenu = ({ closeMenu, isOpen }) => {
         profileImageUrl: null,
         accessToken: null,
       });
-calStorage.removeItem("accessToken");
+localStorage.removeItem("accessToken");
       alert("로그아웃 되었습니다.");
       navigate("/");
     } catch (error) {
@@ -120,7 +120,7 @@ calStorage.removeItem("accessToken");
         >
           내 여행
         </p>
-        <p className="py-3" onClick={() => handleNavigation("/mbti-test")}>
+        <p className="py-3" onClick={() => handleNavigation("/mbti/test")}>
           여행 MBTI 검사
         </p>
         <p

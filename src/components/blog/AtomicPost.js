@@ -3,6 +3,7 @@ import { format } from "date-fns"; // date-fns 라이브러리 사용
 import like_pic from "../../assets/images/like.png";
 import comment_pic from "../../assets/images/comment.png";
 import { useNavigate } from "react-router-dom";
+import noImage from "../../assets/images/noImage.png";
 
 const AtomicPost = ({
   /* postId, // 고유 ID
@@ -52,7 +53,7 @@ const AtomicPost = ({
             alt={post.title}
             className="w-[21vw] h-[17vh] my-[0.5vh] mr-[0.5vw] p-[1px] rounded-md object-cover"
           />
-        ) : null}
+        ) : <img src={noImage} className="w-[21vw] h-[17vh] my-[0.5vh] mr-[0.5vw] p-[1px] rounded-md object-cover"/>}
 
         <div className="flex flex-row justify-between items-center space-x-[1vh]">
         {/* 게시글 제목 */}

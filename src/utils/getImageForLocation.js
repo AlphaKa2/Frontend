@@ -18,7 +18,7 @@ import JeonnamImage from '../assets/images/Jeonnam.png'; // 전라남도
 import GyeongbukImage from '../assets/images/Gyeongbuk.png'; // 경상북도
 import GyeongnamImage from '../assets/images/Gyeongnam.png'; // 경상남도
 import JejuImage from '../assets/images/Jeju.png'; // 경상남도
-import DefaultImage from '../assets/images/panibottle.png'; // 기본 이미지
+import DefaultImage from '../assets/images/yt.png'; // 기본 이미지
 
 // 지역 데이터
 const locationData = {
