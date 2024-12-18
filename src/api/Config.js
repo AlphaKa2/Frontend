@@ -1,12 +1,15 @@
 // Config.js
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
+
 const axiosInstance = axios.create({
   baseURL: "https://172.16.210.54.nip.io:32085", // API 서버 주소
   headers: {
     "Content-Type": "application/json",
   },
   timeout: 5000, // 요청 제한 시간 설정
+  withCredentials: true
 });
 
 // 요청 인터셉터: AccessToken 추가

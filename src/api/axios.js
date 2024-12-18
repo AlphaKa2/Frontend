@@ -1,6 +1,9 @@
 // axios.js
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
+
+
 // Axios 인스턴스 생성
 const axiosInstance = axios.create({
   baseURL: 'https://172.16.210.54.nip.io:32085', // API 기본 URL

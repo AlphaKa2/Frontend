@@ -43,11 +43,11 @@ import MbtiTestPage from './pages/blog-service/mbti/MbtiTestPage';
 import MbtiPage from './pages/blog-service/mbti/MbtiPage';
 import MbtiResultPage from './pages/blog-service/mbti/MbtiResultPage';
 // 블로그 
-import PostDetailPage from './pages/PostDetailPage';
-import CreatePostPage from './pages/CreatePostPage';
-import PostPage from './pages/PostPage' ;
-import PostEditPage from "./pages/PostEditPage";
-import CommentSection from "./pages/CommentSection";
+import PostDetailPage from './pages/blog-service/blog/PostDetailPage';
+import CreatePostPage from './pages/blog-service/blog/CreatePostPage';
+import PostPage from './pages/blog-service/blog/PostPage' ;
+import PostEditPage from "./pages/blog-service/blog/PostEditPage";
+import TotalPostPage from './pages/blog-service/blog/TotalPostPage';
 // Hooks
 import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
@@ -56,6 +56,8 @@ import loginState from "./recoil/atoms/loginState";
 import React from 'react';
 import "./index.css"; // Tailwind가 포함된 CSS 파일을 import
 import "./App.css";
+
+
 
 
 function App() {
@@ -128,19 +130,9 @@ function AppContent() {
         <Route path="/MbtiResultPage" element={<MbtiResultPage/>}/>
 
         <Route path="/blog-service/api/posts/blog/:nickname" element={<PostPage />} />
-        {/* <Route
-          path="/"
-          element={
-            nickname ? (
-              <Navigate to={`/blog-service/api/posts/blog/${nickname}`} />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        /> */}
-        <Route path="/blog-service/auth/api/posts/:postId" element={<PostDetailPage />} />
+        <Route path="/blog-service/api/posts/:postId" element={<PostDetailPage />} />
         <Route path="/blog-service/auth/api/posts/:postId/edit" element={<PostEditPage/>}/>
-
+        <Route path="/blog-service/api/posts/all" element={<TotalPostPage/>}/>
         <Route path="/blog-service/api/posts" element={<CreatePostPage/>}/>
       </Routes>
     </div>
